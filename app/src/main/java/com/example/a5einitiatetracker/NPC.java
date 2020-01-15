@@ -1,7 +1,11 @@
 package com.example.a5einitiatetracker;
 
+
+import java.util.Random;
+
 class NPC extends Combatant {
     protected int health;
+    Random roller = new Random();
 
     public NPC(){
         health = 0;
@@ -20,6 +24,10 @@ class NPC extends Combatant {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    private int rollInitiative(){
+        return roller.nextInt(21) + initiativeModifier;
     }
 
 }

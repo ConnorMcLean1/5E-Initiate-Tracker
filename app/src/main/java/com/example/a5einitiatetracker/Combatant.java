@@ -29,9 +29,6 @@ class Combatant {
         this.initiativeModifier = initiativeModifier;
     }
 
-    private int rollInitiative(){
-
-    }
 }
 
 
