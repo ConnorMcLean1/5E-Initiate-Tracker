@@ -28,6 +28,10 @@ class Combatant {
     public void setInitiativeModifier(int initiativeModifier) {
         this.initiativeModifier = initiativeModifier;
     }
+
+    private int rollInitiative(){
+
+    }
 }
 
 
