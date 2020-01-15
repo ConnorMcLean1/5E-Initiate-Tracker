@@ -5,7 +5,6 @@ import java.util.Random;
 
 class NPC extends Combatant {
     protected int health;
-    protected enum advantage {NONE, ADVANTAGE, DISADVANTAGE}
     Random roller = new Random();
 
     public NPC(){
