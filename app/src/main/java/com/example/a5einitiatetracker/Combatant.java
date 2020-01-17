@@ -7,6 +7,7 @@ class Combatant {
     protected int initiativeModifier;
     protected enum combatantStates {ALIVE, DEAD, UNCONSCIOUS, UNSTABLE}
     protected combatantStates status;
+    protected String name;
     //endregion
 
     //region PUBLIC FUNCTIONS/METHODS
@@ -19,10 +20,11 @@ class Combatant {
     }
 
     // constructor with arguments
-    public Combatant(int initiative, int initiativeModifier, combatantStates status){
+    public Combatant(int initiative, int initiativeModifier, combatantStates status, String name){
         this.initiative = initiative;
         this.initiativeModifier = initiativeModifier;
         this.status = status;
+        this.name = name;
     }
 
     public Integer getInitiative() {
@@ -37,6 +39,10 @@ class Combatant {
         return status;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setInitiative(int initiative) {
         this.initiative = initiative;
     }
@@ -48,6 +54,12 @@ class Combatant {
     public void setInitiativeModifier(int initiativeModifier) {
         this.initiativeModifier = initiativeModifier;
     }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     //endregion
 
 }

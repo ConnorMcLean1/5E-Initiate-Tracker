@@ -9,8 +9,8 @@ class Player extends Combatant {
         super.status = combatantStates.ALIVE;
     }
 
-    public Player(int initiative, int initiativeModifier, combatantStates status) {
-        super(initiative, initiativeModifier, status);
+    public Player(int initiative, int initiativeModifier, combatantStates status, String name) {
+        super(initiative, initiativeModifier, status, name);
     }
     //endregion
 

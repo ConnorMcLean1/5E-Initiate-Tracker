@@ -19,9 +19,12 @@ class NPC extends Combatant implements Comparable<Combatant> {
         super.status = combatantStates.ALIVE;
     }
 
-    public NPC(int initiative, int initiativeModifier, combatantStates status, int health) {
-        super(initiative, initiativeModifier, status);
+    public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv) {
+        this.status = status;
         this.health = health;
+        this.initiativeModifier = initiativeModifier;
+        this.name = name;
+        this.initiative = rollInitiative(adv);
     }
 
     public int getHealth() {
@@ -35,6 +38,11 @@ class NPC extends Combatant implements Comparable<Combatant> {
     @Override
     public int compareTo(Combatant o) {
         return this.getInitiative().compareTo(o.getInitiative());
+    }
+
+    protected static int dexToMod(int dex){
+        Double mod = Math.floor(((dex-10)/2));
+        return mod.intValue();
     }
     //endregion
 
