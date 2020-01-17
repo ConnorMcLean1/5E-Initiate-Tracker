@@ -4,17 +4,18 @@ package com.example.a5einitiatetracker;
 import java.util.Random;
 
 class NPC extends Combatant {
-    protected int health;
-    Random roller = new Random();
+    private int health;
+    private Random roller = new Random();
 
     public NPC(){
         health = 0;
         super.initiative = 0;
         super.initiativeModifier = 0;
+        super.status = combatantStates.ALIVE;
     }
 
-    public NPC(int initiative, int initiativeModifier, int health) {
-        super(initiative, initiativeModifier);
+    public NPC(int initiative, int initiativeModifier, combatantStates status, int health) {
+        super(initiative, initiativeModifier, status);
         this.health = health;
     }
 
