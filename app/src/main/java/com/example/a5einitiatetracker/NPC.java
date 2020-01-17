@@ -1,12 +1,17 @@
 package com.example.a5einitiatetracker;
 
-
 import java.util.Random;
 
-class NPC extends Combatant {
+class NPC extends Combatant implements Comparable<Combatant> {
+
+    //region VARIABLES
+    private final int ADVANTAGE = 1; // roll with advantage
+    private final int DISADVANTAGE = -1; // roll with disadvantage
     private int health;
     private Random roller = new Random();
+    //endregion
 
+    //region PUBLIC FUNCTIONS/METHODS
     public NPC(){
         health = 0;
         super.initiative = 0;
@@ -27,17 +32,26 @@ class NPC extends Combatant {
         this.health = health;
     }
 
-    //Method to roll intiative. Note for input 0 = no extra roll, 1 = advantage, -1 = disadvantage
+    @Override
+    public int compareTo(Combatant o) {
+        return this.getInitiativeModifier().compareTo(o.getInitiativeModifier());
+    }
+    //endregion
+
+    //region PRIVATE FUNCTIONS/METHODS
+
+    //Method to roll initiative. Note for input 0 = no extra roll, 1 = advantage, -1 = disadvantage
     private int rollInitiative(int adv){
         int temp = roller.nextInt(21);
-        if(adv == 1){
+
+        if(adv == ADVANTAGE){
             int temp2 = roller.nextInt(21);
             if(temp > temp2)
                 return temp  + initiativeModifier;
             else
                 return temp2  + initiativeModifier;
         }
-        else if (adv == -1){
+        else if (adv == DISADVANTAGE){
                 int temp2 = roller.nextInt(21);
                 if(temp < temp2)
                     return temp  + initiativeModifier;
@@ -45,6 +59,8 @@ class NPC extends Combatant {
                     return temp2  + initiativeModifier;
         }
         else
-            return temp + initiativeModifier;
+            return temp + initiativeModifier; // no roll modifier
     }
+    //endregion
+
 }
