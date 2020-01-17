@@ -3,14 +3,18 @@ package com.example.a5einitiatetracker;
 class Combatant {
     protected int initiative;
     protected int initiativeModifier;
+    protected enum combatantStates {ALIVE, DEAD, UNCONSCIOUS, UNSTABLE}
+    protected combatantStates status;
 
     public Combatant(){
         initiative = 0;
         initiativeModifier = 0;
+        status = combatantStates.ALIVE;
     }
-    public Combatant(int initiative, int initiativeModifier){
+    public Combatant(int initiative, int initiativeModifier, combatantStates status){
         this.initiative = initiative;
         this.initiativeModifier = initiativeModifier;
+        this.status = status;
     }
 
     public int getInitiative() {
@@ -25,13 +29,18 @@ class Combatant {
         return initiativeModifier;
     }
 
+    public combatantStates getStatus() {
+        return status;
+    }
+
+    public void setStatus(combatantStates status) {
+        this.status = status;
+    }
+
     public void setInitiativeModifier(int initiativeModifier) {
         this.initiativeModifier = initiativeModifier;
     }
 
-    private int rollInitiative(){
-
-    }
 }
 
 
