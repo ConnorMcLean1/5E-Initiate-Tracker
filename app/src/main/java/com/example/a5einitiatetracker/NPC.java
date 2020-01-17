@@ -14,6 +14,13 @@ class NPC extends Combatant {
         super.status = combatantStates.ALIVE;
     }
 
+    public NPC(int initiativeModifier, combatantStates status, int health, int adv) {
+        this.initiativeModifier = initiativeModifier;
+        this.status = status;
+        this.health = health;
+        this.initiative = rollInitiative(adv);
+    }
+
     public NPC(int initiative, int initiativeModifier, combatantStates status, int health) {
         super(initiative, initiativeModifier, status);
         this.health = health;
@@ -28,7 +35,7 @@ class NPC extends Combatant {
     }
 
     //Method to roll intiative. Note for input 0 = no extra roll, 1 = advantage, -1 = disadvantage
-    private int rollInitiative(int adv){
+    protected int rollInitiative(int adv){
         int temp = roller.nextInt(21);
         if(adv == 1){
             int temp2 = roller.nextInt(21);
@@ -47,4 +54,15 @@ class NPC extends Combatant {
         else
             return temp + initiativeModifier;
     }
+
+    //converts an NPCs dex score to their dexterity modifier
+    static int dexToMod(int d){
+        return ((d-10)/2);
+    }
+
+    //Overloaded to include additional DM specified dex bonuses
+    static int dexToMod(int d, int xtra){
+        return ((d-10)/2) + xtra;
+    }
+
 }
