@@ -3,8 +3,8 @@ package com.example.a5einitiatetracker;
 class Combatant {
 
     //region VARIABLES
-    protected int initiative;
-    protected Integer initiativeModifier;
+    protected Integer initiative;
+    protected int initiativeModifier;
     protected enum combatantStates {ALIVE, DEAD, UNCONSCIOUS, UNSTABLE}
     protected combatantStates status;
     //endregion
@@ -25,11 +25,11 @@ class Combatant {
         this.status = status;
     }
 
-    public int getInitiative() {
+    public Integer getInitiative() {
         return initiative;
     }
 
-    public Integer getInitiativeModifier() {
+    public int getInitiativeModifier() {
         return initiativeModifier;
     }
 

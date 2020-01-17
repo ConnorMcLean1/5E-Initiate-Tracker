@@ -34,7 +34,7 @@ class NPC extends Combatant implements Comparable<Combatant> {
 
     @Override
     public int compareTo(Combatant o) {
-        return this.getInitiativeModifier().compareTo(o.getInitiativeModifier());
+        return this.getInitiative().compareTo(o.getInitiative());
     }
     //endregion
 
