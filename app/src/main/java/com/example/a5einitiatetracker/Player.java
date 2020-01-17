@@ -1,6 +1,8 @@
 package com.example.a5einitiatetracker;
 
 class Player extends Combatant {
+
+    //region PUBLIC FUNCTIONS/METHODS
     public Player() {
         super.initiative = 0;
         super.initiativeModifier = 0;
@@ -10,6 +12,6 @@ class Player extends Combatant {
     public Player(int initiative, int initiativeModifier, combatantStates status) {
         super(initiative, initiativeModifier, status);
     }
-
+    //endregion
 
 }
