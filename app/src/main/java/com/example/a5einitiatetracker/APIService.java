@@ -8,7 +8,7 @@ import retrofit2.http.Path;
 
 public interface APIService {
     @GET("monsters")
-    Call<List<Monster>> listMonsters();
+    Call<List<MonsterIndex>> listMonsters();
     @GET("monsters/{monster}")
     Call<Monster> getMonsterStats(@Path("monster") String monster);
 
