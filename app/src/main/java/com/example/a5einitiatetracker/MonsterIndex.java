@@ -2,32 +2,21 @@ package com.example.a5einitiatetracker;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class MonsterIndex {
+    @SerializedName("results")
+    private List<MonsterName> results;
 
-    @SerializedName("index")
-    private String index;
-
-    @SerializedName("name")
-    private String name;
-
-    public MonsterIndex(String index, String name) {
-        this.index = index;
-        this.name = name;
+    public MonsterIndex(List<MonsterName> results) {
+        this.results = results;
     }
 
-    public String getIndex() {
-        return index;
+    public List<MonsterName> getResults() {
+        return results;
     }
 
-    public void setIndex(String index) {
-        this.index = index;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setResults(List<MonsterName> results) {
+        this.results = results;
     }
 }
