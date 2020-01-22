@@ -2,34 +2,20 @@
 
 package com.example.a5einitiatetracker;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Monster {
-        @Expose
-        @SerializedName("hit_points")
-        private Integer hitPoints;
-        @Expose
-        @SerializedName("dexterity")
-        private Integer dexterity;
-        @Expose
-        @SerializedName("name")
-        private String name;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("hit_points")
+    private Integer hp;
+    @SerializedName("dexterity")
+    private Integer dex;
 
-    public Integer getHit_points() {
-        return hitPoints;
-    }
-
-    public void setHit_points(Integer hit_points) {
-        this.hitPoints = hit_points;
-    }
-
-    public Integer getDexterity() {
-        return dexterity;
-    }
-
-    public void setDexterity(Integer dexterity) {
-        this.dexterity = dexterity;
+    public Monster(String name, Integer hp, Integer dex) {
+        this.name = name;
+        this.hp = hp;
+        this.dex = dex;
     }
 
     public String getName() {
@@ -38,5 +24,21 @@ public class Monster {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getHp() {
+        return hp;
+    }
+
+    public void setHp(Integer hp) {
+        this.hp = hp;
+    }
+
+    public Integer getDex() {
+        return dex;
+    }
+
+    public void setDex(Integer dex) {
+        this.dex = dex;
     }
 }
