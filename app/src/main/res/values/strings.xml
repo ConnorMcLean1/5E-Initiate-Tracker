@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">5E Initiate Tracker</string>
-    <string name="title_activity_monsters">MonstersActivity</string>
     <string name="btn_add_monster">Add Monster</string>
     <string name="btn_start">Start</string>
 </resources>
