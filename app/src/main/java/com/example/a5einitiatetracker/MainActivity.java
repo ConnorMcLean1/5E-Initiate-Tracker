@@ -18,8 +18,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "DebugInfo";
-    public static final String BASE_URL = "http://dnd5eapi.co/api/";
+    //variables for API using Retrofit library
+    public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
     private static Retrofit retrofit = null;
 
     @Override
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public void connectAndGetApiData() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(BASE_API_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MonsterIndex> call, Throwable throwable) {
-                Log.e(TAG, throwable.toString());
+                Log.e("API_RESPONSE", throwable.toString());
             }
         });
     }
