@@ -5,8 +5,14 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class MonsterIndex {
+
+    //region VARIABLES
     @SerializedName("results")
     private List<MonsterName> results;
+
+    //endregion
+
+    //region PUBLIC FUNCTIONS/METHODS
 
     public MonsterIndex(List<MonsterName> results) {
         this.results = results;
@@ -19,4 +25,6 @@ public class MonsterIndex {
     public void setResults(List<MonsterName> results) {
         this.results = results;
     }
+
+    //endregion
 }

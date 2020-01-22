@@ -5,6 +5,8 @@ package com.example.a5einitiatetracker;
 import com.google.gson.annotations.SerializedName;
 
 public class Monster {
+
+    //region VARIABLES
     @SerializedName("name")
     private String name;
     @SerializedName("hit_points")
@@ -17,7 +19,9 @@ public class Monster {
         this.hp = hp;
         this.dex = dex;
     }
+    //endregion
 
+    //region PUBLIC FUNCTIONS/METHODS
     public String getName() {
         return name;
     }
@@ -41,4 +45,5 @@ public class Monster {
     public void setDex(Integer dex) {
         this.dex = dex;
     }
+    //endregion
 }

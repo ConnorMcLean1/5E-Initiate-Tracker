@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 
 public class MonsterName {
+
+    //region VARIABLES
     @SerializedName("name")
     private String name;
 
@@ -15,7 +17,9 @@ public class MonsterName {
         this.name = name;
         this.index = index;
     }
+    //endregion
 
+    //region PUBLIC FUNCTIONS/METHODS
     public String getName() {
         return name;
     }
@@ -31,4 +35,6 @@ public class MonsterName {
     public void setIndex(String index) {
         this.index = index;
     }
+
+    //endregion
 }
