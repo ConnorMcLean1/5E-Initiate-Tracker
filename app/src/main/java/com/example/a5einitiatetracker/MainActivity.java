@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static Retrofit retrofit = null;
 
     //JSON objects for storing monster list from the initial API call
+    JSONArray jsonArray = new JSONArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Method connects to the API and returns a list of MonsterName objects, each holding the index and name of a monster
     //TODO: monsterNames needs to be passed into a global variable or stored into a JSON file to be used by the app
-    public void connectAndGetApiData() {
+    private void connectAndGetApiData() {
+        List<MonsterName> monsterNames;
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_API_URL)
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
                 List<MonsterName> monsterNames = response.body().getResults();
+                MonsterNamesToJSONArray(monsterNames);
             }
 
             @Override
@@ -63,5 +69,44 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("API_RESPONSE", throwable.toString());
             }
         });
+    }
+
+    //Creates a JSON object out of each MonsterName object in the provided list
+    //and adds it to a JSONArray.
+    private JSONArray MonsterNamesToJSONArray(List<MonsterName> list){
+        //region VARIABLES
+        JSONArray arr = new JSONArray();
+        JSONObject obj;
+        //endregion
+        try {
+            //region LOOP
+            for (int i = 0; i < list.size(); i++) {
+                obj = new JSONObject();
+                obj.put("Index", list.get(i).getIndex());
+                obj.put("Name", list.get(i).getIndex());
+                arr.put(obj);
+            }
+        }
+        catch (Exception e){
+            Log.e("JSON_CONVERTER", "Error converting MonsterNames list to JSON Object: "
+                    + e.getLocalizedMessage());
+        }
+        //endregion
+
+        //region TESTING
+        try {
+            JSONObject tempOBJ;
+            for (int i = 0; i < arr.length(); i++) {
+                tempOBJ = arr.getJSONObject(i);
+                Log.d("JSON_TEST", "Name: " + tempOBJ.getString("Name") + ", Index: "
+                        + tempOBJ.getString("Index"));
+            }
+        }
+        catch (Exception e){
+            Log.e("JSON_TEST", "Error: " + e.getLocalizedMessage());
+        }
+        //endregion
+
+        return arr;
     }
 }
