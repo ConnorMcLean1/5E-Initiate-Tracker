@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
     private static Retrofit retrofit = null;
 
+    //JSON objects for storing monster list from the initial API call
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
