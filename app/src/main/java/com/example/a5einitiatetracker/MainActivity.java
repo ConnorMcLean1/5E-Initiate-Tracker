@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
@@ -38,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
         //On create grabs the list of Monsters from the API
         connectAndGetApiData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     //Method connects to the API and returns a list of MonsterName objects, each holding the index and name of a monster
