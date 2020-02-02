@@ -36,5 +36,9 @@ public class MonsterName {
         this.index = index;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
     //endregion
 }
