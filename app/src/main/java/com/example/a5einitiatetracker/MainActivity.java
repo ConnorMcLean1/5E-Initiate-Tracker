@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.util.JsonWriter;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
         connectAndGetApiData();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     //Method connects to the API and returns a list of MonsterName objects, each holding the index and name of a monster
     //TODO: monsterNames needs to be passed into a global variable or stored into a JSON file to be used by the app
     private void connectAndGetApiData() {
@@ -65,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<MonsterIndex>() {
             @Override
             public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
-              
+
                List<MonsterName> monsterNames = response.body().getResults();
                storeMonstersToJSON(MonsterNamesToJSONArray(monsterNames));
             }
