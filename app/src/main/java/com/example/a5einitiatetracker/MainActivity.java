@@ -12,7 +12,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
@@ -29,15 +28,15 @@ public class MainActivity extends AppCompatActivity {
     public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
     private static Retrofit retrofit = null;
 
-    //JSON objects for storing monster list from the initial API call
-    JSONArray jsonArray = new JSONArray();
-
     private static final String JSON_FILE_NAME = "MonsterListJSON";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //File pointer to file storing the list of monster names and indexes from the API
+        File monsterListJSON = new File(JSON_FILE_NAME);
 
         Button startButton = findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     //Method connects to the API and returns a list of MonsterName objects, each holding the index and name of a monster
     //TODO: monsterNames needs to be passed into a global variable or stored into a JSON file to be used by the app
     private void connectAndGetApiData() {
-        List<MonsterName> monsterNames;
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_API_URL)
@@ -67,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
                 List<MonsterName> monsterNames = response.body().getResults();
-                MonsterNamesToJSONArray(monsterNames);
+                storeMonstersToJSON(MonsterNamesToJSONArray(monsterNames));
             }
 
             @Override
@@ -116,12 +114,14 @@ public class MainActivity extends AppCompatActivity {
         return arr;
     }
 
-    private String storeMonstersToJSON(JSONArray arr){
+    //Creates a new JSON file if one does not exist for storing the API Data and stores it as an
+    //array of JSON objects
+    private void storeMonstersToJSON(JSONArray arr){
         File file = new File(this.getFilesDir(), JSON_FILE_NAME);
         FileWriter fw;
         JsonWriter jw;
-        BufferedWriter bw;
 
+        //If the file does not exist, create a new one
         if(!file.exists()){
             try{
                 file.createNewFile();
@@ -140,12 +140,10 @@ public class MainActivity extends AppCompatActivity {
                 jw.endObject();
             }
             jw.endArray();
-            return file.getAbsolutePath();
 
         }
         catch (Exception e){
             Log.e("FILE_WRITING", "Error: " + e.getLocalizedMessage());
         }
-        return "ERROR";
     }
 }
