@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.JsonWriter;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
@@ -11,6 +12,9 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     //JSON objects for storing monster list from the initial API call
     JSONArray jsonArray = new JSONArray();
+
+    private static final String JSON_FILE_NAME = "MonsterListJSON";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,5 +114,38 @@ public class MainActivity extends AppCompatActivity {
         //endregion
 
         return arr;
+    }
+
+    private String storeMonstersToJSON(JSONArray arr){
+        File file = new File(this.getFilesDir(), JSON_FILE_NAME);
+        FileWriter fw;
+        JsonWriter jw;
+        BufferedWriter bw;
+
+        if(!file.exists()){
+            try{
+                file.createNewFile();
+            }
+            catch (Exception e){
+                Log.e("FILE_CREATION", "Error: " + e.getLocalizedMessage());
+            }
+        }
+        try{
+            fw = new FileWriter(file.getAbsoluteFile());
+            jw = new JsonWriter(fw);
+            jw.beginArray();
+            for(int i = 0; i < arr.length(); i++){
+                jw.beginObject();
+                jw.value(arr.getJSONObject(i).toString());
+                jw.endObject();
+            }
+            jw.endArray();
+            return file.getAbsolutePath();
+
+        }
+        catch (Exception e){
+            Log.e("FILE_WRITING", "Error: " + e.getLocalizedMessage());
+        }
+        return "ERROR";
     }
 }
