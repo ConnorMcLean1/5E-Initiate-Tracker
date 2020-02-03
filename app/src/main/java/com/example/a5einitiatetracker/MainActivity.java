@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     //variables for API using Retrofit library
     public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
     private static Retrofit retrofit = null;
+    public static List<MonsterName> monstersList = null;
 
     private static final String JSON_FILE_NAME = "MonsterListJSON";
 
@@ -64,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<MonsterIndex>() {
             @Override
             public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
-                List<MonsterName> monsterNames = response.body().getResults();
-                storeMonstersToJSON(MonsterNamesToJSONArray(monsterNames));
+              
+               List<MonsterName> monsterNames = response.body().getResults();
+               storeMonstersToJSON(MonsterNamesToJSONArray(monsterNames));
             }
 
             @Override

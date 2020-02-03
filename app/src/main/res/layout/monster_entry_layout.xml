@@ -4,13 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="50dp">
 
-
-    <EditText
+    <AutoCompleteTextView
+        android:id="@+id/actvMonsters"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5"
-        android:hint="Monster Name"
-        android:inputType="text" />
+        android:inputType="text"
+        android:completionHint="Select a monster"
+        android:completionThreshold="1"
+        android:maxLines="1"
+        android:hint="Monster Name" />
+
+
+<!--    <EditText-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_weight="5"-->
+<!--        android:hint="Monster Name"-->
+<!--        android:inputType="text" />-->
 
     <EditText
         android:layout_width="0dp"
