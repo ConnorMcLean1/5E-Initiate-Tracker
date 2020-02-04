@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<MonsterName> monstersList = null;
 
     private static final String JSON_FILE_NAME = "MonsterListJSON";
+    File monsterListJSON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //File pointer to file storing the list of monster names and indexes from the API
-        File monsterListJSON = new File(JSON_FILE_NAME);
+        monsterListJSON = new File(JSON_FILE_NAME);
 
         Button startButton = findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
 
                List<MonsterName> monsterNames = response.body().getResults();
-               storeMonstersToJSON(MonsterNamesToJSONArray(monsterNames));
+               JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON.getAbsolutePath() ,JSON_FILE_NAME);
             }
 
             @Override
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Creates a JSON object out of each MonsterName object in the provided list
     //and adds it to a JSONArray.
-    private JSONArray MonsterNamesToJSONArray(List<MonsterName> list){
+    /*private JSONArray MonsterNamesToJSONArray(List<MonsterName> list){
         //region VARIABLES
         JSONArray arr = new JSONArray();
         JSONObject obj;
@@ -121,11 +122,11 @@ public class MainActivity extends AppCompatActivity {
         //endregion
 
         return arr;
-    }
+    }*/
 
     //Creates a new JSON file if one does not exist for storing the API Data and stores it as an
     //array of JSON objects
-    private void storeMonstersToJSON(JSONArray arr){
+    /* private void storeMonstersToJSON(JSONArray arr){
         File file = new File(this.getFilesDir(), JSON_FILE_NAME);
         FileWriter fw;
         JsonWriter jw;
@@ -154,5 +155,5 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e){
             Log.e("FILE_WRITING", "Error: " + e.getLocalizedMessage());
         }
-    }
+    }*/
 }
