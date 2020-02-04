@@ -1,5 +1,6 @@
 package com.example.a5einitiatetracker;
 
+import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
 
@@ -10,45 +11,76 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
 
-public class JSONUtility {
+class JSONUtility {
 
-    static void storeMonstersToJSON(List<MonsterName> list, String directory, String filename){
-        File file = new File(directory, filename);
-        FileWriter fw;
-        JsonWriter jw;
-        JSONArray arr = MonsterNamesToJSONArray(list);
+    //Creates a new file with the specified context and filename if one does not already exist
+    static void createFile(Context context, String filename){
+        File file = new File(context.getFilesDir(), filename);
 
-        //If the file does not exist, create a new one
         if(!file.exists()){
-            try{
+            try {
                 file.createNewFile();
             }
             catch (Exception e){
                 Log.e("FILE_CREATION", "Error: " + e.getLocalizedMessage());
+                e.printStackTrace();
             }
         }
+    }
+
+    //Stores a list of MonsterName objects to a JSON File
+    static void storeMonstersToJSON(List<MonsterName> list, File file){
+        //region VARIABLES
+        FileWriter fw;
+        JsonWriter jw;
+        JSONArray arr = MonsterNamesToJSONArray(list);
+        //endregion
+
+        //region TRY
         try{
-            fw = new FileWriter(file.getAbsoluteFile());
+            //region LOCAL_VARIABLES
+            fw = new FileWriter(file.getAbsoluteFile(), false);
             jw = new JsonWriter(fw);
+
+            String name;
+            JSONArray tempArr;
+            JSONObject tempOBJ;
+            //endregion
+
+            //write the JSONArray of JSONObjects to the file
             jw.beginArray();
+            //Outer loops writes the objects
             for(int i = 0; i < arr.length(); i++){
                 jw.beginObject();
-                jw.value(arr.getJSONObject(i).toString());
+                tempOBJ = arr.getJSONObject(i);
+                tempArr = tempOBJ.names();
+                //Inner loop writes the objects names/values
+                for(int j = 0; j < tempArr.length(); j++) {
+                    name = tempArr.getString(j);
+                    jw.name(name).value(tempOBJ.getString(name));
+                }
                 jw.endObject();
             }
             jw.endArray();
 
         }
+        //endregion
+
+        //region CATCH
         catch (Exception e){
             Log.e("FILE_WRITING", "Error: " + e.getLocalizedMessage());
+            e.printStackTrace();
         }
+        //endregion
     }
 
+    //converts a list of MonsterNames to a JSONArray to make it easier to write to a JSONFile
     private static JSONArray MonsterNamesToJSONArray(List<MonsterName> list){
         //region VARIABLES
         JSONArray arr = new JSONArray();
         JSONObject obj;
         //endregion
+
         try {
             //region LOOP
             for (int i = 0; i < list.size(); i++) {
@@ -61,20 +93,6 @@ public class JSONUtility {
         catch (Exception e){
             Log.e("JSON_CONVERTER", "Error converting MonsterNames list to JSON Object: "
                     + e.getLocalizedMessage());
-        }
-        //endregion
-
-        //region TESTING
-        try {
-            JSONObject tempOBJ;
-            for (int i = 0; i < arr.length(); i++) {
-                tempOBJ = arr.getJSONObject(i);
-                Log.d("JSON_TEST", "Name: " + tempOBJ.getString("Name") + ", Index: "
-                        + tempOBJ.getString("Index"));
-            }
-        }
-        catch (Exception e){
-            Log.e("JSON_TEST", "Error: " + e.getLocalizedMessage());
         }
         //endregion
 

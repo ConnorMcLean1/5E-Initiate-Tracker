@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     //variables for API using Retrofit library
     public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
     private static Retrofit retrofit = null;
-    public static List<MonsterName> monstersList = null;
+    public static List<MonsterName> monstersList;
 
     private static final String JSON_FILE_NAME = "MonsterListJSON";
     File monsterListJSON;
@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //File pointer to file storing the list of monster names and indexes from the API
-        monsterListJSON = new File(JSON_FILE_NAME);
+        JSONUtility.createFile(this.getApplicationContext(), JSON_FILE_NAME);
+        monsterListJSON = new File(this.getFilesDir(), JSON_FILE_NAME);
 
         Button startButton = findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         //On create grabs the list of Monsters from the API
         connectAndGetApiData();
+
     }
 
     @Override
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
 
                List<MonsterName> monsterNames = response.body().getResults();
-               JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON.getAbsolutePath() ,JSON_FILE_NAME);
+               JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON);
             }
 
             @Override
@@ -84,76 +88,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    //Creates a JSON object out of each MonsterName object in the provided list
-    //and adds it to a JSONArray.
-    /*private JSONArray MonsterNamesToJSONArray(List<MonsterName> list){
-        //region VARIABLES
-        JSONArray arr = new JSONArray();
-        JSONObject obj;
-        //endregion
-        try {
-            //region LOOP
-            for (int i = 0; i < list.size(); i++) {
-                obj = new JSONObject();
-                obj.put("Index", list.get(i).getIndex());
-                obj.put("Name", list.get(i).getIndex());
-                arr.put(obj);
-            }
-        }
-        catch (Exception e){
-            Log.e("JSON_CONVERTER", "Error converting MonsterNames list to JSON Object: "
-                    + e.getLocalizedMessage());
-        }
-        //endregion
-
-        //region TESTING
-        try {
-            JSONObject tempOBJ;
-            for (int i = 0; i < arr.length(); i++) {
-                tempOBJ = arr.getJSONObject(i);
-                Log.d("JSON_TEST", "Name: " + tempOBJ.getString("Name") + ", Index: "
-                        + tempOBJ.getString("Index"));
-            }
-        }
-        catch (Exception e){
-            Log.e("JSON_TEST", "Error: " + e.getLocalizedMessage());
-        }
-        //endregion
-
-        return arr;
-    }*/
-
-    //Creates a new JSON file if one does not exist for storing the API Data and stores it as an
-    //array of JSON objects
-    /* private void storeMonstersToJSON(JSONArray arr){
-        File file = new File(this.getFilesDir(), JSON_FILE_NAME);
-        FileWriter fw;
-        JsonWriter jw;
-
-        //If the file does not exist, create a new one
-        if(!file.exists()){
-            try{
-                file.createNewFile();
-            }
-            catch (Exception e){
-                Log.e("FILE_CREATION", "Error: " + e.getLocalizedMessage());
-            }
-        }
-        try{
-            fw = new FileWriter(file.getAbsoluteFile());
-            jw = new JsonWriter(fw);
-            jw.beginArray();
-            for(int i = 0; i < arr.length(); i++){
-                jw.beginObject();
-                jw.value(arr.getJSONObject(i).toString());
-                jw.endObject();
-            }
-            jw.endArray();
-
-        }
-        catch (Exception e){
-            Log.e("FILE_WRITING", "Error: " + e.getLocalizedMessage());
-        }
-    }*/
 }
