@@ -1,20 +1,16 @@
 package com.example.a5einitiatetracker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.util.JsonWriter;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileWriter;
 import java.util.List;
 
 import retrofit2.Call;
@@ -76,14 +72,14 @@ public class MainActivity extends AppCompatActivity {
         Call<MonsterIndex> call = APIService.listMonsters();
         call.enqueue(new Callback<MonsterIndex>() {
             @Override
-            public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
+            public void onResponse(@NonNull Call<MonsterIndex> call, @NonNull Response<MonsterIndex> response) {
 
                List<MonsterName> monsterNames = response.body().getResults();
                JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON);
             }
 
             @Override
-            public void onFailure(Call<MonsterIndex> call, Throwable throwable) {
+            public void onFailure(@NonNull Call<MonsterIndex> call, @NonNull Throwable throwable) {
                 Log.e("API_RESPONSE", throwable.toString());
             }
         });
