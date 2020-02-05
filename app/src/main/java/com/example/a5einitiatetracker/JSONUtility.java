@@ -1,13 +1,16 @@
 package com.example.a5einitiatetracker;
 
 import android.content.Context;
+import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.List;
 
@@ -91,11 +94,35 @@ class JSONUtility {
             }
         }
         catch (Exception e){
-            Log.e("JSON_CONVERTER", "Error converting MonsterNames list to JSON Object: "
+            Log.e("JSON_CONVERTER", "Error converting MonsterName list to JSON Object: "
                     + e.getLocalizedMessage());
         }
         //endregion
 
         return arr;
+    }
+
+    static List<MonsterName> readMonsternamesFromJSONFile(Context context, String filename){
+        File file;
+        FileReader fr;
+        JsonReader jr;
+
+        try{
+            file = new File(context.getFilesDir(), filename);
+            fr = new FileReader(file);
+            jr = new JsonReader(fr);
+
+            while(jr.hasNext()){
+                
+            }
+        }
+        catch (Exception e){
+            Log.e("JSON_CONVERTER", "Error converting JSON to MOnsterName list: " + e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static List<MonsterName> convertJSONtoMonsterNames(JSONArray arr){
+
     }
 }
