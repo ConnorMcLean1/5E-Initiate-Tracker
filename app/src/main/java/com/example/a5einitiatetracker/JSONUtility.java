@@ -8,10 +8,10 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 class JSONUtility {
@@ -56,16 +56,22 @@ class JSONUtility {
             for(int i = 0; i < arr.length(); i++){
                 jw.beginObject();
                 tempOBJ = arr.getJSONObject(i);
+
+
                 tempArr = tempOBJ.names();
                 //Inner loop writes the objects names/values
                 for(int j = 0; j < tempArr.length(); j++) {
                     name = tempArr.getString(j);
                     jw.name(name).value(tempOBJ.getString(name));
+                    //Log.d("JSON_TEST", "" + tempOBJ.getString("Index"));
+                    //Log.d("JSON_TEST", "" + tempOBJ.getString("Name"));
                 }
                 jw.endObject();
             }
             jw.endArray();
+            jw.flush();
 
+            //Log.d("JSON_TEST", "The information stored to the file is: " + arr.toString());
         }
         //endregion
 
@@ -89,7 +95,7 @@ class JSONUtility {
             for (int i = 0; i < list.size(); i++) {
                 obj = new JSONObject();
                 obj.put("Index", list.get(i).getIndex());
-                obj.put("Name", list.get(i).getIndex());
+                obj.put("Name", list.get(i).getName());
                 arr.put(obj);
             }
         }
@@ -107,22 +113,69 @@ class JSONUtility {
         FileReader fr;
         JsonReader jr;
 
+        JSONArray tempArr = new JSONArray();
+        JSONObject tempObj;
+        String name, Index, monstName;
+
         try{
             file = new File(context.getFilesDir(), filename);
             fr = new FileReader(file);
             jr = new JsonReader(fr);
 
+            jr.beginArray();
             while(jr.hasNext()){
-                
+                jr.beginObject();
+                tempObj = new JSONObject();
+                for(int i = 0; i < 2; i++){
+                    name = jr.nextName();
+                    //Log.d("JSON_TEST", "Out of loop Index = " + name);
+                    if(name.equals("Index")){
+                        Index = jr.nextString();
+                        tempObj.put(name, Index);
+                        Log.d("JSON_TEST", "In loop Index = " + Index);
+                    }
+                    else if(name.equals("Name")){
+                        monstName = jr.nextString();
+                        tempObj.put(name, monstName);
+                        Log.d("JSON_TEST", "In loop Name = " + monstName);
+                    }
+                }
+                jr.endObject();
+                tempArr.put(tempObj);
             }
+            jr.endArray();
+            jr.close();
+
+            Log.d("JSON_TEST", "The information read from the file is: " + tempArr.toString());
+
+            return convertJSONtoMonsterNames(tempArr);
         }
         catch (Exception e){
-            Log.e("JSON_CONVERTER", "Error converting JSON to MOnsterName list: " + e.getLocalizedMessage());
+            Log.e("JSON_CONVERTER", "Error reading JSON File to convert to list: " + e.getLocalizedMessage());
             e.printStackTrace();
+
+            return null;
         }
     }
 
-    private static List<MonsterName> convertJSONtoMonsterNames(JSONArray arr){
+    private static List<MonsterName> convertJSONtoMonsterNames(JSONArray arr) {
+        List<MonsterName> monsterNameList = new ArrayList<>();
+        MonsterName monster;
+        JSONObject jsonObject;
 
+        try {
+            for (int i = 0; i < arr.length(); i++) {
+                jsonObject = arr.getJSONObject(i);
+                monster = new MonsterName(jsonObject.getString("Name"), jsonObject.getString("Index"));
+                monsterNameList.add(monster);
+            }
+            Log.d("JSON_TEST", "The information converted from JSON is: " + monsterNameList.toString());
+            return monsterNameList;
+        }
+        catch (Exception e){
+            Log.e("JSON_CONVERTER", "Error converting JSON to MonsterName list: " + e.getLocalizedMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 }

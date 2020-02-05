@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static Retrofit retrofit = null;
     public static List<MonsterName> monstersList;
 
-    private static final String JSON_FILE_NAME = "MonsterListJSON";
+    static final String JSON_FILE_NAME = "MonsterListJSON";
     File monsterListJSON;
 
     @Override
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Method connects to the API and returns a list of MonsterName objects, each holding the index and name of a monster
-    //TODO: monsterNames needs to be passed into a global variable or stored into a JSON file to be used by the app
     private void connectAndGetApiData() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
@@ -73,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<MonsterIndex>() {
             @Override
             public void onResponse(@NonNull Call<MonsterIndex> call, @NonNull Response<MonsterIndex> response) {
-
-               List<MonsterName> monsterNames = response.body().getResults();
-               JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON);
+                monstersList = response.body().getResults();
+                List<MonsterName> monsterNames = response.body().getResults();
+                JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON);
             }
 
             @Override
