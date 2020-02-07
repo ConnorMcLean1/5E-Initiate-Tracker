@@ -19,14 +19,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.a5einitiatetracker.JSONUtility.JSON_FILE_NAME;
+
 public class MainActivity extends AppCompatActivity {
 
     //variables for API using Retrofit library
-    public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
-    private static Retrofit retrofit = null;
     public static List<MonsterName> monstersList;
 
-    static final String JSON_FILE_NAME = "MonsterListJSON";
+
     File monsterListJSON;
 
     @Override
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //On create grabs the list of Monsters from the API
-        connectAndGetApiData();
+        APIUtility.connectAndGetApiData();
 
     }
 
@@ -59,28 +59,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    //Method connects to the API and returns a list of MonsterName objects, each holding the index and name of a monster
-    private void connectAndGetApiData() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_API_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-        APIService APIService = retrofit.create(APIService.class);
-        Call<MonsterIndex> call = APIService.listMonsters();
-        call.enqueue(new Callback<MonsterIndex>() {
-            @Override
-            public void onResponse(@NonNull Call<MonsterIndex> call, @NonNull Response<MonsterIndex> response) {
-                monstersList = response.body().getResults();
-                List<MonsterName> monsterNames = response.body().getResults();
-                JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<MonsterIndex> call, @NonNull Throwable throwable) {
-                Log.e("API_RESPONSE", throwable.toString());
-            }
-        });
-    }
 }

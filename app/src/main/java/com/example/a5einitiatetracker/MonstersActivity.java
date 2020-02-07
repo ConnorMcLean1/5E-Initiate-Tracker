@@ -12,6 +12,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.util.List;
+
 public class MonstersActivity extends AppCompatActivity {
 
     private LinearLayout parentLinearLayout;
@@ -20,6 +23,8 @@ public class MonstersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monsters);
+
+        List<MonsterName> monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), MainActivity.JSON_FILE_NAME);
 
         parentLinearLayout = findViewById(R.id.parent_linear_layout);
 

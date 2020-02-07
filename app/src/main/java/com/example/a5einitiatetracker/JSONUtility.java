@@ -16,6 +16,8 @@ import java.util.List;
 
 class JSONUtility {
 
+    static final String JSON_FILE_NAME = "MonsterListJSON";
+
     //Creates a new file with the specified context and filename if one does not already exist
     static void createFile(Context context, String filename){
         File file = new File(context.getFilesDir(), filename);
