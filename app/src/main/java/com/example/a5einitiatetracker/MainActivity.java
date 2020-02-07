@@ -1,5 +1,6 @@
 package com.example.a5einitiatetracker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -28,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
     //variables for API using Retrofit library
     public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
     private static Retrofit retrofit = null;
-    public static List<MonsterName> monstersList = null;
+    public static List<MonsterName> monstersList;
 
-    private static final String JSON_FILE_NAME = "MonsterListJSON";
+    static final String JSON_FILE_NAME = "MonsterListJSON";
+    File monsterListJSON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //File pointer to file storing the list of monster names and indexes from the API
-        File monsterListJSON = new File(JSON_FILE_NAME);
+        JSONUtility.createFile(this.getApplicationContext(), JSON_FILE_NAME);
+        monsterListJSON = new File(this.getFilesDir(), JSON_FILE_NAME);
 
         Button startButton = findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -71,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
         Call<MonsterIndex> call = APIService.listMonsters();
         call.enqueue(new Callback<MonsterIndex>() {
             @Override
-            public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
-
-               List<MonsterName> monsterNames = response.body().getResults();
-               storeMonstersToJSON(MonsterNamesToJSONArray(monsterNames));
+            public void onResponse(@NonNull Call<MonsterIndex> call, @NonNull Response<MonsterIndex> response) {
+                monstersList = response.body().getResults();
+                List<MonsterName> monsterNames = response.body().getResults();
+                JSONUtility.storeMonstersToJSON(monsterNames, monsterListJSON);
             }
 
             @Override
