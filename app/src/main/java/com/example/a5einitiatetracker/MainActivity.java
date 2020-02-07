@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<MonsterIndex>() {
             @Override
             public void onResponse(Call<MonsterIndex> call, Response<MonsterIndex> response) {
-               monstersList = response.body().getResults();
+
                List<MonsterName> monsterNames = response.body().getResults();
                storeMonstersToJSON(MonsterNamesToJSONArray(monsterNames));
             }
