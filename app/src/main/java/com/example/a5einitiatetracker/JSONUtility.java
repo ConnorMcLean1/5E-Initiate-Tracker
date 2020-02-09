@@ -134,12 +134,12 @@ class JSONUtility {
                     if(name.equals("Index")){
                         Index = jr.nextString();
                         tempObj.put(name, Index);
-                        Log.d("JSON_TEST", "In loop Index = " + Index);
+                        //Log.d("JSON_TEST", "In loop Index = " + Index);
                     }
                     else if(name.equals("Name")){
                         monstName = jr.nextString();
                         tempObj.put(name, monstName);
-                        Log.d("JSON_TEST", "In loop Name = " + monstName);
+                        //Log.d("JSON_TEST", "In loop Name = " + monstName);
                     }
                 }
                 jr.endObject();

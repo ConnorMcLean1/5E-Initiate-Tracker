@@ -1,5 +1,6 @@
 package com.example.a5einitiatetracker;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,24 +20,27 @@ public class APIUtility {
     private static Retrofit retrofit = null;
 
 
-    public static Monster getMonsterByIndex(String index){
+    /*public static Monster getMonsterByIndex(String index){
 
-    }
+    }*/
 
-   static void connectAndGetApiData() {
+   static void connectAndGetApiData(Context context) {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_API_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
+
+        final File file = new File(context.getFilesDir(), JSONUtility.JSON_FILE_NAME);
+
         APIService APIService = retrofit.create(APIService.class);
         Call<MonsterIndex> call = APIService.listMonsters();
         call.enqueue(new Callback<MonsterIndex>() {
             @Override
             public void onResponse(@NonNull Call<MonsterIndex> call, @NonNull Response<MonsterIndex> response) {
                 List<MonsterName> monsterNames = response.body().getResults();
-                JSONUtility.storeMonstersToJSON(monsterNames, new File(JSONUtility.JSON_FILE_NAME));
+                JSONUtility.storeMonstersToJSON(monsterNames, file);
             }
 
             @Override

@@ -18,19 +18,21 @@ import java.util.List;
 public class MonstersActivity extends AppCompatActivity {
 
     private LinearLayout parentLinearLayout;
+    List<MonsterName> monsterNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monsters);
 
-        List<MonsterName> monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), MainActivity.JSON_FILE_NAME);
+        monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
+        Log.d("API_TEST", "List is: " + monsterNames);
 
         parentLinearLayout = findViewById(R.id.parent_linear_layout);
 
-        String[] monsters = new String[MainActivity.monstersList.size()];
-        for (int i = 0; i < MainActivity.monstersList.size(); i++) {
-            monsters[i] = MainActivity.monstersList.get(i).toString();
+        String[] monsters = new String[monsterNames.size()];
+        for (int i = 0; i < monsterNames.size(); i++) {
+            monsters[i] = monsterNames.get(i).toString();
             Log.d("myTAG", monsters[i]);
         }
 
@@ -49,6 +51,15 @@ public class MonstersActivity extends AppCompatActivity {
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
             }
         });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+
     }
 
     public void onDelete(View v) {
