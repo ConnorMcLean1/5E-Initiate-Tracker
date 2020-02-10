@@ -3,7 +3,6 @@ package com.example.a5einitiatetracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,30 +55,49 @@ public class MonstersActivity extends AppCompatActivity {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<Integer, String> monsters = new HashMap<Integer, String>();
-                int monstersCount = parentLinearLayout.getChildCount();
-                View view = null;
-                AutoCompleteTextView name = null;
-                EditText num = null;
-                for (int i = 0; i < monstersCount; i++) {
-                    view = parentLinearLayout.getChildAt(i);
-                    num = view.findViewById(R.id.editTxtMonsterNumber);
-                    name = view.findViewById(R.id.autoTxtViewMonsters);
-                    monsters.put(
-                            Integer.parseInt(num.getText().toString()),
-                            name.getText().toString()
-                    );
-                }
 
-                for (Map.Entry<Integer, String> entry : monsters.entrySet()) {
-                    Log.v("MAP", String.format("Key: %s - Value: %s", entry.getKey(), entry.getValue()));
-                }
 
             }
         });
     }
 
+    public void onGetMonsterData(View v) {
+        Map<Integer, String> monsters = createMonsterKeyValuePair();
+        int[] numberOfMonster = new int[monsters.size()];
+        String[] monsterNames = new String[monsters.size()];
+        String monsterIndex;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
+    }
+
     public void onDelete(View v) {
         parentLinearLayout.removeView((View) v.getParent());
+    }
+
+    private Map createMonsterKeyValuePair() {
+        Map<Integer, String> m = new HashMap<Integer, String>();
+        int monstersCount = parentLinearLayout.getChildCount();
+        View view;
+        AutoCompleteTextView name;
+        EditText num;
+        for (int i = 0; i < monstersCount; i++) {
+            view = parentLinearLayout.getChildAt(i);
+            num = view.findViewById(R.id.editTxtMonsterNumber);
+            name = view.findViewById(R.id.autoTxtViewMonsters);
+            m.put(
+                    Integer.parseInt(num.getText().toString()),
+                    name.getText().toString()
+            );
+        }
+        // for debugging
+        for (Map.Entry<Integer, String> entry : m.entrySet()) {
+            Log.v("MAP", String.format("Key: %s - Value: %s", entry.getKey(), entry.getValue()));
+        }
+
+        return m;
     }
 }
