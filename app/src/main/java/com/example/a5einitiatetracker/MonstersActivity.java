@@ -3,7 +3,6 @@ package com.example.a5einitiatetracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,13 +20,13 @@ import java.util.List;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MonstersActivity extends AppCompatActivity {
+
     private LinearLayout parentLinearLayout;
     HashMap<String, String> monsterNames;
-    public static List<Monster> combatantsList = new ArrayList<>();
+    public static List<Combatant> combatantsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,36 +60,59 @@ public class MonstersActivity extends AppCompatActivity {
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
             }
         });
+    }
 
-        Button btnNext = findViewById(R.id.btnNext);
-        btnNext.setOnClickListener(new View.OnClickListener() {
+    public void onGetMonsterData(View v) {
+        final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                Map<Integer, String> monsters = new HashMap<Integer, String>();
-                int monstersCount = parentLinearLayout.getChildCount();
-                View view = null;
-                AutoCompleteTextView name = null;
-                EditText num = null;
-                for (int i = 0; i < monstersCount; i++) {
-                    view = parentLinearLayout.getChildAt(i);
-                    num = view.findViewById(R.id.editTxtMonsterNumber);
-                    name = view.findViewById(R.id.autoTxtViewMonsters);
-                    monsters.put(
-                            Integer.parseInt(num.getText().toString()),
-                            name.getText().toString()
-                    );
+            public void run() {
+                String monsterIndex;
+                for (HashMap.Entry<String, Integer> entry : monsters.entrySet()) {
+                    Log.d("KEY", String.format("key: %s", entry.getKey()));
+                    monsterIndex = monsterNames.get(entry.getKey());
+                    Log.d("INDEX", String.format("index: %s", monsterIndex));
+                    for (int i = 0; i < entry.getValue(); i++) {
+                        combatantsList.add(APIUtility.getMonsterByIndex(monsterIndex));
+                    }
                 }
 
-                for (Map.Entry<Integer, String> entry : monsters.entrySet()) {
-                    Log.v("MAP", String.format("Key: %s - Value: %s", entry.getKey(), entry.getValue()));
+                String combatantData = "";
+
+                for (Combatant c : combatantsList) {
+                    combatantData += c.toString();
                 }
 
+                Log.d("COMBATANTS", "\n" + combatantData);
             }
-        });
+        }).start();
     }
 
     public void onDelete(View v) {
         parentLinearLayout.removeView((View) v.getParent());
+    }
+
+    private HashMap createMonsterKeyValuePair() {
+        HashMap<String, Integer> m = new HashMap<String, Integer>();
+        int monstersCount = parentLinearLayout.getChildCount();
+        View view;
+        AutoCompleteTextView name;
+        EditText num;
+        for (int i = 0; i < monstersCount; i++) {
+            view = parentLinearLayout.getChildAt(i);
+            num = view.findViewById(R.id.editTxtMonsterNumber);
+            name = view.findViewById(R.id.autoTxtViewMonsters);
+            m.put(
+                    name.getText().toString(),
+                    Integer.parseInt(num.getText().toString())
+            );
+        }
+        // for debugging
+        for (Map.Entry<String, Integer> entry : m.entrySet()) {
+            Log.v("MAP", String.format("Key: %s - Value: %s", entry.getKey(), entry.getValue()));
+        }
+
+        return m;
     }
 
 }
