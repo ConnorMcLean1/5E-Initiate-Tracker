@@ -26,7 +26,7 @@ public class MonstersActivity extends AppCompatActivity {
 
     private LinearLayout parentLinearLayout;
     HashMap<String, String> monsterNames;
-    public static List<Monster> combatantsList = new ArrayList<>();
+    public static List<Combatant> combatantsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +69,21 @@ public class MonstersActivity extends AppCompatActivity {
             public void run() {
                 String monsterIndex;
                 for (HashMap.Entry<String, Integer> entry : monsters.entrySet()) {
-
+                    Log.d("KEY", String.format("key: %s", entry.getKey()));
+                    monsterIndex = monsterNames.get(entry.getKey());
+                    Log.d("INDEX", String.format("index: %s", monsterIndex));
+                    for (int i = 0; i < entry.getValue(); i++) {
+                        combatantsList.add(APIUtility.getMonsterByIndex(monsterIndex));
+                    }
                 }
+
+                String combatantData = "";
+
+                for (Combatant c : combatantsList) {
+                    combatantData += c.toString();
+                }
+
+                Log.d("COMBATANTS", "\n" + combatantData);
             }
         }).start();
     }

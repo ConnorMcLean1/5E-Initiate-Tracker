@@ -1,5 +1,7 @@
 package com.example.a5einitiatetracker;
 
+import androidx.annotation.NonNull;
+
 class Combatant {
 
     //region VARIABLES
@@ -58,6 +60,12 @@ class Combatant {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("Name: %s\nInitiative: %d\n", name, initiative);
     }
 
     //endregion
