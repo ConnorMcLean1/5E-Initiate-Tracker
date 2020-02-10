@@ -13,15 +13,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.util.List;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MonstersActivity extends AppCompatActivity {
 
     private LinearLayout parentLinearLayout;
-    public static List<Monster> combatantsList = new ArrayList<>();
+    List<MonsterName> monsterNames;
+    public static List<Combatant> combatantsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,12 @@ public class MonstersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_monsters);
 
         parentLinearLayout = findViewById(R.id.lnrLayoutMonsters);
+        //Reads in the list of monster Names and Indexes from the JSON file created on startup
+        monsterNames = JSONUtility.readMonsterNamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
 
-        String[] monsters = new String[MainActivity.monstersList.size()];
-        for (int i = 0; i < MainActivity.monstersList.size(); i++) {
-            monsters[i] = MainActivity.monstersList.get(i).toString();
+        String[] monsters = new String[monsterNames.size()];
+        for (int i = 0; i < monsterNames.size(); i++) {
+            monsters[i] = monsterNames.get(i).toString();
             Log.d("myTAG", monsters[i]);
         }
 
@@ -50,26 +54,17 @@ public class MonstersActivity extends AppCompatActivity {
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
             }
         });
-
-        Button btnNext = findViewById(R.id.btnNext);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-            }
-        });
     }
 
     public void onGetMonsterData(View v) {
-        Map<Integer, String> monsters = createMonsterKeyValuePair();
-        int[] numberOfMonster = new int[monsters.size()];
-        String[] monsterNames = new String[monsters.size()];
-        String monsterIndex;
+        final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         new Thread(new Runnable() {
             @Override
             public void run() {
+                String monsterIndex;
+                for (HashMap.Entry<String, Integer> entry : monsters.entrySet()) {
 
+                }
             }
         }).start();
     }
@@ -78,8 +73,8 @@ public class MonstersActivity extends AppCompatActivity {
         parentLinearLayout.removeView((View) v.getParent());
     }
 
-    private Map createMonsterKeyValuePair() {
-        Map<Integer, String> m = new HashMap<Integer, String>();
+    private HashMap createMonsterKeyValuePair() {
+        HashMap<String, Integer> m = new HashMap<String, Integer>();
         int monstersCount = parentLinearLayout.getChildCount();
         View view;
         AutoCompleteTextView name;
@@ -89,12 +84,12 @@ public class MonstersActivity extends AppCompatActivity {
             num = view.findViewById(R.id.editTxtMonsterNumber);
             name = view.findViewById(R.id.autoTxtViewMonsters);
             m.put(
-                    Integer.parseInt(num.getText().toString()),
-                    name.getText().toString()
+                    name.getText().toString(),
+                    Integer.parseInt(num.getText().toString())
             );
         }
         // for debugging
-        for (Map.Entry<Integer, String> entry : m.entrySet()) {
+        for (Map.Entry<String, Integer> entry : m.entrySet()) {
             Log.v("MAP", String.format("Key: %s - Value: %s", entry.getKey(), entry.getValue()));
         }
 

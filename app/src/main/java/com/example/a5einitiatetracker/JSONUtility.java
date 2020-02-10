@@ -16,6 +16,8 @@ import java.util.List;
 
 class JSONUtility {
 
+    static final String JSON_FILE_NAME = "MonsterListJSON";
+
     //Creates a new file with the specified context and filename if one does not already exist
     static void createFile(Context context, String filename){
         File file = new File(context.getFilesDir(), filename);
@@ -108,7 +110,7 @@ class JSONUtility {
         return arr;
     }
 
-    static List<MonsterName> readMonsternamesFromJSONFile(Context context, String filename){
+    static List<MonsterName> readMonsterNamesFromJSONFile(Context context, String filename){
         File file;
         FileReader fr;
         JsonReader jr;
@@ -132,12 +134,12 @@ class JSONUtility {
                     if(name.equals("Index")){
                         Index = jr.nextString();
                         tempObj.put(name, Index);
-                        Log.d("JSON_TEST", "In loop Index = " + Index);
+                        //Log.d("JSON_TEST", "In loop Index = " + Index);
                     }
                     else if(name.equals("Name")){
                         monstName = jr.nextString();
                         tempObj.put(name, monstName);
-                        Log.d("JSON_TEST", "In loop Name = " + monstName);
+                        //Log.d("JSON_TEST", "In loop Name = " + monstName);
                     }
                 }
                 jr.endObject();
