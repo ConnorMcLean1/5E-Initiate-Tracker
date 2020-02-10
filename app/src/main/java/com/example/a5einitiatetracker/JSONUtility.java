@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 class JSONUtility {
@@ -110,7 +111,7 @@ class JSONUtility {
         return arr;
     }
 
-    static List<MonsterName> readMonsterNamesFromJSONFile(Context context, String filename){
+    static HashMap<String, String> readMonsternamesFromJSONFile(Context context, String filename){
         File file;
         FileReader fr;
         JsonReader jr;
@@ -150,7 +151,7 @@ class JSONUtility {
 
             Log.d("JSON_TEST", "The information read from the file is: " + tempArr.toString());
 
-            return convertJSONtoMonsterNames(tempArr);
+            return convertJSONtoHashMap(tempArr);
         }
         catch (Exception e){
             Log.e("JSON_CONVERTER", "Error reading JSON File to convert to list: " + e.getLocalizedMessage());
@@ -160,19 +161,17 @@ class JSONUtility {
         }
     }
 
-    private static List<MonsterName> convertJSONtoMonsterNames(JSONArray arr) {
-        List<MonsterName> monsterNameList = new ArrayList<>();
-        MonsterName monster;
+    private static HashMap<String, String> convertJSONtoHashMap(JSONArray arr) {
+        HashMap<String, String> map = new HashMap<>();
         JSONObject jsonObject;
 
         try {
             for (int i = 0; i < arr.length(); i++) {
                 jsonObject = arr.getJSONObject(i);
-                monster = new MonsterName(jsonObject.getString("Name"), jsonObject.getString("Index"));
-                monsterNameList.add(monster);
+                map.put(jsonObject.getString("Name"), jsonObject.getString("Index"));
             }
-            Log.d("JSON_TEST", "The information converted from JSON is: " + monsterNameList.toString());
-            return monsterNameList;
+            Log.d("JSON_TEST", "The information converted from JSON is: " + map.toString());
+            return map;
         }
         catch (Exception e){
             Log.e("JSON_CONVERTER", "Error converting JSON to MonsterName list: " + e.getLocalizedMessage());

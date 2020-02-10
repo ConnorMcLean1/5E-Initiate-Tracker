@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.ArrayList;
@@ -22,8 +25,8 @@ import java.util.Map;
 public class MonstersActivity extends AppCompatActivity {
 
     private LinearLayout parentLinearLayout;
-    List<MonsterName> monsterNames;
-    public static List<Combatant> combatantsList = new ArrayList<>();
+    HashMap<String, String> monsterNames;
+    public static List<Monster> combatantsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +35,16 @@ public class MonstersActivity extends AppCompatActivity {
 
         parentLinearLayout = findViewById(R.id.lnrLayoutMonsters);
         //Reads in the list of monster Names and Indexes from the JSON file created on startup
-        monsterNames = JSONUtility.readMonsterNamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
+        monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
 
         String[] monsters = new String[monsterNames.size()];
-        for (int i = 0; i < monsterNames.size(); i++) {
-            monsters[i] = monsterNames.get(i).toString();
+        int i = 0;
+        for (Map.Entry<String, String> entry : monsterNames.entrySet()) {
+            monsters[i] = entry.getKey();
             Log.d("myTAG", monsters[i]);
+            i++;
         }
+
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<   >(this,
                 android.R.layout.simple_list_item_1, monsters);
@@ -95,4 +101,5 @@ public class MonstersActivity extends AppCompatActivity {
 
         return m;
     }
+
 }
