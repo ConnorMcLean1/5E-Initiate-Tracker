@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIUtility {
 
-    public static final String BASE_API_URL = "http://dnd5eapi.co/api/";
+    private static final String BASE_API_URL = "http://dnd5eapi.co/api/";
     private static Retrofit retrofit = null;
     private static  APIService APIService;
 
