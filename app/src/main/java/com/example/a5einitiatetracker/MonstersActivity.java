@@ -3,6 +3,7 @@ package com.example.a5einitiatetracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ import java.io.File;
 import java.util.List;
 
 public class MonstersActivity extends AppCompatActivity {
-
     private LinearLayout parentLinearLayout;
     List<MonsterName> monsterNames;
 
@@ -25,8 +25,8 @@ public class MonstersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monsters);
 
+        //Reads in the list of monster Names and Indexes from the JSON file created on startup
         monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
-        Log.d("API_TEST", "List is: " + monsterNames);
 
         parentLinearLayout = findViewById(R.id.parent_linear_layout);
 
@@ -54,15 +54,8 @@ public class MonstersActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-
-    }
-
     public void onDelete(View v) {
         parentLinearLayout.removeView((View) v.getParent());
     }
+
 }
