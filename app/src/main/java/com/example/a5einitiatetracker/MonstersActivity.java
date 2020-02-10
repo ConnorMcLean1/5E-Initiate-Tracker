@@ -39,10 +39,13 @@ public class MonstersActivity extends AppCompatActivity {
         monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
 
         String[] monsters = new String[monsterNames.size()];
-        for (int i = 0; i < monsterNames.size(); i++) {
-            monsters[i] = monsterNames.get(i).toString();
+        int i = 0;
+        for (Map.Entry<String, String> entry : monsterNames.entrySet()) {
+            monsters[i] = entry.getKey();
             Log.d("myTAG", monsters[i]);
+            i++;
         }
+
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<   >(this,
                 android.R.layout.simple_list_item_1, monsters);
