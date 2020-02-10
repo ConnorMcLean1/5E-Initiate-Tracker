@@ -30,7 +30,7 @@
         android:background="#F44336"
         android:contentDescription="@string/monster_entry_del_button"
         android:onClick="onDelete"
-        android:src="@drawable/ic_delete_white_24dp"
+
         android:layout_marginBottom="15dp"/>
 
 </LinearLayout>

@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 public class MonstersActivity extends AppCompatActivity {
     private LinearLayout parentLinearLayout;
-    List<MonsterName> monsterNames;
+    HashMap<String, String> monsterNames;
     public static List<Monster> combatantsList = new ArrayList<>();
 
     @Override
@@ -87,4 +89,5 @@ public class MonstersActivity extends AppCompatActivity {
     public void onDelete(View v) {
         parentLinearLayout.removeView((View) v.getParent());
     }
+
 }
