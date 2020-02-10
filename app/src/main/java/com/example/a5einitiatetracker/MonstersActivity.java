@@ -14,14 +14,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.util.List;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MonstersActivity extends AppCompatActivity {
-
     private LinearLayout parentLinearLayout;
+    List<MonsterName> monsterNames;
     public static List<Monster> combatantsList = new ArrayList<>();
 
     @Override
@@ -30,10 +33,12 @@ public class MonstersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_monsters);
 
         parentLinearLayout = findViewById(R.id.lnrLayoutMonsters);
+        //Reads in the list of monster Names and Indexes from the JSON file created on startup
+        monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
 
-        String[] monsters = new String[MainActivity.monstersList.size()];
-        for (int i = 0; i < MainActivity.monstersList.size(); i++) {
-            monsters[i] = MainActivity.monstersList.get(i).toString();
+        String[] monsters = new String[monsterNames.size()];
+        for (int i = 0; i < monsterNames.size(); i++) {
+            monsters[i] = monsterNames.get(i).toString();
             Log.d("myTAG", monsters[i]);
         }
 
