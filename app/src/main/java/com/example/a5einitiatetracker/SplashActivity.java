@@ -1,8 +1,13 @@
 package com.example.a5einitiatetracker;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -27,5 +32,23 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private boolean connected(){
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        Network[] networks = connectivityManager.getAllNetworks();
+        NetworkInfo networkInfo;
+        for (Network mNetwork : networks){
+            networkInfo = connectivityManager.getNetworkInfo(mNetwork);
+            if ((networkInfo.getState().equals(NetworkInfo.State.CONNECTED))) {
+                Toast.makeText(SplashActivity.this,"@string/connected", Toast.LENGTH_LONG);
+                return true;
+            }
+            else {
+                Toast.makeText(SplashActivity.this,"@string/not_connected", Toast.LENGTH_LONG);
+                return false;
+            }
+        }
     }
 }

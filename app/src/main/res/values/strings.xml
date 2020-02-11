@@ -6,4 +6,6 @@
     <string name="monster_entry_number">Number</string>
     <string name="monster_entry_del_button">Delete</string>
     <string name="btn_next">Next</string>
+    <string name="connected">Connected to the Internet! Checking API.</string>
+    <string name="not_connected">Not connected to the Internet! Closing app.</string>
 </resources>
