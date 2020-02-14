@@ -19,13 +19,15 @@ public class SplashActivity extends AppCompatActivity {
             gotoMainActivity();
         }
     };
+    private boolean isConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         myHandler.postDelayed(r, 500);
-
+        if (connected()) gotoMainActivity();
+        else closeApp();
     }
 
     private void gotoMainActivity(){
@@ -35,7 +37,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private boolean connected(){
-
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         Network[] networks = connectivityManager.getAllNetworks();
         NetworkInfo networkInfo;
@@ -43,12 +44,11 @@ public class SplashActivity extends AppCompatActivity {
             networkInfo = connectivityManager.getNetworkInfo(mNetwork);
             if ((networkInfo.getState().equals(NetworkInfo.State.CONNECTED))) {
                 Toast.makeText(SplashActivity.this,"@string/connected", Toast.LENGTH_LONG);
-                return true;
-            }
-            else {
-                Toast.makeText(SplashActivity.this,"@string/not_connected", Toast.LENGTH_LONG);
-                return false;
+                isConnected = true;
             }
         }
+        return isConnected;
     }
+
+    private void closeApp(){}
 }
