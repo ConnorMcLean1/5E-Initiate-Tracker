@@ -68,6 +68,7 @@ public class Combatant {
         this.name = name;
     }
 
+
     @NonNull
     @Override
     public String toString() {
