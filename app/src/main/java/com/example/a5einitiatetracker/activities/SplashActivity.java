@@ -1,9 +1,11 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.a5einitiatetracker.R;
 
 public class SplashActivity extends AppCompatActivity {
 

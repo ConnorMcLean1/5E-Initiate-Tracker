@@ -1,20 +1,19 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.util.JsonWriter;
 import android.view.View;
 import android.widget.Button;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.example.a5einitiatetracker.api.MonsterName;
+import com.example.a5einitiatetracker.R;
+import com.example.a5einitiatetracker.api.APIUtility;
+import com.example.a5einitiatetracker.api.json.JSONUtility;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {

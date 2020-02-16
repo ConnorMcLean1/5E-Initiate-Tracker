@@ -1,9 +1,11 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.api.json;
 
 import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
+
+import com.example.a5einitiatetracker.api.MonsterName;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,16 +13,15 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-class JSONUtility {
+public class JSONUtility {
 
-    static final String JSON_FILE_NAME = "MonsterListJSON";
+    public static final String JSON_FILE_NAME = "MonsterListJSON";
 
     //Creates a new file with the specified context and filename if one does not already exist
-    static void createFile(Context context, String filename){
+    public static void createFile(Context context, String filename){
         File file = new File(context.getFilesDir(), filename);
 
         if(!file.exists()){
@@ -35,7 +36,7 @@ class JSONUtility {
     }
 
     //Stores a list of MonsterName objects to a JSON File
-    static void storeMonstersToJSON(List<MonsterName> list, File file){
+    public static void storeMonstersToJSON(List<MonsterName> list, File file){
         //region VARIABLES
         FileWriter fw;
         JsonWriter jw;
@@ -87,7 +88,7 @@ class JSONUtility {
     }
 
     //converts a list of MonsterNames to a JSONArray to make it easier to write to a JSONFile
-    private static JSONArray MonsterNamesToJSONArray(List<MonsterName> list){
+    static JSONArray MonsterNamesToJSONArray(List<MonsterName> list){
         //region VARIABLES
         JSONArray arr = new JSONArray();
         JSONObject obj;
@@ -111,7 +112,7 @@ class JSONUtility {
         return arr;
     }
 
-    static HashMap<String, String> readMonsternamesFromJSONFile(Context context, String filename){
+    public static HashMap<String, String> readMonsternamesFromJSONFile(Context context, String filename){
         File file;
         FileReader fr;
         JsonReader jr;

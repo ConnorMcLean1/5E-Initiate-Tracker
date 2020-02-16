@@ -1,13 +1,13 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.combatant;
 
 import androidx.annotation.NonNull;
 
-class Combatant {
+public class Combatant {
 
     //region VARIABLES
     protected Integer initiative;
     protected int initiativeModifier;
-    protected enum combatantStates {ALIVE, DEAD, UNCONSCIOUS, UNSTABLE}
+    public enum combatantStates {ALIVE, DEAD, UNCONSCIOUS, UNSTABLE}
     protected combatantStates status;
     protected String name;
     //endregion
@@ -45,6 +45,8 @@ class Combatant {
         return name;
     }
 
+    public combatantStates getCombatState() { return status; }
+
     public void setInitiative(int initiative) {
         this.initiative = initiative;
     }
@@ -55,6 +57,10 @@ class Combatant {
 
     public void setInitiativeModifier(int initiativeModifier) {
         this.initiativeModifier = initiativeModifier;
+    }
+
+    public void setCombatState(combatantStates status) {
+        this.status = status;
     }
 
 

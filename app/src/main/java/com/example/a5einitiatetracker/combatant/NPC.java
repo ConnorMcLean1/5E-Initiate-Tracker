@@ -1,10 +1,10 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.combatant;
 
 import androidx.annotation.NonNull;
 
 import java.util.Random;
 
-class NPC extends Combatant implements Comparable<Combatant> {
+public class NPC extends Combatant implements Comparable<Combatant> {
 
     //region VARIABLES
     private final int ADVANTAGE = 1; // roll with advantage
@@ -48,13 +48,14 @@ class NPC extends Combatant implements Comparable<Combatant> {
         return super.toString() + String.format("Health: %d\n\n", health);
     }
 
-    //endregion
-
-    //region PRIVATE FUNCTIONS/METHODS
-    protected static int dexToMod(int dex){
+    public static int dexToMod(int dex){
         Double mod = Math.floor(((dex-10)/2));
         return mod.intValue();
     }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS/METHODS
 
     //Method to roll initiative. Note for input 0 = no extra roll, 1 = advantage, -1 = disadvantage
     private int rollInitiative(int adv){
