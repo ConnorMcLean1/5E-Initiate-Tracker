@@ -1,4 +1,4 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.api;
 
 import com.google.gson.annotations.SerializedName;
 

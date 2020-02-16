@@ -1,6 +1,6 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.combatant;
 
-class Player extends Combatant {
+public class Player extends Combatant {
 
     //region PUBLIC FUNCTIONS/METHODS
     public Player() {
