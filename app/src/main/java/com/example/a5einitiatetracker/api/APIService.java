@@ -1,6 +1,6 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.api;
 
-import java.util.List;
+import com.example.a5einitiatetracker.combatant.Monster;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

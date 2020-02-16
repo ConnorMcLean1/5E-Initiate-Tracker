@@ -1,9 +1,13 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.api;
 
 import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import com.example.a5einitiatetracker.api.json.JSONUtility;
+import com.example.a5einitiatetracker.combatant.Monster;
+import com.example.a5einitiatetracker.combatant.NPC;
 
 import java.io.File;
 import java.util.List;
@@ -51,7 +55,7 @@ public class APIUtility {
 
     //Performs the initial API call to grab the list of monster names and indexes
     //Retrieved data is stored to a JSON file for later use
-    static void connectAndGetApiData(Context context) {
+    public static void connectAndGetApiData(Context context) {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_API_URL)

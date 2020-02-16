@@ -1,6 +1,6 @@
 //Parser class to handle data returned by the rest API.
 
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.combatant;
 
 import com.google.gson.annotations.SerializedName;
 
