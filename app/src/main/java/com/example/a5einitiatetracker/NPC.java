@@ -77,6 +77,7 @@ class NPC extends Combatant implements Comparable<Combatant> {
         else
             return temp + initiativeModifier; // no roll modifier
     }
+
     //endregion
 
 }
