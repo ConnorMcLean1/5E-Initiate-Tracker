@@ -16,9 +16,20 @@ public class SplashActivity extends AppCompatActivity {
     final Runnable r = new Runnable() {
         @Override
         public void run() {
-            gotoMainActivity();
+            if (connected())
+                gotoMainActivity();
+            else
+                myHandler.postDelayed(r2, 3000);
         }
     };
+
+    final Runnable r2 = new Runnable() {
+        @Override
+        public void run() {
+                closeApp();
+        }
+    };
+
     private boolean isConnected = false;
 
     @Override
@@ -26,8 +37,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         myHandler.postDelayed(r, 500);
-        if (connected()) gotoMainActivity();
-        else closeApp();
     }
 
     private void gotoMainActivity(){
@@ -43,12 +52,16 @@ public class SplashActivity extends AppCompatActivity {
         for (Network mNetwork : networks){
             networkInfo = connectivityManager.getNetworkInfo(mNetwork);
             if ((networkInfo.getState().equals(NetworkInfo.State.CONNECTED))) {
-                Toast.makeText(SplashActivity.this,"@string/connected", Toast.LENGTH_LONG);
+                Toast.makeText(SplashActivity.this, this.getString(R.string.connected), Toast.LENGTH_SHORT).show();
                 isConnected = true;
             }
         }
+        if (!isConnected) Toast.makeText(SplashActivity.this, this.getString(R.string.not_connected), Toast.LENGTH_LONG).show();
         return isConnected;
     }
 
-    private void closeApp(){}
+    private void closeApp(){
+        finish();
+        moveTaskToBack(true);
+    }
 }
