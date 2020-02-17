@@ -4,8 +4,10 @@
     <string name="btn_start">Start</string>
     <string name="monster_entry_name">Monster Name</string>
     <string name="monster_entry_number">Number</string>
-    <string name="monster_entry_del_button">Delete</string>
+    <string name="entry_delete_button">Delete Item</string>
     <string name="btn_next">Next</string>
+    <string name="player_entry_name">Player Name</string>
+    <string name="player_entry_initiative">Initiative</string>
     <string name="connected">Connected to the Internet! Checking API.</string>
     <string name="not_connected">Not connected to the Internet! Closing app.</string>
 </resources>

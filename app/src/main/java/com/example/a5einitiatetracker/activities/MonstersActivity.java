@@ -1,8 +1,9 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import java.io.File;
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import com.example.a5einitiatetracker.R;
+import com.example.a5einitiatetracker.api.APIUtility;
+import com.example.a5einitiatetracker.api.json.JSONUtility;
+import com.example.a5einitiatetracker.combatant.Combatant;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
 import java.util.ArrayList;
@@ -49,7 +53,7 @@ public class MonstersActivity extends AppCompatActivity {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<   >(this,
                 android.R.layout.simple_list_item_1, monsters);
 
-        Button addMonsterButton = findViewById(R.id.btnAddMonster);
+        FloatingActionButton addMonsterButton = findViewById(R.id.btnAddMonster);
         addMonsterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,10 +90,8 @@ public class MonstersActivity extends AppCompatActivity {
                 Log.d("COMBATANTS", "\n" + combatantData);
             }
         }).start();
-    }
-
-    public void onDelete(View v) {
-        parentLinearLayout.removeView((View) v.getParent());
+        Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
+        startActivity(intent);
     }
 
     private HashMap createMonsterKeyValuePair() {
@@ -113,6 +115,10 @@ public class MonstersActivity extends AppCompatActivity {
         }
 
         return m;
+    }
+
+    public void onDelete(View v) {
+        parentLinearLayout.removeView((View) v.getParent());
     }
 
 }
