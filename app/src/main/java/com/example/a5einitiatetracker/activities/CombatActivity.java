@@ -1,4 +1,4 @@
-package com.example.a5einitiatetracker;
+package com.example.a5einitiatetracker.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +7,7 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
@@ -45,9 +46,9 @@ public class CombatActivity extends AppCompatActivity {
                         count++;
                         currCombatant = iterator.next();
                     }
-                } while(currCombatant.getCombatState() != Combatant.combatantStates.DEAD && count < 2);
+                } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
 
-                if(count > 1){
+                if(count > 1){ //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
                     //TODO The combat only contains dead combatants, and the loop would have gone infinitely. Need to add handling
                 }
 
@@ -65,10 +66,27 @@ public class CombatActivity extends AppCompatActivity {
         Button previousButton = findViewById(R.id.);
         previousButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(iterator.hasPrevious())
-                    iterator.previous();
-                else
-                    iterator.
+                count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
+
+                do { //Get the next combatant, skipping over dead ones
+                    if (iterator.hasPrevious()) { //Check if there is another combatant in the list. If yes, grab it out
+                        currCombatant = iterator.previous();
+                    } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
+                        iterator = combatantList.listIterator(combatantList.size()-1);
+                        count++;
+                        currCombatant = iterator.previous();
+                    }
+                } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
+
+                if (count > 1) { //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
+                    //TODO The combat only contains dead combatants, and the loop would have gone infinitely. Need to add handling
+                }
+
+                if (currCombatant instanceof Player) { //Check if the current combatant is a player or not, and cast it appropriately
+                    pc = (Player) currCombatant;
+                } else {
+                    npc = (NPC) currCombatant;
+                }
             }
         });
 
