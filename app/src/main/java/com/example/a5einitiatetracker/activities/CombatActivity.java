@@ -34,7 +34,7 @@ public class CombatActivity extends AppCompatActivity {
         combatComplete = false;
 
         //Button to go to the previous combatant in initiative
-        Button nextButton = findViewById(R.id.);
+        Button nextButton = findViewById(R.id.btnNext);
         nextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
@@ -68,7 +68,7 @@ public class CombatActivity extends AppCompatActivity {
         });
 
         //Button to go to the next combatant in initiative
-        Button previousButton = findViewById(R.id.);
+        Button previousButton = findViewById(R.id.btnPrev);
         previousButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
@@ -100,7 +100,7 @@ public class CombatActivity extends AppCompatActivity {
         });
 
         //Button to change the health of the currently selected monster if they heal or take damage
-        Button changeHpButton = findViewById(R.id.);
+        Button changeHpButton = findViewById(R.id.btnHp);
         changeHpButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 int currCombatantHp;
@@ -128,15 +128,15 @@ public class CombatActivity extends AppCompatActivity {
         });
 
         //Button to change the combatant states (ALIVE, DEAD, STABLE, UNSTABLE)
-        Button changeStateButton = findViewById(R.id.);
-        changeStateButton.setOnClickListener(new View.OnClickListener() {
+        Button changeStatusButton = findViewById(R.id.btnStatus);
+        changeStatusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO display the combatants current state and ask which state they would like to change it to
             }
         });
 
         //Button to roll death saving throws for the currently selected combatant
-        Button rollDeathSaveButton = findViewById(R.id.);
+        Button rollDeathSaveButton = findViewById(R.id.btnDeathSave);
         rollDeathSaveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -188,7 +188,7 @@ public class CombatActivity extends AppCompatActivity {
         });
 
         //Button to change the combatant states (ALIVE, DEAD, STABLE, UNSTABLE)
-        Button endCombatButton = findViewById(R.id.);
+        Button endCombatButton = findViewById(R.id.btnEndCombat);
         endCombatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 combatComplete = true;
