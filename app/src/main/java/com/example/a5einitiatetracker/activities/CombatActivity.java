@@ -2,8 +2,10 @@ package com.example.a5einitiatetracker.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -17,7 +19,7 @@ import com.example.a5einitiatetracker.combatant.Player;
 import java.util.List;
 import java.util.ListIterator;
 
-public class CombatActivity extends AppCompatActivity {
+public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     ListIterator<Combatant> iterator;
     List<Combatant> combatantList;
     Combatant currCombatant;
@@ -131,7 +133,8 @@ public class CombatActivity extends AppCompatActivity {
         Button changeStatusButton = findViewById(R.id.btnStatus);
         changeStatusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO display the combatants current state and ask which state they would like to change it to
+                showStatusChangeMenu(v);
+                //TODO should probably also grey out/disabled the background while the menu is up to prevent the user from doing other things while the menu is open?
             }
         });
 
@@ -212,8 +215,41 @@ public class CombatActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.csm_Alive:
+                currCombatant.setCombatState(Combatant.combatantStates.ALIVE);
+                return true;
+
+            case R.id.csm_Dead:
+                currCombatant.setCombatState(Combatant.combatantStates.DEAD);
+                return true;
+
+            case R.id.csm_Stable:
+                currCombatant.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
+                return true;
+
+            case R.id.csm_Unstable:
+                currCombatant.setCombatState(Combatant.combatantStates.UNSTABLE);
+                return true;
+
+                default:
+                    return false;
+
+        }
+    }
+
     private boolean checkIfUnstable(NPC npc){
         return (npc.getStatus() == Combatant.combatantStates.UNSTABLE);
     }
+
+    private void showStatusChangeMenu(View v) {
+        PopupMenu popup = new PopupMenu(getApplicationContext(), v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.change_state_menu);
+        popup.show();
+    }
+
 
 }
