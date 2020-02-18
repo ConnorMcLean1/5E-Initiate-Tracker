@@ -7,34 +7,34 @@
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_start" />
+        android:text="@string/btn_next" />
 
     <Button
         android:id="@+id/btnPrev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_start" />
+        android:text="@string/btn_previous" />
 
     <Button
         android:id="@+id/btnHp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_start" />
+        android:text="@string/btn_change_hp" />
     <Button
         android:id="@+id/btnStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_start" />
+        android:text="@string/btn_change_status" />
     <Button
         android:id="@+id/btnDeathSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_start" />
+        android:text="@string/btn_roll_death_save" />
 
     <Button
         android:id="@+id/btnEndCombat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_start" />
+        android:text="@string/btn_end_combat" />
 
 </LinearLayout>

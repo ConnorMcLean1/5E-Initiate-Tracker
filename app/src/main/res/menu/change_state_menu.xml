@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/csm_Alive" android:title="Alive" />
-    <item android:id="@+id/csm_Dead" android:title="Dead" />
-    <item android:id="@+id/csm_Unstable" android:title="Unstable" />
-    <item android:id="@+id/csm_Stable" android:title="Stable" />
+    <item android:id="@+id/csm_Alive" android:title="@string/alive" />
+    <item android:id="@+id/csm_Dead" android:title="@string/dead" />
+    <item android:id="@+id/csm_Unstable" android:title="@string/unstable" />
+    <item android:id="@+id/csm_Stable" android:title="@string/stable" />
 </menu>

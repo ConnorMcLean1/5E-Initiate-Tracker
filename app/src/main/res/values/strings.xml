@@ -8,4 +8,13 @@
     <string name="btn_next">Next</string>
     <string name="player_entry_name">Player Name</string>
     <string name="player_entry_initiative">Initiative</string>
+    <string name="alive">Alive</string>
+    <string name="dead">Dead</string>
+    <string name="unstable">Unstable</string>
+    <string name="stable">Stable</string>
+    <string name="btn_previous">Previous</string>
+    <string name="btn_change_hp">Change HP</string>
+    <string name="btn_change_status">Change Status</string>
+    <string name="btn_roll_death_save">Roll Death Save</string>
+    <string name="btn_end_combat">End Combat</string>
 </resources>
