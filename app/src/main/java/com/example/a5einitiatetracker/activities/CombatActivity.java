@@ -25,7 +25,7 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
     Combatant currCombatant;
     NPC npc;
     Player pc;
-    Boolean combatComplete;
+    Boolean combatComplete, isPlayer;
     int count;
 
     @Override
@@ -59,10 +59,12 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
 
                 if(currCombatant instanceof Player){ //Check if the current combatant is a player or not, and cast it appropriately
                     pc = (Player) currCombatant;
+                    isPlayer = true;
                     Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a PC.");
                 }
                 else{
                     npc = (NPC) currCombatant;
+                    isPlayer = false;
                     Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a NPC.");
                 }
 
@@ -92,10 +94,12 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
 
                 if (currCombatant instanceof Player) { //Check if the current combatant is a player or not, and cast it appropriately
                     pc = (Player) currCombatant;
+                    isPlayer = true;
                     Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a PC.");
                 }
                 else {
                     npc = (NPC) currCombatant;
+                    isPlayer = false;
                     Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a NPC.");
                 }
             }
@@ -106,7 +110,7 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         changeHpButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 int currCombatantHp;
-                if(currCombatant instanceof Player){
+                if(isPlayer){
                     Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
                 }
                 else{
@@ -143,7 +147,7 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         rollDeathSaveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if (currCombatant instanceof Player) { //Check if the current combatant is a player or not
+                if (isPlayer) { //Check if the current combatant is a player or not
                     Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, who should roll their own death saves. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -217,27 +221,51 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
 
     @Override
     public boolean onMenuItemClick(MenuItem item){
-        switch(item.getItemId()){
-            case R.id.csm_Alive:
-                currCombatant.setCombatState(Combatant.combatantStates.ALIVE);
-                return true;
+        if(isPlayer){
+            switch(item.getItemId()) {
+                case R.id.csm_Alive:
+                    pc.setCombatState(Combatant.combatantStates.ALIVE);
+                    return true;
 
-            case R.id.csm_Dead:
-                currCombatant.setCombatState(Combatant.combatantStates.DEAD);
-                return true;
+                case R.id.csm_Dead:
+                    pc.setCombatState(Combatant.combatantStates.DEAD);
+                    return true;
 
-            case R.id.csm_Stable:
-                currCombatant.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
-                return true;
+                case R.id.csm_Stable:
+                    pc.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
+                    return true;
 
-            case R.id.csm_Unstable:
-                currCombatant.setCombatState(Combatant.combatantStates.UNSTABLE);
-                return true;
+                case R.id.csm_Unstable:
+                    pc.setCombatState(Combatant.combatantStates.UNSTABLE);
+                    return true;
 
                 default:
                     return false;
-
+            }
         }
+        else{
+            switch(item.getItemId()) {
+                case R.id.csm_Alive:
+                    npc.setCombatState(Combatant.combatantStates.ALIVE);
+                    return true;
+
+                case R.id.csm_Dead:
+                    npc.setCombatState(Combatant.combatantStates.DEAD);
+                    return true;
+
+                case R.id.csm_Stable:
+                   npc.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
+                    return true;
+
+                case R.id.csm_Unstable:
+                    npc.setCombatState(Combatant.combatantStates.UNSTABLE);
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
     }
 
     private boolean checkIfUnstable(NPC npc){
