@@ -1,5 +1,7 @@
 package com.example.a5einitiatetracker.activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -9,6 +11,7 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.a5einitiatetracker.R;
@@ -194,12 +197,29 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
             }
         });
 
-        //Button to change the combatant states (ALIVE, DEAD, STABLE, UNSTABLE)
+        //Button to end the combat)
         Button endCombatButton = findViewById(R.id.btnEndCombat);
         endCombatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 combatComplete = true;
                 //TODO confirm with the DM that they would like to end the combat. If saving is implemented ask if they want to save. End combat or cancel
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                builder.setCancelable(true);
+                builder.setTitle("Combat Finish");
+                builder.setMessage("Are you sure you would like to finish combat? You can't return to this combat later.");
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        gotoMainActivity();
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }
@@ -279,5 +299,10 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         popup.show();
     }
 
+    private void gotoMainActivity(){
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 }
