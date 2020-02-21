@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="50dp"
+    android:tag="@string/monster_entry_tag">
 
     <AutoCompleteTextView
         android:id="@+id/autoTxtViewMonsters"
@@ -21,7 +22,8 @@
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:hint="@string/monster_entry_number"
-        android:inputType="number" />
+        android:inputType="number"
+        android:importantForAutofill="no" />
 
     <Button
         android:layout_width="0dp"

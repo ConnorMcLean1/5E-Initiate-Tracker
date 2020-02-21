@@ -10,4 +10,6 @@
     <string name="player_entry_initiative">Initiative</string>
     <string name="connected">Connected to the Internet! Checking API.</string>
     <string name="not_connected">Not connected to the Internet! Closing app.</string>
+    <string name="monster_entry_tag">monster_entry</string>
+    <string name="player_entry_tag">player_entry</string>
 </resources>
