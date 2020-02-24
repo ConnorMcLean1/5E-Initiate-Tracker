@@ -1,40 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txtViewCombatantName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/combat_txt_name"
+        android:textAlignment="center"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.12"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/txtViewCombatantHealth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="51dp"
+        android:text="@string/combat_txt_hp"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantName"
+        app:layout_constraintVertical_bias="0.064" />
+
+    <TextView
+        android:id="@+id/txtViewCombatantStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="316dp"
+        android:text="@string/combat_txt_status"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantHealth"
+        app:layout_constraintVertical_bias="0.08" />
+
+    <TextView
+        android:id="@+id/txtViewCombatantDeathSaves"
+        android:layout_width="144dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="48dp"
+        android:text="@string/combat_txt_death_saves"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantStatus" />
 
     <Button
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_next" />
+        android:text="@string/combat_btn_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.857"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnPrev" />
 
     <Button
         android:id="@+id/btnPrev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_previous" />
-
-    <Button
-        android:id="@+id/btnHp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_change_hp" />
-    <Button
-        android:id="@+id/btnStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_change_status" />
-    <Button
-        android:id="@+id/btnDeathSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_roll_death_save" />
+        android:layout_marginTop="436dp"
+        android:text="@string/combat_btn_previous"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.133"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantName"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btnEndCombat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_end_combat" />
+        android:layout_marginBottom="28dp"
+        android:text="@string/combat_btn_end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/editTxtHealth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:hint="@string/combat_txt_hint_hp"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/txtViewCombatantHealth"
+        app:layout_constraintTop_toTopOf="@+id/txtViewCombatantHealth" />
+
+    <Button
+        android:id="@+id/btnDeathSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/combat_btn_death_saves"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantDeathSaves" />
+
+    <ImageButton
+        android:id="@+id/btnHp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTxtHealth"
+        app:layout_constraintTop_toTopOf="@+id/editTxtHealth"
+        app:srcCompat="@drawable/ic_check_black_24dp"
+        android:contentDescription="@string/combat_txt_hp" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="288dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@+id/txtViewCombatantStatus"
+        app:layout_constraintTop_toTopOf="@+id/txtViewCombatantStatus" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

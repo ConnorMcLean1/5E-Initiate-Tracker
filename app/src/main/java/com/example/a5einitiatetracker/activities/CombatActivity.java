@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -109,7 +110,7 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         });
 
         //Button to change the health of the currently selected monster if they heal or take damage
-        Button changeHpButton = findViewById(R.id.btnHp);
+        ImageButton changeHpButton = findViewById(R.id.btnHp);
         changeHpButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 int currCombatantHp;
@@ -137,13 +138,13 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         });
 
         //Button to change the combatant states (ALIVE, DEAD, STABLE, UNSTABLE)
-        Button changeStatusButton = findViewById(R.id.btnStatus);
-        changeStatusButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                showStatusChangeMenu(v);
-                //TODO should probably also grey out/disabled the background while the menu is up to prevent the user from doing other things while the menu is open?
-            }
-        });
+//        Button changeStatusButton = findViewById(R.id.btnStatus);
+//        changeStatusButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                showStatusChangeMenu(v);
+//                //TODO should probably also grey out/disabled the background while the menu is up to prevent the user from doing other things while the menu is open?
+//            }
+//        });
 
         //Button to roll death saving throws for the currently selected combatant
         Button rollDeathSaveButton = findViewById(R.id.btnDeathSave);
