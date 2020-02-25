@@ -1,11 +1,8 @@
 package com.example.a5einitiatetracker.combatant;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import java.util.Objects;
-
-public class Combatant implements Comparable<Combatant> {
+public class Combatant {
 
     //region VARIABLES
     protected Integer initiative;
@@ -76,24 +73,6 @@ public class Combatant implements Comparable<Combatant> {
     @Override
     public String toString() {
         return String.format("Name: %s\nInitiative: %d\n", name, initiative);
-    }
-
-    @Override
-    public int compareTo(Combatant c) {
-        return this.getInitiative() - c.getInitiative();
-    }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) return true;
-        if (obj== null || getClass() != obj.getClass()) return false;
-        Combatant c = (Combatant) obj;
-        return initiative == ((Combatant) obj).initiative;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(initiative);
     }
 
     //endregion
