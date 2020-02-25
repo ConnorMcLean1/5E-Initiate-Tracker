@@ -21,8 +21,16 @@
     <string name="dead">Dead</string>
     <string name="unstable">Unstable</string>
     <string name="stable">Stable</string>
-    <string name="monster_entry_tag" />
-    <string name="player_entry_tag" />
-    <string name="connected">Connected!</string>
-    <string name="not_connected">Not connected! Closing app!</string>
+    <string name="heal">Heal</string>
+    <string name="damage">Damage</string>
+    <string name="not_tracked">Not Tracked</string>
+    <string name="current_hp">Current HP:</string>
+
+    <!-- Note any changes to this array should also be reflected in the CombatActivity method getStatusSpinnerPosition-->
+    <string-array name="status_array">
+        <item>Alive</item>
+        <item>Dead</item>
+        <item>Stable</item>
+        <item>Unstable</item>
+    </string-array>
 </resources>
