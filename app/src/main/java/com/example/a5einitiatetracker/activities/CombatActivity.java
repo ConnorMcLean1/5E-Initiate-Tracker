@@ -4,14 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -34,6 +32,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     Player pc;
     Boolean combatComplete, isPlayer;
     int count;
+    TextView txtViewCombatantHealth, txtViewChangeHealth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +40,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         iterator = combatantList.listIterator();
         combatComplete = false;
+
+        //Initialize the TextViews
+        txtViewCombatantHealth = findViewById(R.id.txtViewCombatantCurrentHealth);
+        txtViewChangeHealth = findViewById(R.id.txtViewCombatantHealth);
 
         //Button to go to the previous combatant in initiative
         Button nextButton = findViewById(R.id.btnNext);
@@ -58,11 +61,21 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
-        //Button to change the health of the currently selected monster if they heal or take damage
-        ImageButton changeHpButton = findViewById(R.id.btnHp);
-        changeHpButton.setOnClickListener(new View.OnClickListener() {
+        //Button to heal the combatant based on the number entered in the HP field
+        Button healHpButton = findViewById(R.id.btnHpHeal);
+        healHpButton.setOnClickListener(new View.OnClickListener(){
+            @Override
             public void onClick(View v) {
-                changeHpOnClick();
+                healHpOnClick();
+            }
+        });
+
+        //Button to damage the combatant based on the number entered in the HP field
+        Button damageHpButton = findViewById(R.id.btnHpDamage);
+        healHpButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                damageHpOnClick();
             }
         });
 
@@ -249,26 +262,50 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         }
     }
 
-    private void changeHpOnClick(){
+    private void healHpOnClick(){
         int currCombatantHp;
         if(isPlayer){
             Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
         }
         else{
             currCombatantHp = npc.getHealth();
-            //TODO display some popup with the NPC's current health, and a box to determine how much health the DM wants to Add/Remove
-            int change = 0, overkill;
+            int change = Integer.parseInt(txtViewChangeHealth.getText().toString());
+            int maxHp = npc.getMaxHealth();
+
+            currCombatantHp += change;
+            if(currCombatantHp > maxHp)
+                currCombatantHp = maxHp;
+
+            txtViewCombatantHealth.setText(currCombatantHp);
+            txtViewChangeHealth.setText("0");
+            npc.setHealth(currCombatantHp);
+        }
+    }
+
+    private void damageHpOnClick(){
+        int currCombatantHp;
+        if(isPlayer){
+            Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            currCombatantHp = npc.getHealth();
+            int change = Integer.parseInt(txtViewChangeHealth.getText().toString());
+
             currCombatantHp -= change;
             if(currCombatantHp < 0){
-                overkill = currCombatantHp;
+                int overkill = Math.abs(currCombatantHp);
                 currCombatantHp = 0;
                 if(overkill > npc.getMaxHealth()){ //If the current combatant would be outright killed by the damage
                     //TODO the combatant is killed by RAW so the DM should be asked if they want to change their state to DEAD
+                    Log.d("healHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
                 }
                 else{ //If the combatant is not outright killed the DM should be asked if they want to change their state to ALIVE, DEAD, UNCONSCIOUS or UNSTABLE
                     //TODO the combatant is at 0 health, ask the DM what their state should be changed to. Note it could still be ALIVE if a creature has HP regen
+                    Log.d("healHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
                 }
             }
+            txtViewCombatantHealth.setText(currCombatantHp);
+            txtViewChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
         }
     }
