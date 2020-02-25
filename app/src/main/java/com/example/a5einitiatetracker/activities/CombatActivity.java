@@ -169,7 +169,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     //region BUTTON METHODS
     private void endCombatOnClick(){
         combatComplete = true;
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
         builder.setCancelable(true);
         builder.setTitle("Combat Finish");
         builder.setMessage("Are you sure you would like to finish combat? You can't return to this combat later.");
@@ -177,6 +177,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 gotoMainActivity();
+                combatantList.clear();
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
