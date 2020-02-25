@@ -12,6 +12,12 @@ public class Player extends Combatant {
     public Player(int initiative, int initiativeModifier, combatantStates status, String name) {
         super(initiative, initiativeModifier, status, name);
     }
+
+    public Player(int initiative, String name) {
+        this.initiative = initiative;
+        this.name = name;
+        this.status = combatantStates.ALIVE;
+    }
     //endregion
 
 }
