@@ -71,6 +71,7 @@ public class Combatant implements Comparable<Combatant> {
         this.name = name;
     }
 
+
     @NonNull
     @Override
     public String toString() {
