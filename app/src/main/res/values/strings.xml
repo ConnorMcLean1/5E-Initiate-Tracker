@@ -21,4 +21,8 @@
     <string name="dead">Dead</string>
     <string name="unstable">Unstable</string>
     <string name="stable">Stable</string>
+    <string name="monster_entry_tag" />
+    <string name="player_entry_tag" />
+    <string name="connected">Connected!</string>
+    <string name="not_connected">Not connected! Closing app!</string>
 </resources>
