@@ -29,12 +29,12 @@ import java.util.ListIterator;
 
 public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     List<Combatant> combatantList;
-    Combatant currCombatant;
+    Combatant currCombatant, prevCombatant, nextCombatant;
     NPC npc;
     Player pc;
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
-    TextView txtViewCombatantHealth, txtViewCombatantName;
+    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview, txtViewPrevCombatantPreview;
     EditText editTextChangeHealth;
     Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton, endCombatButton;
     Spinner statusSpinner;
@@ -58,6 +58,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         //Initialize the TextViews
         txtViewCombatantHealth = findViewById(R.id.txtViewCombatantCurrentHealth);
         txtViewCombatantName = findViewById(R.id.txtViewCombatantName);
+        txtViewNextCombatantPreview = findViewById(R.id.txtViewNextCombatantPreview);
+        txtViewPrevCombatantPreview = findViewById(R.id.txtViewPrevCombatantPreview);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
@@ -428,6 +430,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateHealth();
         updateName();
         updateStatus();
+        updatePreviews();
     }
 
     private void updateHealth(){
@@ -449,6 +452,33 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCombatantName.setText(pc.getName());
         else
             txtViewCombatantName.setText(npc.getName());
+    }
+
+    private void updatePreviews(){
+
+        if (currentIndex-1 >= 0) prevCombatant = combatantList.get(currentIndex-1);
+        else prevCombatant = combatantList.get(combatantList.size()-1);
+
+        if (currentIndex+1 < combatantList.size()) nextCombatant = combatantList.get(currentIndex+1);
+        else nextCombatant = combatantList.get(0);
+
+        if (nextCombatant instanceof Player) {
+            pc = (Player) nextCombatant;
+            txtViewNextCombatantPreview.setText(pc.getName());
+        }
+        else {
+            npc = (NPC) nextCombatant;
+            txtViewNextCombatantPreview.setText(npc.getName());
+        }
+
+        if (prevCombatant instanceof Player) {
+            pc = (Player) prevCombatant;
+            txtViewPrevCombatantPreview.setText(pc.getName());
+        }
+        else {
+            npc = (NPC) prevCombatant;
+            txtViewPrevCombatantPreview.setText(npc.getName());
+        }
     }
     //endregion
 }
