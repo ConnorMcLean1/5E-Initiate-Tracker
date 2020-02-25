@@ -28,13 +28,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    ListIterator<Combatant> iterator;
     List<Combatant> combatantList;
     Combatant currCombatant;
     NPC npc;
     Player pc;
     Boolean combatComplete, isPlayer;
-    int count;
+    int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName;
     EditText editTextChangeHealth;
     Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton, endCombatButton;
@@ -53,7 +52,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 3", 0));
         //endregion
 
-        iterator = combatantList.listIterator();
+        currentIndex = 0;
         combatComplete = false;
 
         //Initialize the TextViews
@@ -193,14 +192,15 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
 
         do { //Get the next combatant, skipping over dead ones
-            if (iterator.hasNext()) { //Check if there is another combatant in the list. If yes, grab it out
-                currCombatant = iterator.next();
+            if (currentIndex+1 < combatantList.size()) { //Check if there is another combatant in the list. If yes, grab it out
+                currentIndex++;
+                currCombatant = combatantList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Next");
             }
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
-                iterator = combatantList.listIterator(0);
+                currentIndex = 0;
                 count++;
-                currCombatant = iterator.next();
+                currCombatant = combatantList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Next Button. No next combatant. Reset to start of iterator");
             }
         } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
@@ -228,13 +228,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
 
         do { //Get the next combatant, skipping over dead ones
-            if (iterator.hasPrevious()) { //Check if there is another combatant in the list. If yes, grab it out
-                currCombatant = iterator.previous();
+            if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
+                currentIndex--;
+                currCombatant = combatantList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Previous");
             } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
-                iterator = combatantList.listIterator(combatantList.size());
+                currentIndex = combatantList.size()-1;
                 count++;
-                currCombatant = iterator.previous();
+                currCombatant = combatantList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Previous Button. No previous combatant. Reset to end of iterator");
             }
         } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
@@ -320,9 +321,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             if(currCombatantHp > maxHp)
                 currCombatantHp = maxHp;
 
-            updateHealth();
             editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
+            updateHealth();
         }
     }
 
@@ -348,9 +349,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     Log.d("healHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
                 }
             }
-            updateHealth();
+
             editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
+            updateHealth();
         }
     }
     //endregion
