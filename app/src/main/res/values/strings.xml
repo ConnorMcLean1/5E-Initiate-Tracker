@@ -21,4 +21,12 @@
     <string name="dead">Dead</string>
     <string name="unstable">Unstable</string>
     <string name="stable">Stable</string>
+
+    <!-- Note any changes to this array should also be reflected in the CombatActivity method getStatusSpinnerPosition-->
+    <string-array name="status_array">
+        <item>Alive</item>
+        <item>Dead</item>
+        <item>Stable</item>
+        <item>Unstable</item>
+    </string-array>
 </resources>

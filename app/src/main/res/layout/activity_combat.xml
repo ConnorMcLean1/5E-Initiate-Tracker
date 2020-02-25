@@ -63,7 +63,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/combat_btn_next"
-        android:onClick=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +123,8 @@
         android:contentDescription="@string/combat_txt_hp" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/combatantStatusSpinner"
+        android:entries="@array/status_array"
         android:layout_width="288dp"
         android:layout_height="31dp"
         android:layout_marginStart="12dp"

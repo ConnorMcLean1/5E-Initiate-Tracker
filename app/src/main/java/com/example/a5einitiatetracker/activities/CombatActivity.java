@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -23,7 +26,7 @@ import com.example.a5einitiatetracker.combatant.Player;
 import java.util.List;
 import java.util.ListIterator;
 
-public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     ListIterator<Combatant> iterator;
     List<Combatant> combatantList;
     Combatant currCombatant;
@@ -78,6 +81,19 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
             endCombatOnClick();
             }
         });
+
+        //combatantStatus Spinner
+        Spinner statusSpinner = findViewById(R.id.combatantStatusSpinner);
+        ArrayAdapter<CharSequence> statusSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.status_array, android.R.layout.simple_spinner_item);
+        statusSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusSpinner.setAdapter(statusSpinnerAdapter);
+        statusSpinner.setOnItemSelectedListener(this);
+        statusSpinner.setPrompt("Status");
+        if(isPlayer)
+            statusSpinner.setSelection(getStatusSpinnerPosition(pc.getCombatState()));
+        else
+            statusSpinner.setSelection(getStatusSpinnerPosition(npc.getCombatState()));
     }
 
     @Override
@@ -95,64 +111,9 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         super.onResume();
     }
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item){
-        if(isPlayer){
-            switch(item.getItemId()) {
-                case R.id.csm_Alive:
-                    pc.setCombatState(Combatant.combatantStates.ALIVE);
-                    return true;
-
-                case R.id.csm_Dead:
-                    pc.setCombatState(Combatant.combatantStates.DEAD);
-                    return true;
-
-                case R.id.csm_Stable:
-                    pc.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
-                    return true;
-
-                case R.id.csm_Unstable:
-                    pc.setCombatState(Combatant.combatantStates.UNSTABLE);
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-        else{
-            switch(item.getItemId()) {
-                case R.id.csm_Alive:
-                    npc.setCombatState(Combatant.combatantStates.ALIVE);
-                    return true;
-
-                case R.id.csm_Dead:
-                    npc.setCombatState(Combatant.combatantStates.DEAD);
-                    return true;
-
-                case R.id.csm_Stable:
-                   npc.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
-                    return true;
-
-                case R.id.csm_Unstable:
-                    npc.setCombatState(Combatant.combatantStates.UNSTABLE);
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
-    }
 
     private boolean checkIfUnstable(NPC npc){
         return (npc.getStatus() == Combatant.combatantStates.UNSTABLE);
-    }
-
-    private void showStatusChangeMenu(View v) {
-        PopupMenu popup = new PopupMenu(getApplicationContext(), v);
-        popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.change_state_menu);
-        popup.show();
     }
 
     private void gotoMainActivity(){
@@ -164,7 +125,6 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
     //region BUTTON METHODS
     private void endCombatOnClick(){
         combatComplete = true;
-        //TODO confirm with the DM that they would like to end the combat. If saving is implemented ask if they want to save. End combat or cancel
         AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
         builder.setCancelable(true);
         builder.setTitle("Combat Finish");
@@ -199,7 +159,7 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
 
         if(count > 1){ //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
-            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant or change their state to continue.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
             Log.d("MAIN_LOOP_TEST", "Next Button. No non-dead combatants. Loop would be infinite");
         }
 
@@ -229,7 +189,7 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
         } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
 
         if (count > 1) { //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
-            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant or change their state to continue.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
             Log.d("MAIN_LOOP_TEST", "Previous Button. No non-dead combatants. Loop would be infinite");
         }
 
@@ -253,7 +213,6 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
                 NPC.deathSaveResult saveResult = npc.rolLDeathSave(0, 0); //TODO get the actual adv and bonus values from the DM
                 switch (saveResult) {
                     case SUCCESS:
-
                         Toast.makeText(getApplicationContext(), "Rolled a success on a death save for: " + npc.getName() + ".", Toast.LENGTH_SHORT).show();
                         break;
                     case FAILURE:
@@ -311,6 +270,67 @@ public class CombatActivity extends AppCompatActivity implements PopupMenu.OnMen
                 }
             }
             npc.setHealth(currCombatantHp);
+        }
+    }
+    //endregion
+
+    //region STATUS SPINNER METHODS
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String item = (String) parent.getItemAtPosition(position);
+
+        if(isPlayer) {
+            switch (item) {
+                case "Alive":
+                    pc.setCombatState(Combatant.combatantStates.ALIVE);
+                    break;
+                case "Dead":
+                    pc.setCombatState(Combatant.combatantStates.DEAD);
+                    break;
+                case "Stable":
+                    pc.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
+                    break;
+                case "Unstable":
+                    pc.setCombatState(Combatant.combatantStates.UNSTABLE);
+                    break;
+            }
+        }
+        else{
+            switch (item) {
+                case "Alive":
+                    npc.setCombatState(Combatant.combatantStates.ALIVE);
+                    break;
+                case "Dead":
+                    npc.setCombatState(Combatant.combatantStates.DEAD);
+                    break;
+                case "Stable":
+                    npc.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
+                    break;
+                case "Unstable":
+                    npc.setCombatState(Combatant.combatantStates.UNSTABLE);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    //Simple method to return the position of the string in the Strings.xml resource for any of the 4 conditions
+    private int getStatusSpinnerPosition(Combatant.combatantStates status){
+        switch (status){
+            case ALIVE:
+                return 0;
+            case DEAD:
+                return 1;
+            case UNCONSCIOUS:
+                return 2;
+            case UNSTABLE:
+                return 3;
+            default:
+                return 0;
         }
     }
     //endregion
