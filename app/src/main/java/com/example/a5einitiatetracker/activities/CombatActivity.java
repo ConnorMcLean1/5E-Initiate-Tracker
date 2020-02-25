@@ -72,7 +72,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         //Button to damage the combatant based on the number entered in the HP field
         Button damageHpButton = findViewById(R.id.btnHpDamage);
-        healHpButton.setOnClickListener(new View.OnClickListener(){
+        damageHpButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 damageHpOnClick();
