@@ -140,9 +140,10 @@ public class NPC extends Combatant implements Comparable<Combatant> {
                     successes++;
                     break;
                 case FAILURE:
-                    failures--;
+                    failures++;
                     break;
                 case NONE:
+                    i = deathSaves.length; //break the loop
                     break;
             }
         }
@@ -157,7 +158,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
 
     public void setNextDeathSave(deathSaveResult result){
         int i = 0;
-        while(i < deathSaves.length && deathSaves[i] == deathSaveResult.NONE)
+        while(i < deathSaves.length && deathSaves[i] != deathSaveResult.NONE)
             i++;
         deathSaves[i] = result;
     }

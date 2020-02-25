@@ -23,6 +23,7 @@ import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -127,16 +128,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if (currCombatant instanceof Player) {
             isPlayer = true;
             pc = (Player) currCombatant;
-            statusSpinner.setSelection(getStatusSpinnerPosition(pc.getCombatState()));
-            txtViewCombatantHealth.setText("Not Tracked");
-            txtViewCombatantName.setText(pc.getName());
+            updateUIValues();
         }
         else {
             isPlayer = false;
             npc = (NPC) currCombatant;
-            statusSpinner.setSelection(getStatusSpinnerPosition(npc.getCombatState()));
-            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
-            txtViewCombatantName.setText(npc.getName());
+            updateUIValues();
         }
 
         editTextChangeHealth.setText("0");
@@ -215,15 +212,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if(currCombatant instanceof Player){ //Check if the current combatant is a player or not, and cast it appropriately
             pc = (Player) currCombatant;
             isPlayer = true;
-            txtViewCombatantHealth.setText("Not Tracked");
-            txtViewCombatantName.setText(pc.getName());
+            updateUIValues();
             Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else{
             npc = (NPC) currCombatant;
             isPlayer = false;
-            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
-            txtViewCombatantName.setText(npc.getName());
+            updateUIValues();
             Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
@@ -251,15 +246,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if (currCombatant instanceof Player) { //Check if the current combatant is a player or not, and cast it appropriately
             pc = (Player) currCombatant;
             isPlayer = true;
-            txtViewCombatantHealth.setText("Not Tracked");
-            txtViewCombatantName.setText(pc.getName());
+            updateUIValues();
             Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else {
             npc = (NPC) currCombatant;
             isPlayer = false;
-            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
-            txtViewCombatantName.setText(npc.getName());
+            updateUIValues();
             Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
@@ -272,6 +265,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                 NPC.deathSaveResult saveResult = npc.rolLDeathSave(0, 0); //TODO get the actual adv and bonus values from the DM
                 switch (saveResult) {
                     case SUCCESS:
+                        npc.setNextDeathSave(saveResult);
                         Toast.makeText(getApplicationContext(), "Rolled a success on a death save for: " + npc.getName() + ".", Toast.LENGTH_SHORT).show();
                         break;
                     case FAILURE:
@@ -287,13 +281,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                 }
                 switch (npc.checkDeathSaves()) {
                     case UNSTABLE:
-                        Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is still UNSTABLE.");
+                        Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is still UNSTABLE.");
                         break;
                     case DEAD:
                         npc.resetDeathSaves();
                         npc.setCombatState(Combatant.combatantStates.DEAD);
                         Toast.makeText(getApplicationContext(), "The current combatant has failed 3 death saves and is now dead.", Toast.LENGTH_SHORT).show();
-                        Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now DEAD.");
+                        Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is now DEAD.");
                         break;
                     case STABLE:
                         npc.resetDeathSaves();
@@ -302,6 +296,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                         Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now UNCONSCIOUS (Stable).");
                         break;
                 }
+                updateUIValues();
+                Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
             } else {
                 Toast.makeText(getApplicationContext(), "The current combatant is not unstable (unconscious) and cannot make death saving throws!.", Toast.LENGTH_SHORT).show();
             }
@@ -323,7 +319,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             if(currCombatantHp > maxHp)
                 currCombatantHp = maxHp;
 
-            txtViewCombatantHealth.setText(Integer.toString(currCombatantHp));
+            updateHealth();
             editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
         }
@@ -342,7 +338,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             if(currCombatantHp < 0){
                 int overkill = Math.abs(currCombatantHp);
                 currCombatantHp = 0;
-                if(overkill > npc.getMaxHealth()){ //If the current combatant would be outright killed by the damage
+                if(overkill >= npc.getMaxHealth()){ //If the current combatant would be outright killed by the damage
                     //TODO the combatant is killed by RAW so the DM should be asked if they want to change their state to DEAD
                     Log.d("healHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
                 }
@@ -351,7 +347,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     Log.d("healHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
                 }
             }
-            txtViewCombatantHealth.setText(Integer.toString(currCombatantHp));
+            updateHealth();
             editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
         }
@@ -362,7 +358,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = (String) parent.getItemAtPosition(position);
-
+        //TODO add handling to prevent the combatant status from changing if they are not at the correct HP for the status OR change the HP as well
         if(isPlayer) {
             switch (item) {
                 case "Alive":
@@ -406,16 +402,50 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     private int getStatusSpinnerPosition(Combatant.combatantStates status){
         switch (status){
             case ALIVE:
+                Log.d("SPINNER_POS","ALIVE, 0");
                 return 0;
             case DEAD:
+                Log.d("SPINNER_POS","DEAD, 1");
                 return 1;
             case UNCONSCIOUS:
+                Log.d("SPINNER_POS","UNCONSCIOUS, 2");
                 return 2;
             case UNSTABLE:
+                Log.d("SPINNER_POS","UNSTABLE, 3");
                 return 3;
             default:
+                Log.d("SPINNER_POS","Default, 0");
                 return 0;
         }
+    }
+    //endregion
+
+    //region UI UPDATERS
+    private void updateUIValues(){
+        updateHealth();
+        updateName();
+        updateStatus();
+    }
+
+    private void updateHealth(){
+        if(isPlayer)
+            txtViewCombatantHealth.setText(R.string.not_tracked);
+        else
+            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
+    }
+
+    private void updateStatus(){
+        if(isPlayer)
+            statusSpinner.setSelection(getStatusSpinnerPosition(pc.getCombatState()));
+        else
+            statusSpinner.setSelection(getStatusSpinnerPosition(npc.getCombatState()));
+    }
+
+    private void updateName(){
+        if(isPlayer)
+            txtViewCombatantName.setText(pc.getName());
+        else
+            txtViewCombatantName.setText(npc.getName());
     }
     //endregion
 }
