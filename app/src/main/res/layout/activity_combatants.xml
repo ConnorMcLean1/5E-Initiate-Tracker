@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="bottom|center"
-        android:onClick="onGetMonsterData"
+        android:onClick="startCombat"
         android:text="@string/btn_next" />
 
 

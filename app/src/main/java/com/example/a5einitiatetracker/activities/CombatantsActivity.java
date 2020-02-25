@@ -17,6 +17,8 @@ import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.api.APIUtility;
 import com.example.a5einitiatetracker.api.json.JSONUtility;
 import com.example.a5einitiatetracker.combatant.Combatant;
+import com.example.a5einitiatetracker.combatant.Monster;
+import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -83,52 +85,66 @@ public class CombatantsActivity extends AppCompatActivity {
         combatantsList.clear();
     }
 
-    public void onGetMonsterData(View v) {
+    public void startCombat(View v) {
+        getPlayers();
+        getMonsterData();
+        //TODO: Add code to start new combat activity
+    }
+
+    // loads all the monster info and adds them to the combatant list, then sorts the list by
+    // initiative
+    private void getMonsterData() {
         final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String monsterIndex;
+                String monsterName;
                 for (HashMap.Entry<String, Integer> entry : monsters.entrySet()) {
-                    Log.d("KEY", String.format("key: %s", entry.getKey()));
                     monsterIndex = monsterNames.get(entry.getKey());
-                    Log.d("INDEX", String.format("index: %s", monsterIndex));
                     for (int i = 0; i < entry.getValue(); i++) {
-                        combatantsList.add(APIUtility.getMonsterByIndex(monsterIndex));
+                        NPC m = APIUtility.getMonsterByIndex(monsterIndex);
+                        monsterName = String.format("%s %d", m.getName(), i+1);
+                        m.setName(monsterName);
+                        combatantsList.add(m);
                     }
                 }
 
                 Collections.sort(combatantsList);
-                String combatantData = "";
-                for (Combatant c : combatantsList) {
-                    combatantData += c.toString();
-                }
-                Log.d("COMBATANTS", "\n" + combatantData);
             }
         }).start();
-        //TODO: Add code to start new combat activity
     }
 
+    // loads all the players into the combatant list
+    private void getPlayers() {
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText playerNameEditText, playerInitiativeEditText;
+        String name;
+        int initiative;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("player_entry")) {
+                playerNameEditText = v.findViewById(R.id.editTxtPlayerName);
+                playerInitiativeEditText = v.findViewById(R.id.editTxtInitiative);
+                name = playerNameEditText.getText().toString();
+                initiative = Integer.parseInt(playerInitiativeEditText.getText().toString());
+                Player p = new Player(initiative, name);
+                combatantsList.add(p);
+            }
+        }
+    }
+
+    // creates a hashmap of all the monsters with their name and the number to load
     private HashMap createMonsterKeyValuePair() {
         HashMap<String, Integer> m = new HashMap<String, Integer>();
         int combatantCount = parentLinearLayout.getChildCount();
         View view;
         AutoCompleteTextView name;
-        EditText playerName, playerInitiative;
         EditText num;
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
-            if (view.getTag().toString().equals("player_entry")) {
-                playerName = view.findViewById(R.id.editTxtPlayerName);
-                playerInitiative = view.findViewById(R.id.editTxtInitiative);
-                combatantsList.add(
-                        new Player(
-                                Integer.parseInt(playerInitiative.getText().toString()),
-                                0,
-                                Combatant.combatantStates.ALIVE,
-                                playerName.getText().toString()));
-
-            } else {
+            if (!view.getTag().toString().equals("player_entry")) {
                 num = view.findViewById(R.id.editTxtMonsterNumber);
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                 m.put(
