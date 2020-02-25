@@ -23,6 +23,8 @@
     <string name="stable">Stable</string>
     <string name="heal">Heal</string>
     <string name="damage">Damage</string>
+    <string name="not_tracked">Not Tracked</string>
+    <string name="current_hp">Current HP:</string>
 
     <!-- Note any changes to this array should also be reflected in the CombatActivity method getStatusSpinnerPosition-->
     <string-array name="status_array">

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -32,29 +34,43 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     Player pc;
     Boolean combatComplete, isPlayer;
     int count;
-    TextView txtViewCombatantHealth, txtViewChangeHealth;
+    TextView txtViewCombatantHealth, txtViewCombatantName;
+    EditText editTextChangeHealth;
+    Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton, endCombatButton;
+    Spinner statusSpinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_combat);
+
+        //region TEST VARIABLES
+        combatantList = new ArrayList<>();
+        combatantList.add(new Player(22, 5, Combatant.combatantStates.ALIVE, "Player1"));
+        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 1", 0));
+        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 2", 0));
+        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 3", 0));
+        //endregion
 
         iterator = combatantList.listIterator();
         combatComplete = false;
 
         //Initialize the TextViews
         txtViewCombatantHealth = findViewById(R.id.txtViewCombatantCurrentHealth);
-        txtViewChangeHealth = findViewById(R.id.txtViewCombatantHealth);
+        txtViewCombatantName = findViewById(R.id.txtViewCombatantName);
+
+        //Initialize the EditTexts
+        editTextChangeHealth = findViewById(R.id.editTxtHealth);
 
         //Button to go to the previous combatant in initiative
-        Button nextButton = findViewById(R.id.btnNext);
+        nextButton = findViewById(R.id.btnNext);
         nextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 nextCombatantOnClick();
             }
         });
-
         //Button to go to the next combatant in initiative
-        Button previousButton = findViewById(R.id.btnPrev);
+        previousButton = findViewById(R.id.btnPrev);
         previousButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 previousCombatantOnClick();
@@ -62,7 +78,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
         //Button to heal the combatant based on the number entered in the HP field
-        Button healHpButton = findViewById(R.id.btnHpHeal);
+        healHpButton = findViewById(R.id.btnHpHeal);
         healHpButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -71,7 +87,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
         //Button to damage the combatant based on the number entered in the HP field
-        Button damageHpButton = findViewById(R.id.btnHpDamage);
+        damageHpButton = findViewById(R.id.btnHpDamage);
         damageHpButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -80,7 +96,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
         //Button to roll death saving throws for the currently selected combatant
-        Button rollDeathSaveButton = findViewById(R.id.btnDeathSave);
+        rollDeathSaveButton = findViewById(R.id.btnDeathSave);
         rollDeathSaveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 rollDeathSaveOnClick();
@@ -88,7 +104,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
         //Button to end the combat
-        Button endCombatButton = findViewById(R.id.btnEndCombat);
+        endCombatButton = findViewById(R.id.btnEndCombat);
         endCombatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             endCombatOnClick();
@@ -96,17 +112,35 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
         //combatantStatus Spinner
-        Spinner statusSpinner = findViewById(R.id.combatantStatusSpinner);
+        statusSpinner = findViewById(R.id.combatantStatusSpinner);
         ArrayAdapter<CharSequence> statusSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.status_array, android.R.layout.simple_spinner_item);
         statusSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(statusSpinnerAdapter);
         statusSpinner.setOnItemSelectedListener(this);
         statusSpinner.setPrompt("Status");
-        if(isPlayer)
+
+        //region INITIAL SCREEN SETUP
+        //TODO should change the below to find the first non-dead combatant most likely
+        //Setup combat screen using the first combatant in the list
+        currCombatant = combatantList.get(0);
+        if (currCombatant instanceof Player) {
+            isPlayer = true;
+            pc = (Player) currCombatant;
             statusSpinner.setSelection(getStatusSpinnerPosition(pc.getCombatState()));
-        else
+            txtViewCombatantHealth.setText("Not Tracked");
+            txtViewCombatantName.setText(pc.getName());
+        }
+        else {
+            isPlayer = false;
+            npc = (NPC) currCombatant;
             statusSpinner.setSelection(getStatusSpinnerPosition(npc.getCombatState()));
+            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
+            txtViewCombatantName.setText(npc.getName());
+        }
+
+        editTextChangeHealth.setText("0");
+        //endregion
     }
 
     @Override
@@ -163,11 +197,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         do { //Get the next combatant, skipping over dead ones
             if (iterator.hasNext()) { //Check if there is another combatant in the list. If yes, grab it out
                 currCombatant = iterator.next();
+                Log.d("MAIN_LOOP_TEST","Next");
             }
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 iterator = combatantList.listIterator(0);
                 count++;
                 currCombatant = iterator.next();
+                Log.d("MAIN_LOOP_TEST", "Next Button. No next combatant. Reset to start of iterator");
             }
         } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
 
@@ -179,12 +215,16 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if(currCombatant instanceof Player){ //Check if the current combatant is a player or not, and cast it appropriately
             pc = (Player) currCombatant;
             isPlayer = true;
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a PC.");
+            txtViewCombatantHealth.setText("Not Tracked");
+            txtViewCombatantName.setText(pc.getName());
+            Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else{
             npc = (NPC) currCombatant;
             isPlayer = false;
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a NPC.");
+            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
+            txtViewCombatantName.setText(npc.getName());
+            Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
 
@@ -194,10 +234,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         do { //Get the next combatant, skipping over dead ones
             if (iterator.hasPrevious()) { //Check if there is another combatant in the list. If yes, grab it out
                 currCombatant = iterator.previous();
+                Log.d("MAIN_LOOP_TEST","Previous");
             } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
-                iterator = combatantList.listIterator(combatantList.size()-1);
+                iterator = combatantList.listIterator(combatantList.size());
                 count++;
                 currCombatant = iterator.previous();
+                Log.d("MAIN_LOOP_TEST", "Previous Button. No previous combatant. Reset to end of iterator");
             }
         } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
 
@@ -209,12 +251,16 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if (currCombatant instanceof Player) { //Check if the current combatant is a player or not, and cast it appropriately
             pc = (Player) currCombatant;
             isPlayer = true;
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a PC.");
+            txtViewCombatantHealth.setText("Not Tracked");
+            txtViewCombatantName.setText(pc.getName());
+            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else {
             npc = (NPC) currCombatant;
             isPlayer = false;
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + currCombatant.getName() + " is a NPC.");
+            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
+            txtViewCombatantName.setText(npc.getName());
+            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
 
@@ -269,15 +315,16 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         }
         else{
             currCombatantHp = npc.getHealth();
-            int change = Integer.parseInt(txtViewChangeHealth.getText().toString());
+            int change = Integer.parseInt(editTextChangeHealth.getText().toString());
+            Log.d("MAIN_LOOP_TEST","ChangeHp: the combatant: " + npc.getName() +" now has: " + npc.getHealth() + " health.");
             int maxHp = npc.getMaxHealth();
 
             currCombatantHp += change;
             if(currCombatantHp > maxHp)
                 currCombatantHp = maxHp;
 
-            txtViewCombatantHealth.setText(currCombatantHp);
-            txtViewChangeHealth.setText("0");
+            txtViewCombatantHealth.setText(Integer.toString(currCombatantHp));
+            editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
         }
     }
@@ -289,7 +336,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         }
         else{
             currCombatantHp = npc.getHealth();
-            int change = Integer.parseInt(txtViewChangeHealth.getText().toString());
+            int change = Integer.parseInt(editTextChangeHealth.getText().toString());
 
             currCombatantHp -= change;
             if(currCombatantHp < 0){
@@ -304,8 +351,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     Log.d("healHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
                 }
             }
-            txtViewCombatantHealth.setText(currCombatantHp);
-            txtViewChangeHealth.setText("0");
+            txtViewCombatantHealth.setText(Integer.toString(currCombatantHp));
+            editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
         }
     }
