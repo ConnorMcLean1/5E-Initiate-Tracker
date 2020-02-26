@@ -214,12 +214,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             pc = (Player) currCombatant;
             isPlayer = true;
             updateUIValues();
+            updateControls();
             Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else{
             npc = (NPC) currCombatant;
             isPlayer = false;
             updateUIValues();
+            updateControls();
             Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
@@ -249,12 +251,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             pc = (Player) currCombatant;
             isPlayer = true;
             updateUIValues();
+            updateControls();
             Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else {
             npc = (NPC) currCombatant;
             isPlayer = false;
             updateUIValues();
+            updateControls();
             Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
@@ -341,13 +345,23 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                 int overkill = Math.abs(currCombatantHp);
                 currCombatantHp = 0;
                 if(overkill >= npc.getMaxHealth()){ //If the current combatant would be outright killed by the damage
-                    //TODO the combatant is killed by RAW so the DM should be asked if they want to change their state to DEAD
-                    Log.d("healHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
+                    Toast.makeText(getApplicationContext(), "The combatant has been instantly killed by taking massive damage.", Toast.LENGTH_SHORT).show();
+                    npc.setCombatState(Combatant.combatantStates.DEAD);
+                    updateStatus();
+                    Log.d("damageHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
                 }
                 else{ //If the combatant is not outright killed the DM should be asked if they want to change their state to ALIVE, DEAD, UNCONSCIOUS or UNSTABLE
-                    //TODO the combatant is at 0 health, ask the DM what their state should be changed to. Note it could still be ALIVE if a creature has HP regen
-                    Log.d("healHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
+                    Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
+                    npc.setCombatState(Combatant.combatantStates.UNSTABLE);
+                    updateStatus();
+                    Log.d("damageHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
                 }
+            }
+            else if(currCombatantHp == 0){
+                Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
+                npc.setCombatState(Combatant.combatantStates.UNSTABLE);
+                updateStatus();
+                Log.d("damageHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
             }
 
             editTextChangeHealth.setText("0");
@@ -430,6 +444,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateStatus();
     }
 
+    private void updateControls(){
+        updateDeathSaveButtons();
+        updateHpControls();
+    }
+
     private void updateHealth(){
         if(isPlayer)
             txtViewCombatantHealth.setText(R.string.not_tracked);
@@ -449,6 +468,27 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCombatantName.setText(pc.getName());
         else
             txtViewCombatantName.setText(npc.getName());
+    }
+
+    private void updateDeathSaveButtons(){
+        if(isPlayer)
+            rollDeathSaveButton.setEnabled(false);
+        else
+            rollDeathSaveButton.setEnabled(true);
+
+    }
+
+    private void updateHpControls(){
+        if(isPlayer) {
+            damageHpButton.setEnabled(false);
+            healHpButton.setEnabled(false);
+            editTextChangeHealth.setEnabled(false);
+        }
+        else {
+            damageHpButton.setEnabled(true);
+            healHpButton.setEnabled(true);
+            editTextChangeHealth.setEnabled(true);
+        }
     }
     //endregion
 }
