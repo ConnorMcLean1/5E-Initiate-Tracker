@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent_linear_layout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".activities.CombatantsActivity">
+    tools:context=".activities.MonstersActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,29 +21,14 @@
 
     </ScrollView>
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddMonster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:layout_gravity="bottom|end"
-        app:fab_labelStyle="@style/custom_fab">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddMonster"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_size="mini"
-            app:fab_icon="@drawable/ic_add_white_24dp"
-            app:fab_title="Add Monster" />
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddPlayer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_size="mini"
-            app:fab_icon="@drawable/ic_person_add_white_24dp"
-            app:fab_title="Add Player" />
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        android:src="@drawable/ic_add_white_24dp" />
 
     <Button
         android:id="@+id/btnNext"
