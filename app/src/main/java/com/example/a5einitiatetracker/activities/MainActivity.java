@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         Button startButton = findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), CombatantsActivity.class);
+                Intent intent = new Intent(getBaseContext(), MonstersActivity.class);
                 startActivity(intent);
             }
         });
