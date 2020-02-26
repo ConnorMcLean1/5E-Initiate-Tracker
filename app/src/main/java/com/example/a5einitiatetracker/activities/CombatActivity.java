@@ -329,10 +329,19 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
             editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
+
+            if(npc.getCombatState() == Combatant.combatantStates.UNSTABLE && npc.getHealth() > 0){
+                npc.setCombatState(Combatant.combatantStates.ALIVE);
+                Toast.makeText(getApplicationContext(), "The combatant has been healed and is no longer unstable.", Toast.LENGTH_SHORT).show();
+                Log.d("healButton", "The combatant has been healed while unstable and is now alive");
+            }
+
+            updateStatus();
             updateHealth();
         }
     }
 
+    //TODO the below function should add functionality for an NPC to suffer an automatic death save failure if damaged while unstable
     private void damageHpOnClick(){
         int currCombatantHp;
         if(isPlayer){
