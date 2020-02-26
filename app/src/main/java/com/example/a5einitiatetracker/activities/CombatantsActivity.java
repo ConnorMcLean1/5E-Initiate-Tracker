@@ -88,7 +88,8 @@ public class CombatantsActivity extends AppCompatActivity {
     public void startCombat(View v) {
         getPlayers();
         getMonsterData();
-        //TODO: Add code to start new combat activity
+        Intent intent = new Intent(getBaseContext(), CombatActivity.class);
+        startActivity(intent);
     }
 
     // loads all the monster info and adds them to the combatant list, then sorts the list by

@@ -22,13 +22,11 @@ import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 
 public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    List<Combatant> combatantList;
+    List<Combatant> combatantsList;
     Combatant currCombatant, prevCombatant, nextCombatant;
     NPC npc;
     Player pc;
@@ -45,11 +43,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_combat);
 
         //region TEST VARIABLES
-        combatantList = new ArrayList<>();
-        combatantList.add(new Player(22, 5, Combatant.combatantStates.ALIVE, "Player1"));
-        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 1", 0));
-        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 2", 0));
-        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 3", 0));
+        combatantsList = CombatantsActivity.combatantsList;
+//        combatantList.add(new Player(22, 5, Combatant.combatantStates.ALIVE, "Player1"));
+//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 1", 0));
+//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 2", 0));
+//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 3", 0));
         //endregion
 
         currentIndex = 0;
@@ -125,7 +123,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         //region INITIAL SCREEN SETUP
         //TODO should change the below to find the first non-dead combatant most likely
         //Setup combat screen using the first combatant in the list
-        currCombatant = combatantList.get(0);
+        currCombatant = combatantsList.get(0);
         if (currCombatant instanceof Player) {
             isPlayer = true;
             pc = (Player) currCombatant;
@@ -178,7 +176,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(DialogInterface dialog, int i) {
                 gotoMainActivity();
-                combatantList.clear();
+                combatantsList.clear();
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -194,15 +192,15 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
 
         do { //Get the next combatant, skipping over dead ones
-            if (currentIndex+1 < combatantList.size()) { //Check if there is another combatant in the list. If yes, grab it out
+            if (currentIndex+1 < combatantsList.size()) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex++;
-                currCombatant = combatantList.get(currentIndex);
+                currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Next");
             }
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = 0;
                 count++;
-                currCombatant = combatantList.get(currentIndex);
+                currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Next Button. No next combatant. Reset to start of iterator");
             }
         } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
@@ -234,12 +232,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         do { //Get the next combatant, skipping over dead ones
             if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex--;
-                currCombatant = combatantList.get(currentIndex);
+                currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Previous");
             } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
-                currentIndex = combatantList.size()-1;
+                currentIndex = combatantsList.size()-1;
                 count++;
-                currCombatant = combatantList.get(currentIndex);
+                currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Previous Button. No previous combatant. Reset to end of iterator");
             }
         } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
@@ -484,11 +482,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void updatePreviews(){
 
-        if (currentIndex-1 >= 0) prevCombatant = combatantList.get(currentIndex-1);
-        else prevCombatant = combatantList.get(combatantList.size()-1);
+        if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
+        else prevCombatant = combatantsList.get(combatantsList.size()-1);
 
-        if (currentIndex+1 < combatantList.size()) nextCombatant = combatantList.get(currentIndex+1);
-        else nextCombatant = combatantList.get(0);
+        if (currentIndex+1 < combatantsList.size()) nextCombatant = combatantsList.get(currentIndex+1);
+        else nextCombatant = combatantsList.get(0);
 
         if (nextCombatant instanceof Player) {
             pc = (Player) nextCombatant;
