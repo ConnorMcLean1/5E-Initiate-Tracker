@@ -22,8 +22,6 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDisablePreview">true</item>
     </style>
-    
-    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert"/>
 
     <style name="custom_fab">
         <item name="android:background">@drawable/fab_label_background</item>

@@ -40,14 +40,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button testButton = findViewById(R.id.testButton);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), CombatActivity.class);
-                startActivity(intent);
-            }
-        });
-
 
 
         //On create grabs the list of Monsters from the API
