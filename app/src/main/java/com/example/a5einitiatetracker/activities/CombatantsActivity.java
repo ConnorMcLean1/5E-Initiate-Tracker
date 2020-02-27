@@ -85,16 +85,15 @@ public class CombatantsActivity extends AppCompatActivity {
         combatantsList.clear();
     }
 
-    public void startCombat(View v) {
-        getPlayers();
-        getMonsterData();
+    public void startCombat() {
         Intent intent = new Intent(getBaseContext(), CombatActivity.class);
         startActivity(intent);
     }
 
     // loads all the monster info and adds them to the combatant list, then sorts the list by
     // initiative
-    private void getMonsterData() {
+    public void getMonsterData(View v) {
+        getPlayers();
         final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         new Thread(new Runnable() {
             @Override
@@ -112,6 +111,8 @@ public class CombatantsActivity extends AppCompatActivity {
                 }
 
                 Collections.sort(combatantsList);
+                Log.v("LIST", combatantsList.toString());
+                startCombat();
             }
         }).start();
     }
