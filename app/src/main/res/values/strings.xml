@@ -8,6 +8,31 @@
     <string name="btn_next">Next</string>
     <string name="player_entry_name">Player Name</string>
     <string name="player_entry_initiative">Initiative</string>
+    <string name="combat_btn_next">Next</string>
+    <string name="combat_btn_previous">Previous</string>
+    <string name="combat_btn_end">End Combat</string>
+    <string name="combat_btn_death_saves">Roll Death Save</string>
+    <string name="combat_txt_name">Name</string>
+    <string name="combat_txt_hp">HP:</string>
+    <string name="combat_txt_status">Status:</string>
+    <string name="combat_txt_death_saves">Death Saves</string>
+    <string name="combat_txt_hint_hp">Health Points</string>
+    <string name="alive">Alive</string>
+    <string name="dead">Dead</string>
+    <string name="unstable">Unstable</string>
+    <string name="stable">Stable</string>
+    <string name="heal">Heal</string>
+    <string name="damage">Damage</string>
+    <string name="not_tracked">Not Tracked</string>
+    <string name="current_hp">Current HP:</string>
+
+    <!-- Note any changes to this array should also be reflected in the CombatActivity method getStatusSpinnerPosition-->
+    <string-array name="status_array">
+        <item>Alive</item>
+        <item>Dead</item>
+        <item>Stable</item>
+        <item>Unstable</item>
+    </string-array>
     <string name="connected">Connected to the Internet! Checking API.</string>
     <string name="not_connected">Not connected to the Internet! Closing app.</string>
     <string name="monster_entry_tag">monster_entry</string>

@@ -98,5 +98,3 @@ public class Combatant implements Comparable<Combatant> {
     //endregion
 
 }
-
-
