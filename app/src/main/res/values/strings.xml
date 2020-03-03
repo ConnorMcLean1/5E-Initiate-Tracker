@@ -25,6 +25,7 @@
     <string name="damage">Damage</string>
     <string name="not_tracked">Not Tracked</string>
     <string name="current_hp">Current HP:</string>
+    <string name="roll_death_save_button_tip">Rolls a death saving throw for the current NPC if they are unstable.</string>
 
     <!-- Note any changes to this array should also be reflected in the CombatActivity method getStatusSpinnerPosition-->
     <string-array name="status_array">

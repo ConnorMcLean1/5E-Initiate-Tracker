@@ -524,6 +524,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewDeathSaves.setVisibility(View.GONE);
 
         }
+        else if(npc.getCombatState() != Combatant.combatantStates.UNSTABLE){
+            rollDeathSaveButton.setEnabled(false);
+            rollDeathSaveButton.setVisibility(View.VISIBLE);
+            txtViewDeathSaves.setVisibility(View.VISIBLE);
+        }
         else {
             rollDeathSaveButton.setEnabled(true);
             rollDeathSaveButton.setVisibility(View.VISIBLE);
