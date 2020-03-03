@@ -110,7 +110,7 @@ public class CombatantsActivity extends AppCompatActivity {
                     }
                 }
 
-                Collections.sort(combatantsList);
+                Collections.sort(combatantsList, Collections.<Combatant>reverseOrder());
                 Log.v("LIST", combatantsList.toString());
                 startCombat();
             }
