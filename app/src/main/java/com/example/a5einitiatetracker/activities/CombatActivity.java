@@ -362,7 +362,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     updateStatus();
                     Log.d("damageHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
                 }
-                else{ //If the combatant is not outright killed the DM should be asked if they want to change their state to ALIVE, DEAD, UNCONSCIOUS or UNSTABLE
+                else if(npc.getCombatState() != Combatant.combatantStates.DEAD){ //If the combatant is not outright killed the DM should be asked if they want to change their state to ALIVE, DEAD, UNCONSCIOUS or UNSTABLE
                     Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
                     npc.setCombatState(Combatant.combatantStates.UNSTABLE);
                     updateStatus();
@@ -470,7 +470,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel.setVisibility(View.GONE);
         }
         else {
-            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
+            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth()));
             txtViewCombatantHealth.setVisibility(View.VISIBLE);
             txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
         }
