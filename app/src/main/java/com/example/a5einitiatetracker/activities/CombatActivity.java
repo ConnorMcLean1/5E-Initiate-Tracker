@@ -130,13 +130,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if (currCombatant instanceof Player) {
             isPlayer = true;
             pc = (Player) currCombatant;
-            updateUIValues();
         }
         else {
             isPlayer = false;
             npc = (NPC) currCombatant;
-            updateUIValues();
         }
+
+        updateUIValues();
+        updateControls();
 
         editTextChangeHealth.setText("0");
         //endregion
