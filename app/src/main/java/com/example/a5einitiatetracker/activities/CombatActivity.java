@@ -32,7 +32,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     Player pc;
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
-    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview, txtViewPrevCombatantPreview;
+    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview, txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
     EditText editTextChangeHealth;
     Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton, endCombatButton;
     Spinner statusSpinner;
@@ -58,6 +58,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewCombatantName = findViewById(R.id.txtViewCombatantName);
         txtViewNextCombatantPreview = findViewById(R.id.txtViewNextCombatantPreview);
         txtViewPrevCombatantPreview = findViewById(R.id.txtViewPrevCombatantPreview);
+        txtViewChangeHp = findViewById(R.id.txtViewCombatantHealth);
+        txtViewDeathSaves = findViewById(R.id.txtViewCombatantDeathSaves);
+        txtViewCurrentHpLabel = findViewById(R.id.txtViewCombatantCurrentHealthLabel);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
@@ -375,7 +378,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
             editTextChangeHealth.setText("0");
             npc.setHealth(currCombatantHp);
-            updateHealth();
+            updateUIValues();
+            updateControls();
         }
     }
     //endregion
@@ -460,10 +464,16 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void updateHealth(){
-        if(isPlayer)
+        if(isPlayer) {
             txtViewCombatantHealth.setText(R.string.not_tracked);
-        else
+            txtViewCombatantHealth.setVisibility(View.GONE);
+            txtViewCurrentHpLabel.setVisibility(View.GONE);
+        }
+        else {
             txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()));
+            txtViewCombatantHealth.setVisibility(View.VISIBLE);
+            txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
+        }
     }
 
     private void updateStatus(){
@@ -508,23 +518,43 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void updateDeathSaveButtons(){
-        if(isPlayer)
+        if(isPlayer) {
             rollDeathSaveButton.setEnabled(false);
-        else
+            rollDeathSaveButton.setVisibility(View.GONE);
+            txtViewDeathSaves.setVisibility(View.GONE);
+
+        }
+        else if(npc.getCombatState() != Combatant.combatantStates.UNSTABLE){
+            rollDeathSaveButton.setEnabled(false);
+            rollDeathSaveButton.setVisibility(View.VISIBLE);
+            txtViewDeathSaves.setVisibility(View.VISIBLE);
+        }
+        else {
             rollDeathSaveButton.setEnabled(true);
+            rollDeathSaveButton.setVisibility(View.VISIBLE);
+            txtViewDeathSaves.setVisibility(View.VISIBLE);
+        }
 
     }
 
     private void updateHpControls(){
         if(isPlayer) {
             damageHpButton.setEnabled(false);
+            damageHpButton.setVisibility(View.GONE);
             healHpButton.setEnabled(false);
+            healHpButton.setVisibility(View.GONE);
             editTextChangeHealth.setEnabled(false);
+            editTextChangeHealth.setVisibility(View.GONE);
+            txtViewChangeHp.setVisibility(View.GONE);
         }
         else {
             damageHpButton.setEnabled(true);
+            damageHpButton.setVisibility(View.VISIBLE);
             healHpButton.setEnabled(true);
+            healHpButton.setVisibility(View.VISIBLE);
             editTextChangeHealth.setEnabled(true);
+            editTextChangeHealth.setVisibility(View.VISIBLE);
+            txtViewChangeHp.setVisibility(View.VISIBLE);
         }
     }
     //endregion
