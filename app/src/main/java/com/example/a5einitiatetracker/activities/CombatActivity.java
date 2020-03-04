@@ -72,6 +72,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                 nextCombatantOnClick();
             }
         });
+
         //Button to go to the next combatant in initiative
         previousButton = findViewById(R.id.btnPrev);
         previousButton.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +136,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             isPlayer = false;
             npc = (NPC) currCombatant;
         }
-
         updateUIValues();
         updateControls();
 
@@ -272,36 +272,19 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, who should roll their own death saves. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
         } else {
             if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
-                NPC.deathSaveResult saveResult = npc.rolLDeathSave(0, 0); //TODO get the actual adv and bonus values from the DM
-                switch (saveResult) {
-                    case SUCCESS:
-                        npc.setNextDeathSave(saveResult);
-                        Toast.makeText(getApplicationContext(), "Rolled a success on a death save for: " + npc.getName() + ".", Toast.LENGTH_SHORT).show();
-                        break;
-                    case FAILURE:
-                        npc.setNextDeathSave(saveResult);
-                        Toast.makeText(getApplicationContext(), "Rolled a failure on a death save for: " + npc.getName() + ".", Toast.LENGTH_SHORT).show();
-                        break;
-                    case CRITICALSUCCESS:
-                        npc.resetDeathSaves();
-                        npc.setHealth(1);
-                        npc.setCombatState(Combatant.combatantStates.ALIVE);
-                        Toast.makeText(getApplicationContext(), "Rolled a critical success (natural 20) on a death save for: " + npc.getName() + ". They are alive and have 1 hp.", Toast.LENGTH_SHORT).show();
-                        break;
-                }
                 switch (npc.checkDeathSaves()) {
                     case UNSTABLE:
                         Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is still UNSTABLE.");
                         break;
                     case DEAD:
                         npc.resetDeathSaves();
-                        npc.setCombatState(Combatant.combatantStates.DEAD);
+                        statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.DEAD));
                         Toast.makeText(getApplicationContext(), "The current combatant has failed 3 death saves and is now dead.", Toast.LENGTH_SHORT).show();
                         Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is now DEAD.");
                         break;
                     case STABLE:
                         npc.resetDeathSaves();
-                        npc.setCombatState(Combatant.combatantStates.UNCONSCIOUS);
+                        statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.UNCONSCIOUS));
                         Toast.makeText(getApplicationContext(), "The current combatant has succeeded 3 death saves and is now stable.", Toast.LENGTH_SHORT).show();
                         Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now UNCONSCIOUS (Stable).");
                         break;
@@ -363,7 +346,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     updateStatus();
                     Log.d("damageHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
                 }
-                else if(npc.getCombatState() != Combatant.combatantStates.DEAD){ //If the combatant is not outright killed the DM should be asked if they want to change their state to ALIVE, DEAD, UNCONSCIOUS or UNSTABLE
+                else if(npc.getCombatState() == Combatant.combatantStates.UNSTABLE){
+                    npc.setNextDeathSave(NPC.deathSaveResult.FAILURE);
+                    npc.checkDeathSaves();
+                }
+                else if(npc.getCombatState() != Combatant.combatantStates.DEAD){
                     Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
                     npc.setCombatState(Combatant.combatantStates.UNSTABLE);
                     updateStatus();
@@ -422,6 +409,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     break;
             }
         }
+        updateUIValues();
+        updateControls();
     }
 
     @Override
