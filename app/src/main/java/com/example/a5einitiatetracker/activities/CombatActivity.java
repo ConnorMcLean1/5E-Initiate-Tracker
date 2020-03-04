@@ -272,23 +272,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, who should roll their own death saves. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
         } else {
             if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
-                switch (npc.checkDeathSaves()) {
-                    case UNSTABLE:
-                        Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is still UNSTABLE.");
-                        break;
-                    case DEAD:
-                        npc.resetDeathSaves();
-                        statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.DEAD));
-                        Toast.makeText(getApplicationContext(), "The current combatant has failed 3 death saves and is now dead.", Toast.LENGTH_SHORT).show();
-                        Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is now DEAD.");
-                        break;
-                    case STABLE:
-                        npc.resetDeathSaves();
-                        statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.UNCONSCIOUS));
-                        Toast.makeText(getApplicationContext(), "The current combatant has succeeded 3 death saves and is now stable.", Toast.LENGTH_SHORT).show();
-                        Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now UNCONSCIOUS (Stable).");
-                        break;
-                }
+                npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
+                checkDeathSaves();
                 updateUIValues();
                 Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
             } else {
@@ -348,7 +333,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                 }
                 else if(npc.getCombatState() == Combatant.combatantStates.UNSTABLE){
                     npc.setNextDeathSave(NPC.deathSaveResult.FAILURE);
-                    npc.checkDeathSaves();
+                    checkDeathSaves();
                 }
                 else if(npc.getCombatState() != Combatant.combatantStates.DEAD){
                     Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
@@ -548,6 +533,37 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             editTextChangeHealth.setEnabled(true);
             editTextChangeHealth.setVisibility(View.VISIBLE);
             txtViewChangeHp.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void checkDeathSaves(){
+        switch (npc.checkDeathSaves()) {
+            case UNSTABLE:
+                Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is still UNSTABLE.");
+                break;
+            case DEAD:
+                npc.resetDeathSaves();
+                npc.setStatus(Combatant.combatantStates.DEAD);
+                statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.DEAD));
+                Toast.makeText(getApplicationContext(), "The current combatant has failed 3 death saves and is now dead.", Toast.LENGTH_SHORT).show();
+                Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is now DEAD.");
+                break;
+            case STABLE:
+                npc.resetDeathSaves();
+                npc.setStatus(Combatant.combatantStates.UNCONSCIOUS);
+                statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.UNCONSCIOUS));
+                Toast.makeText(getApplicationContext(), "The current combatant has succeeded 3 death saves and is now stable.", Toast.LENGTH_SHORT).show();
+                Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now UNCONSCIOUS (Stable).");
+                break;
+            case ALIVE:
+                npc.resetDeathSaves();
+                npc.setStatus(Combatant.combatantStates.ALIVE);
+                npc.setHealth(1);
+                statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.ALIVE));
+                Toast.makeText(getApplicationContext(), "The current combatant has critically succeeded and is alive again.", Toast.LENGTH_SHORT).show();
+                Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now ALIVE.");
+                break;
+
         }
     }
     //endregion

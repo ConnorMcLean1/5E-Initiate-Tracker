@@ -13,7 +13,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     private final int MINDEATHSAVESUCCESS = 10;
     private int health;
     public enum deathSaveResult {SUCCESS, FAILURE, CRITICALSUCCESS, NONE}
-    public enum deathSaveState {UNSTABLE, DEAD, STABLE}
+    public enum deathSaveState {UNSTABLE, DEAD, STABLE, ALIVE}
     private deathSaveResult[] deathSaves;
     private Random roller = new Random();
     //endregion
@@ -147,6 +147,8 @@ public class NPC extends Combatant implements Comparable<Combatant> {
                 case FAILURE:
                     failures++;
                     break;
+                case CRITICALSUCCESS:
+                    return deathSaveState.ALIVE;
                 case NONE:
                     i = deathSaves.length; //break the loop
                     break;
