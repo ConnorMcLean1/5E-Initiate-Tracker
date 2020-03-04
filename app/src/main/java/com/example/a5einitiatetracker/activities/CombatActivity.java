@@ -28,8 +28,8 @@ import java.util.List;
 public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     List<Combatant> combatantsList;
     Combatant currCombatant, prevCombatant, nextCombatant;
-    NPC npc;
-    Player pc;
+    NPC npc, tempNpc;
+    Player pc, tempPc;
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview, txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
@@ -493,6 +493,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void updatePreviews(){
 
+        tempNpc = npc;
+        tempPc = pc;
+
         if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
         else prevCombatant = combatantsList.get(combatantsList.size()-1);
 
@@ -500,21 +503,21 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         else nextCombatant = combatantsList.get(0);
 
         if (nextCombatant instanceof Player) {
-            pc = (Player) nextCombatant;
-            txtViewNextCombatantPreview.setText(pc.getName());
+            tempPc = (Player) nextCombatant;
+            txtViewNextCombatantPreview.setText(tempPc.getName());
         }
         else {
-            npc = (NPC) nextCombatant;
-            txtViewNextCombatantPreview.setText(npc.getName());
+            tempNpc = (NPC) nextCombatant;
+            txtViewNextCombatantPreview.setText(tempNpc.getName());
         }
 
         if (prevCombatant instanceof Player) {
-            pc = (Player) prevCombatant;
-            txtViewPrevCombatantPreview.setText(pc.getName());
+            tempPc = (Player) prevCombatant;
+            txtViewPrevCombatantPreview.setText(tempPc.getName());
         }
         else {
-            npc = (NPC) prevCombatant;
-            txtViewPrevCombatantPreview.setText(npc.getName());
+            tempNpc = (NPC) prevCombatant;
+            txtViewPrevCombatantPreview.setText(tempNpc.getName());
         }
     }
 
