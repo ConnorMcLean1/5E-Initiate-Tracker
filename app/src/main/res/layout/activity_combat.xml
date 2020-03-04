@@ -90,6 +90,7 @@
         android:layout_height="61dp"
         android:scaleType="centerInside"
         android:src="@drawable/button_next"
+        android:background="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.882"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,22 +100,22 @@
         android:id="@+id/btnPrev"
         android:layout_width="114dp"
         android:layout_height="61dp"
-        android:layout_marginTop="436dp"
+        android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/button_prev"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btnEndCombat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.117"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantName"
-        app:layout_constraintVertical_bias="0.019" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnEndCombat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="114dp"
+        android:layout_height="61dp"
         android:layout_marginBottom="28dp"
-        android:text="@string/combat_btn_end"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:src="@drawable/button_end_combat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -141,23 +142,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantDeathSaves" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnHpHeal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editTxtHealth"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantCurrentHealth"
-        android:text="@string/heal" />
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="4dp"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:src="@drawable/button_heal"
+        app:layout_constraintLeft_toRightOf="@+id/editTxtHealth"
+        app:layout_constraintTop_toTopOf="@id/editTxtHealth"
+        tools:layout_editor_absoluteY="189dp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnHpDamage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/damage"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:src="@drawable/button_damage"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toEndOf="@+id/editTxtHealth"
-        app:layout_constraintTop_toBottomOf="@+id/editTxtHealth" />
+        app:layout_constraintTop_toBottomOf="@+id/btnHpHeal" />
 
     <Spinner
         android:id="@+id/combatantStatusSpinner"
