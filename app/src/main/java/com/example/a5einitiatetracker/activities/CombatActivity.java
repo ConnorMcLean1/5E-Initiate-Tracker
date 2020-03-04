@@ -1,14 +1,17 @@
 package com.example.a5einitiatetracker.activities;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +26,9 @@ import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     List<Combatant> combatantsList;
@@ -32,9 +37,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     Player pc;
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
-    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview, txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
+    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
+            txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
     EditText editTextChangeHealth;
-    Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton, endCombatButton;
+    Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton,
+            endCombatButton, dealDamageButton;
     Spinner statusSpinner;
 
     @Override
@@ -114,6 +121,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
+        dealDamageButton = findViewById(R.id.btnDamage);
+        dealDamageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dealNPCDamage();
+            }
+        });
+
         //combatantStatus Spinner
         statusSpinner = findViewById(R.id.combatantStatusSpinner);
         ArrayAdapter<CharSequence> statusSpinnerAdapter = ArrayAdapter.createFromResource(this,
@@ -169,6 +184,21 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     //region BUTTON METHODS
+    private void dealNPCDamage() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.npc_combatant_dialogue_layout);
+        dialog.setTitle("Select NPC(s) to Damage");
+        List<NPC> npcs = combatantsList
+                .stream()
+                .filter(p -> p instanceof NPC)
+                .map(p -> (NPC)p)
+                .collect(Collectors.toList());
+        ListView npcListView = dialog.findViewById(R.id.lvCombatantsNPC);
+        ArrayAdapter<NPC> adapter = new ArrayAdapter<NPC>(this, android.R.layout.simple_list_item_1, npcs);
+        npcListView.setAdapter(adapter);
+        dialog.show();
+    }
+
     private void endCombatOnClick(){
         combatComplete = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
