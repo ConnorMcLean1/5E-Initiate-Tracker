@@ -287,27 +287,37 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if(isPlayer){
             Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
         }
-        else{
-            currCombatantHp = npc.getHealth();
-            int change = Integer.parseInt(editTextChangeHealth.getText().toString());
-            Log.d("MAIN_LOOP_TEST","ChangeHp: the combatant: " + npc.getName() +" now has: " + npc.getHealth() + " health.");
-            int maxHp = npc.getMaxHealth();
-
-            currCombatantHp += change;
-            if(currCombatantHp > maxHp)
-                currCombatantHp = maxHp;
-
+        else if(npc.getCombatState() == Combatant.combatantStates.DEAD){
+            Toast.makeText(getApplicationContext(), "The combatant is dead and cannot be healed.", Toast.LENGTH_SHORT).show();
             editTextChangeHealth.setText("0");
-            npc.setHealth(currCombatantHp);
+            updateControls();
+            updateUIValues();
+        }
+        else{
+            int change = Integer.parseInt(editTextChangeHealth.getText().toString());
 
-            if(npc.getCombatState() == Combatant.combatantStates.UNSTABLE && npc.getHealth() > 0){
-                npc.setCombatState(Combatant.combatantStates.ALIVE);
-                Toast.makeText(getApplicationContext(), "The combatant has been healed and is no longer unstable.", Toast.LENGTH_SHORT).show();
-                Log.d("healButton", "The combatant has been healed while unstable and is now alive");
+            if(change > 0) {
+                currCombatantHp = npc.getHealth();
+                int maxHp = npc.getMaxHealth();
+
+                currCombatantHp += change;
+                if (currCombatantHp > maxHp)
+                    currCombatantHp = maxHp;
+
+                editTextChangeHealth.setText("0");
+                npc.setHealth(currCombatantHp);
+                Log.d("MAIN_LOOP_TEST", "ChangeHp: the combatant: " + npc.getName() + " now has: " + npc.getHealth() + " health.");
+
+                if ((npc.getCombatState() == Combatant.combatantStates.UNSTABLE || npc.getCombatState() == Combatant.combatantStates.UNCONSCIOUS) && npc.getHealth() > 0) {
+                    npc.setCombatState(Combatant.combatantStates.ALIVE);
+                    statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.ALIVE));
+                    Toast.makeText(getApplicationContext(), "The combatant has been healed and is no longer unstable.", Toast.LENGTH_SHORT).show();
+                    Log.d("healButton", "The combatant has been healed while unstable and is now alive");
+                }
             }
 
-            updateStatus();
-            updateHealth();
+            updateControls();
+            updateUIValues();
         }
     }
 
