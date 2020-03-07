@@ -1,12 +1,10 @@
 package com.example.a5einitiatetracker.activities;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,14 +22,15 @@ import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
+import com.example.a5einitiatetracker.dialoags.CombatantsDialog;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     List<Combatant> combatantsList;
+    public static List<NPC> npcs;
     Combatant currCombatant, prevCombatant, nextCombatant;
     NPC npc, tempNpc;
     Player pc, tempPc;
@@ -125,7 +124,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         dealDamageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dealNPCDamage();
+                openNPCDialog();
             }
         });
 
@@ -185,19 +184,15 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     //region BUTTON METHODS
-    private void dealNPCDamage() {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.npc_combatant_dialogue_layout);
-        dialog.setTitle("Select NPC(s) to Damage");
-        List<NPC> npcs = combatantsList
+    private void openNPCDialog() {
+        npcs = combatantsList
                 .stream()
                 .filter(p -> p instanceof NPC)
                 .map(p -> (NPC)p)
                 .collect(Collectors.toList());
-        ListView npcListView = dialog.findViewById(R.id.lvCombatantsNPC);
-        ArrayAdapter<NPC> adapter = new ArrayAdapter<NPC>(this, android.R.layout.simple_list_item_1, npcs);
-        npcListView.setAdapter(adapter);
-        dialog.show();
+        Log.v("NPCs", npcs.toString());
+        CombatantsDialog dialog = new CombatantsDialog();
+        dialog.show(getSupportFragmentManager(), "combatants dialog");
     }
 
     private void endCombatOnClick(){

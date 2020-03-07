@@ -53,7 +53,7 @@ public class CombatantsActivity extends AppCompatActivity {
         }
 
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<   >(this,
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, monsters);
 
         FloatingActionButton addMonsterButton = findViewById(R.id.fabAddMonster);
