@@ -28,7 +28,6 @@ public class CombatantsDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.npc_combatant_dialog_layout, null);
         ListView npcListView = view.findViewById(R.id.npcListView);
-        // TODO: load NPCs into ListView for selection
         NPCsAdapter adapter = new NPCsAdapter(Objects.requireNonNull(this.getContext()), npcArrList);
         npcListView.setAdapter(adapter);
         builder.setView(view)
@@ -46,8 +45,6 @@ public class CombatantsDialog extends DialogFragment {
                     }
                 });
 
-        Button btnDamage = view.findViewById(R.id.btnHpDamage);
-        Button btnHeal = view.findViewById(R.id.btnHpHeal);
         return builder.create();
     }
 }
