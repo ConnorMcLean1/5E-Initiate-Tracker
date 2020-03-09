@@ -24,11 +24,12 @@ import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.example.a5einitiatetracker.dialoags.CombatantsDialog;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, CombatantsDialog.CombatantsDialogListener {
     List<Combatant> combatantsList;
     public static List<NPC> npcs;
     Combatant currCombatant, prevCombatant, nextCombatant;
@@ -198,8 +199,19 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     .collect(Collectors.toList());
             Log.v("NPCs", npcs.toString());
             CombatantsDialog dialog = new CombatantsDialog();
-            dialog.setDamageAmount(dmg);
             dialog.show(getSupportFragmentManager(), "combatants dialog");
+            dialog.setDamage(dmg);
+        }
+    }
+
+    @Override
+    public void returnCombatantsList(ArrayList<NPC> checkedNPCs, int damage) {
+        for (int i = 0; i < npcs.size(); i++) {
+            for (int j = 0; j < checkedNPCs.size(); j++) {
+                if (npcs.get(i).equals(checkedNPCs.get(j))) {
+                    //TODO: add function to deal damage
+                }
+            }
         }
     }
 
