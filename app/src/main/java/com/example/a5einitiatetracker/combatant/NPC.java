@@ -13,7 +13,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     private final int MINDEATHSAVESUCCESS = 10;
     private int health;
     public enum deathSaveResult {SUCCESS, FAILURE, CRITICALSUCCESS, NONE}
-    public enum deathSaveState {UNSTABLE, DEAD, STABLE}
+    public enum deathSaveState {UNSTABLE, DEAD, STABLE, ALIVE}
     private deathSaveResult[] deathSaves;
     private Random roller = new Random();
     //endregion
@@ -99,14 +99,17 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     }
 
     //Rolls a death saving throw and returns the rolled value between 1 and 20
-    public deathSaveResult rolLDeathSave(int adv, int bonus){
+    public void rollDeathSave(int adv, int bonus){
         int temp = roller.nextInt(20) + 1;
         int roll;
+        deathSaveResult result;
 
         if(adv == ADVANTAGE){
             int temp2 = roller.nextInt(20) + 1;
-            if(temp == 20 || temp2 == 20)
-                return deathSaveResult.CRITICALSUCCESS;
+            if(temp == 20 || temp2 == 20) {
+                setNextDeathSave(deathSaveResult.CRITICALSUCCESS);
+                return;
+            }
             else if(temp > temp2)
                 roll = temp + bonus;
             else
@@ -114,8 +117,10 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         }
         else if (adv == DISADVANTAGE){
             int temp2 = roller.nextInt(20) + 1;
-            if(temp == 20 && temp2 == 20)
-                return deathSaveResult.CRITICALSUCCESS;
+            if(temp == 20 && temp2 == 20) {
+                setNextDeathSave(deathSaveResult.CRITICALSUCCESS);
+                return;
+            }
             else if(temp < temp2)
                 roll = temp + bonus;
             else
@@ -125,9 +130,9 @@ public class NPC extends Combatant implements Comparable<Combatant> {
             roll = temp + bonus;
 
         if(roll < MINDEATHSAVESUCCESS)
-            return deathSaveResult.FAILURE;
+            setNextDeathSave(deathSaveResult.FAILURE);
         else
-            return deathSaveResult.SUCCESS;
+            setNextDeathSave(deathSaveResult.SUCCESS);
     }
 
     public deathSaveState checkDeathSaves(){
@@ -142,6 +147,8 @@ public class NPC extends Combatant implements Comparable<Combatant> {
                 case FAILURE:
                     failures++;
                     break;
+                case CRITICALSUCCESS:
+                    return deathSaveState.ALIVE;
                 case NONE:
                     i = deathSaves.length; //break the loop
                     break;
