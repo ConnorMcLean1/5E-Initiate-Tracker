@@ -13,11 +13,14 @@ public class Monster {
     private Integer hp;
     @SerializedName("dexterity")
     private Integer dex;
+    @SerializedName("armor_class")
+    private Integer ac;
 
-    public Monster(String name, Integer hp, Integer dex) {
+    public Monster(String name, Integer hp, Integer dex, Integer ac) {
         this.name = name;
         this.hp = hp;
         this.dex = dex;
+        this.ac = ac;
     }
     //endregion
 
@@ -45,5 +48,14 @@ public class Monster {
     public void setDex(Integer dex) {
         this.dex = dex;
     }
+
+    public Integer getAc() {
+        return ac;
+    }
+
+    public void setAc(Integer ac) {
+        this.ac = ac;
+    }
+
     //endregion
 }
