@@ -1,5 +1,9 @@
 package com.example.a5einitiatetracker.combatant;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import java.util.Random;
@@ -173,6 +177,36 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public void resetDeathSaves(){
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
+
+    public boolean damageNpc(int damage, Context context){
+        health -= damage;
+        if(health < 0){
+            int overkill = Math.abs(health);
+            health = 0;
+            if(overkill >= maxHealth){ //If the current combatant would be outright killed by the damage
+                Toast.makeText(context, "The combatant has been instantly killed by taking massive damage.", Toast.LENGTH_SHORT).show();
+                status = Combatant.combatantStates.DEAD;
+                Log.d("damageHpClick", "The combatant: " + name + " is killed by RAW.");
+            }
+            else if(status == Combatant.combatantStates.UNSTABLE){
+                setNextDeathSave(NPC.deathSaveResult.FAILURE);
+                return true;
+            }
+            else if(status != Combatant.combatantStates.DEAD){
+                Toast.makeText(context, "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
+                status = Combatant.combatantStates.UNSTABLE;
+                Log.d("damageHpClick", "The combatant: " + name + " is at 0 HP");
+            }
+        }
+        else if(health == 0){
+            Toast.makeText(context, "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
+            status = Combatant.combatantStates.UNSTABLE;
+            Log.d("damageHpClick", "The combatant: " + name + " is at 0 HP");
+        }
+        return false;
+    }
+
+
 
     //endregion
 
