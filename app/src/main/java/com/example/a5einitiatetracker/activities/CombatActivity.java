@@ -273,9 +273,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         } else {
             if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
                 npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
+                Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
                 checkDeathSaves();
                 updateUIValues();
-                Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
             } else {
                 Toast.makeText(getApplicationContext(), "The current combatant is not unstable (unconscious) and cannot make death saving throws!.", Toast.LENGTH_SHORT).show();
             }
@@ -329,8 +329,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
         }
         else{
-            int change = Integer.parseInt(editTextChangeHealth.getText().toString());
-            boolean checkSaves = npc.damageNpc(change, getApplicationContext());
+            int damage;
+            try{
+                damage = Integer.parseInt(editTextChangeHealth.getText().toString());
+            }
+            catch(NumberFormatException e){
+                damage = 0;
+            }
+            boolean checkSaves = npc.damageNpc(damage, getApplicationContext());
             if(checkSaves)
                 checkDeathSaves();
 
