@@ -38,7 +38,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
-    EditText editTextChangeHealth;
+    EditText editTextChangeHealth, editTextDamageAmount;
     Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton,
             endCombatButton, dealDamageButton;
     Spinner statusSpinner;
@@ -70,6 +70,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
+        editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
 
         //Button to go to the previous combatant in initiative
         nextButton = findViewById(R.id.btnNext);
@@ -185,14 +186,21 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     //region BUTTON METHODS
     private void openNPCDialog() {
-        npcs = combatantsList
-                .stream()
-                .filter(p -> p instanceof NPC)
-                .map(p -> (NPC)p)
-                .collect(Collectors.toList());
-        Log.v("NPCs", npcs.toString());
-        CombatantsDialog dialog = new CombatantsDialog();
-        dialog.show(getSupportFragmentManager(), "combatants dialog");
+        if (editTextDamageAmount.getText().toString().equals("")) {
+            Toast.makeText(this, "Enter damage to deal", Toast.LENGTH_SHORT).show();
+        } else {
+            int dmg = Integer.parseInt(editTextDamageAmount.getText().toString());
+            npcs = combatantsList
+                    .stream()
+                    .filter(p -> p instanceof NPC)
+                    .filter(p -> p.getCombatState() != NPC.combatantStates.DEAD)
+                    .map(p -> (NPC)p)
+                    .collect(Collectors.toList());
+            Log.v("NPCs", npcs.toString());
+            CombatantsDialog dialog = new CombatantsDialog();
+            dialog.setDamageAmount(dmg);
+            dialog.show(getSupportFragmentManager(), "combatants dialog");
+        }
     }
 
     private void endCombatOnClick(){
@@ -346,7 +354,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         }
     }
 
-    //TODO the below function should add functionality for an NPC to suffer an automatic death save failure if damaged while unstable
     private void damageHpOnClick(){
         int currCombatantHp;
         if(isPlayer){
@@ -466,11 +473,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateName();
         updateStatus();
         updatePreviews();
+        updateDamageControls();
     }
 
     private void updateControls(){
         updateDeathSaveButtons();
         updateHpControls();
+        updateDamageControls();
     }
 
     private void updateHealth(){
@@ -483,6 +492,16 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth()));
             txtViewCombatantHealth.setVisibility(View.VISIBLE);
             txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateDamageControls() {
+        if (isPlayer) {
+            editTextDamageAmount.setVisibility(View.VISIBLE);
+            dealDamageButton.setVisibility(View.VISIBLE);
+        } else {
+            editTextDamageAmount.setVisibility(View.GONE);
+            dealDamageButton.setVisibility(View.GONE);
         }
     }
 

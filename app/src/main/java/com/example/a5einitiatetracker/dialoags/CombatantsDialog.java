@@ -20,6 +20,7 @@ import java.util.Objects;
 
 public class CombatantsDialog extends DialogFragment {
     private ArrayList<NPC> npcArrList = new ArrayList<>(CombatActivity.npcs);
+    int damageAmount;
 
 
     @Override
@@ -46,5 +47,9 @@ public class CombatantsDialog extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    public void setDamageAmount(int damageAmount) {
+        this.damageAmount = damageAmount;
     }
 }
