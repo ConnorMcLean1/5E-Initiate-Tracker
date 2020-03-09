@@ -318,9 +318,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         } else {
             if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
                 npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
+                Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
                 checkDeathSaves();
                 updateUIValues();
-                Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
             } else {
                 Toast.makeText(getApplicationContext(), "The current combatant is not unstable (unconscious) and cannot make death saving throws!.", Toast.LENGTH_SHORT).show();
             }
@@ -362,6 +362,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             }
 
             updateControls();
+            updateControls();
             updateUIValues();
         }
     }
@@ -372,39 +373,18 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
         }
         else{
-            currCombatantHp = npc.getHealth();
-            int change = Integer.parseInt(editTextChangeHealth.getText().toString());
-
-            currCombatantHp -= change;
-            if(currCombatantHp < 0){
-                int overkill = Math.abs(currCombatantHp);
-                currCombatantHp = 0;
-                if(overkill >= npc.getMaxHealth()){ //If the current combatant would be outright killed by the damage
-                    Toast.makeText(getApplicationContext(), "The combatant has been instantly killed by taking massive damage.", Toast.LENGTH_SHORT).show();
-                    npc.setCombatState(Combatant.combatantStates.DEAD);
-                    updateStatus();
-                    Log.d("damageHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
-                }
-                else if(npc.getCombatState() == Combatant.combatantStates.UNSTABLE){
-                    npc.setNextDeathSave(NPC.deathSaveResult.FAILURE);
-                    checkDeathSaves();
-                }
-                else if(npc.getCombatState() != Combatant.combatantStates.DEAD){
-                    Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
-                    npc.setCombatState(Combatant.combatantStates.UNSTABLE);
-                    updateStatus();
-                    Log.d("damageHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
-                }
+            int damage;
+            try{
+                damage = Integer.parseInt(editTextChangeHealth.getText().toString());
             }
-            else if(currCombatantHp == 0){
-                Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
-                npc.setCombatState(Combatant.combatantStates.UNSTABLE);
-                updateStatus();
-                Log.d("damageHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
+            catch(NumberFormatException e){
+                damage = 0;
             }
+            boolean checkSaves = npc.damageNpc(damage, getApplicationContext());
+            if(checkSaves)
+                checkDeathSaves();
 
             editTextChangeHealth.setText("0");
-            npc.setHealth(currCombatantHp);
             updateUIValues();
             updateControls();
         }
