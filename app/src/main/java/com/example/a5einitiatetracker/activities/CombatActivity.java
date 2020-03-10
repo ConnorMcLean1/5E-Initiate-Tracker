@@ -158,6 +158,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+    }
+
 
     private boolean checkIfUnstable(NPC npc){
         return (npc.getStatus() == Combatant.combatantStates.UNSTABLE);
