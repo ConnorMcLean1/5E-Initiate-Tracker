@@ -3,12 +3,16 @@ package com.example.a5einitiatetracker.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,22 +25,28 @@ import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
+import com.example.a5einitiatetracker.dialogs.CombatantsDialog;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
-public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, CombatantsDialog.CombatantsDialogListener {
     List<Combatant> combatantsList;
+    public static List<NPC> npcs;
     Combatant currCombatant, prevCombatant, nextCombatant;
-    NPC npc, tempNpc;
-    Player pc, tempPc;
+    NPC npc, previewNpc;
+    Player pc, previewPc;
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
             txtViewCurrentHpLabel, txtViewInitiative;
-    EditText editTextChangeHealth;
-    Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton, endCombatButton;
+    EditText editTextChangeHealth, editTextDamageAmount;
+    Button rollDeathSaveButton, dealDamageButton;
+    ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
 
     @Override
@@ -67,6 +77,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
+        editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
 
         //Button to go to the previous combatant in initiative
         nextButton = findViewById(R.id.btnNext);
@@ -115,6 +126,38 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         endCombatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             endCombatOnClick();
+            }
+        });
+
+        // Button to deal damage from player screen
+        dealDamageButton = findViewById(R.id.btnDamage);
+        dealDamageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openNPCDialog();
+            }
+        });
+
+        // Edittext for entering damage amount to deal
+        editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
+        editTextDamageAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editTextDamageAmount.getText().toString().length() > 0) {
+                    dealDamageButton.setEnabled(true);
+                } else {
+                    dealDamageButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -178,6 +221,37 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     //region BUTTON METHODS
+    private void openNPCDialog() {
+        if (editTextDamageAmount.getText().toString().equals("")) {
+            Toast.makeText(this, "Enter damage to deal", Toast.LENGTH_SHORT).show();
+        } else {
+            int dmg = Integer.parseInt(editTextDamageAmount.getText().toString());
+            npcs = combatantsList
+                    .stream()
+                    .filter(p -> p instanceof NPC)
+                    .filter(p -> p.getCombatState() != NPC.combatantStates.DEAD)
+                    .map(p -> (NPC)p)
+                    .collect(Collectors.toList());
+            Log.v("NPCs", npcs.toString());
+            CombatantsDialog dialog = new CombatantsDialog();
+            dialog.show(getSupportFragmentManager(), "combatants dialog");
+            dialog.setDamage(dmg);
+        }
+    }
+
+    @Override
+    public void returnCombatantsList(ArrayList<NPC> checkedNPCs, int damage) {
+        for (int i = 0; i < npcs.size(); i++) {
+            for (int j = 0; j < checkedNPCs.size(); j++) {
+                if (npcs.get(i).equals(checkedNPCs.get(j))) {
+                    npcs.get(i).damageNpc(damage, this);
+                }
+            }
+        }
+        editTextDamageAmount.setText("");
+        Toast.makeText(this, "Damage dealt!", Toast.LENGTH_SHORT).show();
+    }
+
     private void endCombatOnClick(){
         combatComplete = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
@@ -320,7 +394,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         }
     }
 
-    //TODO the below function should add functionality for an NPC to suffer an automatic death save failure if damaged while unstable
     private void damageHpOnClick(){
         //Setup the damage variable and grab it from the edit text. If the an invalid entry exists,
         //simply default to 0 so there is no change
@@ -419,11 +492,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateStatus();
         updatePreviews();
         updateInitiative();
+        updateDamageControls();
     }
 
     private void updateControls(){
         updateDeathSaveButtons();
         updateHpControls();
+        updateDamageControls();
     }
 
     private void updateInitiative(){
@@ -442,10 +517,26 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel.setVisibility(View.GONE);
         }
         else {
+            txtViewCombatantHealth.setText(
+                    String.format(Locale.CANADA,
+                            "%d / %d",
+                            npc.getHealth(), npc.getMaxHealth())
+            );
             String temp = Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth());
             txtViewCombatantHealth.setText(temp);
             txtViewCombatantHealth.setVisibility(View.VISIBLE);
             txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateDamageControls() {
+        if (isPlayer) {
+            dealDamageButton.setEnabled(false);
+            editTextDamageAmount.setVisibility(View.VISIBLE);
+            dealDamageButton.setVisibility(View.VISIBLE);
+        } else {
+            editTextDamageAmount.setVisibility(View.GONE);
+            dealDamageButton.setVisibility(View.GONE);
         }
     }
 
@@ -465,31 +556,31 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void updatePreviews(){
 
-        tempNpc = npc;
-        tempPc = pc;
-
-        if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
-        else prevCombatant = combatantsList.get(combatantsList.size()-1);
+        previewNpc = npc;
+        previewPc = pc;
 
         if (currentIndex+1 < combatantsList.size()) nextCombatant = combatantsList.get(currentIndex+1);
         else nextCombatant = combatantsList.get(0);
 
+        if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
+        else prevCombatant = combatantsList.get(combatantsList.size()-1);
+
         if (nextCombatant instanceof Player) {
-            tempPc = (Player) nextCombatant;
-            txtViewNextCombatantPreview.setText(tempPc.getName());
+            previewPc = (Player) nextCombatant;
+            txtViewNextCombatantPreview.setText(previewPc.getName());
         }
         else {
-            tempNpc = (NPC) nextCombatant;
-            txtViewNextCombatantPreview.setText(tempNpc.getName());
+            previewNpc = (NPC) nextCombatant;
+            txtViewNextCombatantPreview.setText(previewNpc.getName());
         }
 
         if (prevCombatant instanceof Player) {
-            tempPc = (Player) prevCombatant;
-            txtViewPrevCombatantPreview.setText(tempPc.getName());
+            previewPc = (Player) prevCombatant;
+            txtViewPrevCombatantPreview.setText(previewPc.getName());
         }
         else {
-            tempNpc = (NPC) prevCombatant;
-            txtViewPrevCombatantPreview.setText(tempNpc.getName());
+            previewNpc = (NPC) prevCombatant;
+            txtViewPrevCombatantPreview.setText(previewNpc.getName());
         }
     }
 
