@@ -1,5 +1,6 @@
 package com.example.a5einitiatetracker.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -41,6 +42,7 @@ public class CombatantsActivity extends AppCompatActivity {
     HashMap<String, String> monsterNames;
     public static List<Combatant> combatantsList = new ArrayList<>();
     private boolean isValid;
+    StringBuilder sb = new StringBuilder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,9 +114,9 @@ public class CombatantsActivity extends AppCompatActivity {
         isValid = true;
         checkMonsterQuantityValidity();
         checkMonstersValidity();
+        final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         if (isValid) {
             getPlayers();
-            final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -136,7 +138,12 @@ public class CombatantsActivity extends AppCompatActivity {
                 }
             }).start();
         } else {
-            Toast.makeText(this.getApplicationContext(), "One of the monsters is not valid. Please ensure all fields are valid before continuing.", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(sb.toString())
+                    .setTitle("Errors");
+            AlertDialog dialog = builder.show();
+            sb = new StringBuilder();
+            //Toast.makeText(this.getApplicationContext(), "One of the monsters is not valid. Please ensure all fields are valid before continuing.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -172,22 +179,18 @@ public class CombatantsActivity extends AppCompatActivity {
             if (!view.getTag().toString().equals("player_entry")) {
                 num = view.findViewById(R.id.editTxtMonsterNumber);
                 name = view.findViewById(R.id.autoTxtViewMonsters);
-                m.put(
-                        name.getText().toString(),
-                        Integer.parseInt(num.getText().toString())
-                );
+                if (m.containsKey(name.getText().toString())) {
+                    isValid = false;
+                    sb.append(String.format("The monster %s has already been added, please delete one.\n", name.getText().toString()));
+                } else {
+                    m.put(
+                            name.getText().toString(),
+                            Integer.parseInt(num.getText().toString())
+                    );
+                }
             }
         }
-        // for debugging
-        for (Map.Entry<String, Integer> entry : m.entrySet()) {
-            Log.v("MAP", String.format("Key: %s - Value: %s", entry.getKey(), entry.getValue()));
-        }
-
         return m;
-    }
-
-    public void onDelete(View v) {
-        parentLinearLayout.removeView((View) v.getParent());
     }
 
     private void checkMonstersValidity() {
@@ -204,6 +207,7 @@ public class CombatantsActivity extends AppCompatActivity {
                     name.setBackgroundColor(Color.parseColor("#ffffff"));
                 } else {
                     name.setBackgroundColor(Color.parseColor("#f54242"));
+                    sb.append(String.format("%s is not a valid monster, please select a valid monster.\n", monster));
                     isValid = false;
                 }
             }
@@ -214,21 +218,28 @@ public class CombatantsActivity extends AppCompatActivity {
         int combatantCount = parentLinearLayout.getChildCount();
         View view;
         EditText num;
+        EditText name;
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
             if (!view.getTag().toString().equals("player_entry")) {
                 if (!view.getTag().toString().equals("player_entry")) {
+                    name = view.findViewById(R.id.autoTxtViewMonsters);
                     num = view.findViewById(R.id.editTxtMonsterNumber);
                     try {
                         Integer.parseInt(num.getText().toString());
                         num.setBackgroundColor(Color.parseColor("#ffffff"));
                     } catch (NumberFormatException e) {
                         num.setBackgroundColor(Color.parseColor("#f54242"));
+                        sb.append(String.format("%s must have a quantity entered.\n", name.getText().toString()));
                         isValid = false;
                     }
                 }
             }
-
         }
     }
+
+    public void onDelete(View v) {
+        parentLinearLayout.removeView((View) v.getParent());
+    }
+
 }
