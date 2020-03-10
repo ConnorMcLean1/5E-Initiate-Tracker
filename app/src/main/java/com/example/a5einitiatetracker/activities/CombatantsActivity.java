@@ -94,6 +94,8 @@ public class CombatantsActivity extends AppCompatActivity {
     // loads all the monster info and adds them to the combatant list, then sorts the list by
     // initiative
     public void getMonsterData(View v) {
+        if(!combatantsList.isEmpty())
+            combatantsList.clear();
         if(parentLinearLayout.getChildCount() == 0){
             Toast.makeText(this.getApplicationContext(), "Please add at least one combatant to the combat to start it!", Toast.LENGTH_SHORT).show();
             return;
