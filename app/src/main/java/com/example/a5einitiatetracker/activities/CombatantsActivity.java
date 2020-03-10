@@ -40,7 +40,7 @@ public class CombatantsActivity extends AppCompatActivity {
     private LinearLayout parentLinearLayout;
     HashMap<String, String> monsterNames;
     public static List<Combatant> combatantsList = new ArrayList<>();
-    private static boolean validCombatants;
+    private boolean isValid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,45 +102,17 @@ public class CombatantsActivity extends AppCompatActivity {
     // initiative
     public void getMonsterData(View v) {
         //If the combatants list is already created then clear it before adding new elements to it
-        if(!combatantsList.isEmpty())
+        if (!combatantsList.isEmpty())
             combatantsList.clear();
         //If the user tries to start an empty combat, prevent it and display a message
-        if(parentLinearLayout.getChildCount() == 0){
+        if (parentLinearLayout.getChildCount() == 0) {
             Toast.makeText(this.getApplicationContext(), "Please add at least one combatant to the combat to start it!", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        int combatantCount = parentLinearLayout.getChildCount();
-        View view;
-        AutoCompleteTextView name;
-        EditText num;
-        int number;
-        validCombatants = true;
-        for (int i = 0; i < combatantCount; i++) {
-            view = parentLinearLayout.getChildAt(i);
-            if (!view.getTag().toString().equals("player_entry")) {
-                num = view.findViewById(R.id.editTxtMonsterNumber);
-                name = view.findViewById(R.id.autoTxtViewMonsters);
-               try{
-                   number = Integer.parseInt(num.getText().toString());
-               }
-               catch (NumberFormatException e) {
-                   num.setBackgroundColor(Color.parseColor("#f54242"));
-                   validCombatants = false;
-               }
-
-               String monster = name.getText().toString();
-               if(monsterNames.containsKey(monster)){
-                   name.setBackgroundColor(Color.parseColor("#ffffff"));
-               }
-               else{
-                   name.setBackgroundColor(Color.parseColor("#f54242"));
-                   validCombatants = false;
-               }
-            }
-        }
-
-        if(validCombatants) {
+        isValid = true;
+        checkMonsterQuantityValidity();
+        checkMonstersValidity();
+        if (isValid) {
             getPlayers();
             final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
             new Thread(new Runnable() {
@@ -163,8 +135,7 @@ public class CombatantsActivity extends AppCompatActivity {
                     startCombat();
                 }
             }).start();
-        }
-        else {
+        } else {
             Toast.makeText(this.getApplicationContext(), "One of the monsters is not valid. Please ensure all fields are valid before continuing.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -219,4 +190,45 @@ public class CombatantsActivity extends AppCompatActivity {
         parentLinearLayout.removeView((View) v.getParent());
     }
 
+    private void checkMonstersValidity() {
+        int combatantCount = parentLinearLayout.getChildCount();
+        View view;
+        AutoCompleteTextView name;
+        EditText num;
+        for (int i = 0; i < combatantCount; i++) {
+            view = parentLinearLayout.getChildAt(i);
+            if (!view.getTag().toString().equals("player_entry")) {
+                name = view.findViewById(R.id.autoTxtViewMonsters);
+                String monster = name.getText().toString();
+                if (monsterNames.containsKey(monster)) {
+                    name.setBackgroundColor(Color.parseColor("#ffffff"));
+                } else {
+                    name.setBackgroundColor(Color.parseColor("#f54242"));
+                    isValid = false;
+                }
+            }
+        }
+    }
+
+    private void checkMonsterQuantityValidity() {
+        int combatantCount = parentLinearLayout.getChildCount();
+        View view;
+        EditText num;
+        for (int i = 0; i < combatantCount; i++) {
+            view = parentLinearLayout.getChildAt(i);
+            if (!view.getTag().toString().equals("player_entry")) {
+                if (!view.getTag().toString().equals("player_entry")) {
+                    num = view.findViewById(R.id.editTxtMonsterNumber);
+                    try {
+                        Integer.parseInt(num.getText().toString());
+                        num.setBackgroundColor(Color.parseColor("#ffffff"));
+                    } catch (NumberFormatException e) {
+                        num.setBackgroundColor(Color.parseColor("#f54242"));
+                        isValid = false;
+                    }
+                }
+            }
+
+        }
+    }
 }
