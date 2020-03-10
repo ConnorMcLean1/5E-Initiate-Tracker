@@ -42,7 +42,7 @@ public class APIUtility {
         try {
             monster = call.execute().body();
             //Log.d("API_TEST", monster.toString());
-            npc = new NPC(NPC.dexToMod(monster.getDex()), NPC.combatantStates.ALIVE, monster.getHp(), monster.getName(), 0);
+            npc = new NPC(NPC.dexToMod(monster.getDex()), NPC.combatantStates.ALIVE, monster.getHp(), monster.getName(), 0, monster.getAc());
             //Log.d("API_TEST", npc.toString());
         }
         catch (Exception e){
