@@ -115,6 +115,7 @@ public class CombatantsActivity extends AppCompatActivity {
         AutoCompleteTextView name;
         EditText num;
         int number;
+        validCombatants = true;
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
             if (!view.getTag().toString().equals("player_entry")) {
@@ -122,33 +123,22 @@ public class CombatantsActivity extends AppCompatActivity {
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                try{
                    number = Integer.parseInt(num.getText().toString());
-                   validCombatants = true;
                }
                catch (NumberFormatException e) {
                    num.setBackgroundColor(Color.parseColor("#f54242"));
                    validCombatants = false;
                }
 
-                String monster = name.getText().toString(), temp;
-                ListAdapter adapter = name.getAdapter();
-                int j;
-
-                for(j = 0; j < adapter.getCount(); j++){
-                    temp = adapter.getItem(j).toString();
-                    if(monster.compareTo(temp) == 0){
-                        name.setBackgroundColor(Color.parseColor("#ffffff"));
-                        validCombatants = true;
-                        break;
-                    }
-                    if(j == adapter.getCount()){
-                        name.setBackgroundColor(Color.parseColor("#f54242"));
-                        validCombatants = false;
-                    }
-                }
+               String monster = name.getText().toString();
+               if(monsterNames.containsKey(monster)){
+                   name.setBackgroundColor(Color.parseColor("#ffffff"));
+               }
+               else{
+                   name.setBackgroundColor(Color.parseColor("#f54242"));
+                   validCombatants = false;
+               }
             }
         }
-
-
 
         if(validCombatants) {
             getPlayers();
