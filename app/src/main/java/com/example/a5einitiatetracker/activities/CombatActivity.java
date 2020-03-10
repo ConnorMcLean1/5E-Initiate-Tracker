@@ -40,12 +40,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     NPC npc, previewNpc;
     Player pc, previewPc;
     Boolean combatComplete, isPlayer;
-    int count, previewCount, currentIndex, previewIndex;
+    int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
     EditText editTextChangeHealth, editTextDamageAmount;
-    Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton,
-            endCombatButton, dealDamageButton;
+    Button rollDeathSaveButton, dealDamageButton;
+    ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
 
     @Override
@@ -62,7 +62,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         //endregion
 
         currentIndex = 0;
-        previewIndex = 0;
         combatComplete = false;
 
         //Initialize the TextViews
@@ -76,7 +75,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
-        editTextDamageAmount = findViewById(R.id.editTextDamageAmount);
+        editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
 
         //Button to go to the previous combatant in initiative
         nextButton = findViewById(R.id.btnNext);
@@ -279,13 +278,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         do { //Get the next combatant, skipping over dead ones
             if (currentIndex+1 < combatantsList.size()) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex++;
-                previewIndex++;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Next");
             }
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = 0;
-                previewIndex = 0;
                 count++;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Next Button. No next combatant. Reset to start of iterator");
@@ -319,12 +316,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         do { //Get the next combatant, skipping over dead ones
             if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex--;
-                previewIndex--;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Previous");
             } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = combatantsList.size()-1;
-                previewIndex = combatantsList.size()-1;
                 count++;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Previous Button. No previous combatant. Reset to end of iterator");
@@ -550,35 +545,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         previewNpc = npc;
         previewPc = pc;
 
-        previewCount = 0;
+        if (currentIndex+1 < combatantsList.size()) nextCombatant = combatantsList.get(currentIndex+1);
+        else nextCombatant = combatantsList.get(0);
 
-        do {
-            if (previewIndex+1 < combatantsList.size()) {
-                previewIndex++;
-                nextCombatant = combatantsList.get(previewIndex);
-            }
-            else {
-                previewIndex = 0;
-                previewCount++;
-                nextCombatant = combatantsList.get(previewIndex);
-            }
-        } while (nextCombatant.getCombatState() == Combatant.combatantStates.DEAD && previewCount <2);
-
-        previewCount = 0;
-
-        do {
-            if (previewIndex-1 >= 0) {
-                previewIndex--;
-                prevCombatant = combatantsList.get(previewIndex);
-                Log.d("PREVIOUS_PREVIEW: ", "Previous");
-            }
-            else {
-                previewIndex = combatantsList.size()-1;
-                previewCount++;
-                prevCombatant = combatantsList.get(previewIndex);
-                Log.d("PREVIOUS_PREVIEW: ", "Previous preview at bottom of list.");
-            }
-        } while (prevCombatant.getCombatState() == Combatant.combatantStates.DEAD && previewCount <2);
+        if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
+        else prevCombatant = combatantsList.get(combatantsList.size()-1);
 
         if (nextCombatant instanceof Player) {
             previewPc = (Player) nextCombatant;
