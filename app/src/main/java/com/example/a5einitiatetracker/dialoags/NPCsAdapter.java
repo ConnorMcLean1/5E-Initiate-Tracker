@@ -40,8 +40,8 @@ public class NPCsAdapter extends ArrayAdapter {
 
         assert npc != null;
         monsterName.setText(npc.getName());
-        monsterHealth.setText(String.format(Locale.CANADA,"%d/%d", npc.getHealth(), npc.getMaxHealth()));
-        monsterAC.setText(String.valueOf(npc.getArmourClass()));
+        monsterHealth.setText(String.format(Locale.CANADA,"%s: %d/%d", "HP", npc.getHealth(), npc.getMaxHealth()));
+        monsterAC.setText(String.format(Locale.CANADA,"%s: %d", "AC", npc.getArmourClass()));
 
         return convertView;
     }
