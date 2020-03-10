@@ -15,7 +15,8 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     private final int DISADVANTAGE = -1; // roll with disadvantage
     private final int maxHealth;
     private final int MINDEATHSAVESUCCESS = 10;
-    private int health, ac;
+    private int health;
+    private int armourClass;
     public enum deathSaveResult {SUCCESS, FAILURE, CRITICALSUCCESS, NONE}
     public enum deathSaveState {UNSTABLE, DEAD, STABLE, ALIVE}
     private deathSaveResult[] deathSaves;
@@ -26,21 +27,21 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public NPC(){
         health = 0;
         maxHealth = 0;
-        ac = 0;
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
+        armourClass = 0;
         super.initiative = 0;
         super.initiativeModifier = 0;
         super.status = combatantStates.ALIVE;
     }
 
-    public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv, int ac) {
+    public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv, int armourClass) {
         this.status = status;
         this.health = health;
         this.maxHealth = health;
         this.initiativeModifier = initiativeModifier;
         this.name = name;
         this.initiative = rollInitiative(adv);
-        this.ac = ac;
+        this.armourClass = armourClass;
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
 
@@ -62,6 +63,14 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         this.health = health;
     }
 
+    public int getArmourClass() {
+        return armourClass;
+    }
+
+    public void setArmourClass(int armourClass) {
+        this.armourClass = armourClass;
+    }
+
     @Override
     public int compareTo(Combatant o) {
         return this.getInitiative().compareTo(o.getInitiative());
@@ -76,14 +85,6 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public static int dexToMod(int dex){
         Double mod = Math.floor(((dex-10)/2));
         return mod.intValue();
-    }
-
-    public int getAc() {
-        return ac;
-    }
-
-    public void setAc(int ac) {
-        this.ac = ac;
     }
 
     //endregion

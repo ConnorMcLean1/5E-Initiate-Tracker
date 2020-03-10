@@ -176,6 +176,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+    }
+
 
     private boolean checkIfUnstable(NPC npc){
         return (npc.getStatus() == Combatant.combatantStates.UNSTABLE);
@@ -317,32 +322,24 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void rollDeathSaveOnClick() {
-        if (isPlayer) { //Check if the current combatant is a player or not
-            Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, who should roll their own death saves. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
+        if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
+            npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
+            Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
+            checkDeathSaves();
+            updateUIValues();
         } else {
-            if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
-                npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
-                Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
-                checkDeathSaves();
-                updateUIValues();
-            } else {
-                Toast.makeText(getApplicationContext(), "The current combatant is not unstable (unconscious) and cannot make death saving throws!.", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getApplicationContext(), "The current combatant is not unstable (unconscious) and cannot make death saving throws!.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void healHpOnClick(){
         int currCombatantHp;
-        if(isPlayer){
-            Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
-        }
-        else if(npc.getCombatState() == Combatant.combatantStates.DEAD){
+        if(npc.getCombatState() == Combatant.combatantStates.DEAD){
             Toast.makeText(getApplicationContext(), "The combatant is dead and cannot be healed.", Toast.LENGTH_SHORT).show();
             editTextChangeHealth.setText("0");
             updateControls();
             updateUIValues();
         }
-        else{
             int change = Integer.parseInt(editTextChangeHealth.getText().toString());
 
             if(change > 0) {
@@ -361,8 +358,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     npc.setCombatState(Combatant.combatantStates.ALIVE);
                     statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.ALIVE));
                     Toast.makeText(getApplicationContext(), "The combatant has been healed and is no longer unstable.", Toast.LENGTH_SHORT).show();
-                    Log.d("healButton", "The combatant has been healed while unstable and is now alive");
-                }
             }
 
             updateControls();
@@ -372,26 +367,25 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void damageHpOnClick(){
-        int currCombatantHp;
-        if(isPlayer){
-            Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
+        //Setup the damage variable and grab it from the edit text. If the an invalid entry exists,
+        //simply default to 0 so there is no change
+        int damage;
+        try{
+            damage = Integer.parseInt(editTextChangeHealth.getText().toString());
         }
-        else{
-            int damage;
-            try{
-                damage = Integer.parseInt(editTextChangeHealth.getText().toString());
-            }
-            catch(NumberFormatException e){
-                damage = 0;
-            }
-            boolean checkSaves = npc.damageNpc(damage, getApplicationContext());
-            if(checkSaves)
-                checkDeathSaves();
+        catch(NumberFormatException e){
+            damage = 0;
+        }
+        boolean checkSaves = npc.damageNpc(damage, getApplicationContext());
 
-            editTextChangeHealth.setText("0");
-            updateUIValues();
-            updateControls();
-        }
+        //If the NPC has suffered a failed death save due to the damage, update the UI
+        if(checkSaves)
+            checkDeathSaves();
+
+        //Reset text box to 0 and update controls
+        editTextChangeHealth.setText("0");
+        updateUIValues();
+        updateControls();
     }
     //endregion
 
@@ -585,7 +579,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewChangeHp.setVisibility(View.VISIBLE);
         }
     }
+    //endregion
 
+    //Method to handle the return from the NPC.checkDeathSaves() method
+    //updates the NPC's values and also sets the spinner to the correct position
     private void checkDeathSaves(){
         switch (npc.checkDeathSaves()) {
             case UNSTABLE:
@@ -616,5 +613,5 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         }
     }
-    //endregion
+
 }
