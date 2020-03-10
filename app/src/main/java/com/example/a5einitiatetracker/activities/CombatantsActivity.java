@@ -93,6 +93,8 @@ public class CombatantsActivity extends AppCompatActivity {
     // loads all the monster info and adds them to the combatant list, then sorts the list by
     // initiative
     public void getMonsterData(View v) {
+        if(!combatantsList.isEmpty())
+            combatantsList.clear();
         getPlayers();
         final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         new Thread(new Runnable() {
