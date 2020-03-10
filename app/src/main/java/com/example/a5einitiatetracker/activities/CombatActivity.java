@@ -3,6 +3,8 @@ package com.example.a5einitiatetracker.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -209,10 +211,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         for (int i = 0; i < npcs.size(); i++) {
             for (int j = 0; j < checkedNPCs.size(); j++) {
                 if (npcs.get(i).equals(checkedNPCs.get(j))) {
-                    //TODO: add function to deal damage
+                    npcs.get(i).damageNpc(damage, this);
                 }
             }
         }
+        editTextDamageAmount.setText("");
+        Toast.makeText(this, "Damage dealt!", Toast.LENGTH_SHORT).show();
     }
 
     private void endCombatOnClick(){
