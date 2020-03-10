@@ -46,10 +46,13 @@
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
-    <Button
+    <ImageButton
         android:id="@+id/btnNext"
-        android:layout_width="wrap_content"
+        android:layout_width="114dp"
         android:layout_height="50dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/button_next"
+        android:background="@null"
         android:layout_gravity="bottom|center"
         android:onClick="getMonsterData"
         android:text="@string/btn_next" />

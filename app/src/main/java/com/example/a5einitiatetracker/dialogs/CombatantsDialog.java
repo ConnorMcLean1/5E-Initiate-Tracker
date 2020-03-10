@@ -1,14 +1,12 @@
-package com.example.a5einitiatetracker.dialoags;
+package com.example.a5einitiatetracker.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 

@@ -1,12 +1,10 @@
-package com.example.a5einitiatetracker.dialoags;
+package com.example.a5einitiatetracker.dialogs;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,8 +38,8 @@ public class NPCsAdapter extends ArrayAdapter {
 
         assert npc != null;
         monsterName.setText(npc.getName());
-        monsterHealth.setText(String.format(Locale.CANADA,"%d/%d", npc.getHealth(), npc.getMaxHealth()));
-        monsterAC.setText(String.valueOf(npc.getArmourClass()));
+        monsterHealth.setText(String.format(Locale.CANADA,"%s: %d/%d", "HP", npc.getHealth(), npc.getMaxHealth()));
+        monsterAC.setText(String.format(Locale.CANADA,"%s: %d", "AC", npc.getArmourClass()));
 
         return convertView;
     }
