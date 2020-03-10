@@ -4,14 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.Toast;
 
 import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.api.APIUtility;
@@ -34,6 +40,7 @@ public class CombatantsActivity extends AppCompatActivity {
     private LinearLayout parentLinearLayout;
     HashMap<String, String> monsterNames;
     public static List<Combatant> combatantsList = new ArrayList<>();
+    private static boolean valid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +69,33 @@ public class CombatantsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.monster_entry_layout, null);
-                AutoCompleteTextView autoCompleteTextView = rowView.findViewById(R.id.autoTxtViewMonsters);
+                final AutoCompleteTextView autoCompleteTextView = rowView.findViewById(R.id.autoTxtViewMonsters);
                 autoCompleteTextView.setAdapter(arrayAdapter);
+
+                //When the user changes focus away from the list of possible monsters check if the
+                //monster exists. If not change the colour to red and display a toast.
+                //Prevents API errors.
+                autoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        String monster = autoCompleteTextView.getText().toString(), temp;
+                        ListAdapter adapter = autoCompleteTextView.getAdapter();
+
+                        for(int i = 0; i < adapter.getCount(); i++){
+                            temp = adapter.getItem(i).toString();
+                            if(monster.compareTo(temp) == 0){
+                                autoCompleteTextView.setBackgroundColor(Color.parseColor("#ffffff"));
+                                valid = true;
+                                return;
+                            }
+                        }
+                        Toast.makeText(CombatantsActivity.this, autoCompleteTextView.getText().toString() + " is not a valid monster. Please select one from the list!", Toast.LENGTH_SHORT).show();
+                        autoCompleteTextView.setBackgroundColor(Color.parseColor("#f54242"));
+                        valid = false;
+                    }
+                });
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount());
+                valid = false;
             }
         });
 
@@ -93,28 +124,33 @@ public class CombatantsActivity extends AppCompatActivity {
     // loads all the monster info and adds them to the combatant list, then sorts the list by
     // initiative
     public void getMonsterData(View v) {
-        getPlayers();
-        final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String monsterIndex;
-                String monsterName;
-                for (HashMap.Entry<String, Integer> entry : monsters.entrySet()) {
-                    monsterIndex = monsterNames.get(entry.getKey());
-                    for (int i = 0; i < entry.getValue(); i++) {
-                        NPC m = APIUtility.getMonsterByIndex(monsterIndex);
-                        monsterName = String.format("%s %d", m.getName(), i+1);
-                        m.setName(monsterName);
-                        combatantsList.add(m);
+        if(valid) {
+            getPlayers();
+            final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String monsterIndex;
+                    String monsterName;
+                    for (HashMap.Entry<String, Integer> entry : monsters.entrySet()) {
+                        monsterIndex = monsterNames.get(entry.getKey());
+                        for (int i = 0; i < entry.getValue(); i++) {
+                            NPC m = APIUtility.getMonsterByIndex(monsterIndex);
+                            monsterName = String.format("%s %d", m.getName(), i + 1);
+                            m.setName(monsterName);
+                            combatantsList.add(m);
+                        }
                     }
-                }
 
-                Collections.sort(combatantsList, Collections.<Combatant>reverseOrder());
-                Log.v("LIST", combatantsList.toString());
-                startCombat();
-            }
-        }).start();
+                    Collections.sort(combatantsList, Collections.<Combatant>reverseOrder());
+                    Log.v("LIST", combatantsList.toString());
+                    startCombat();
+                }
+            }).start();
+        }
+        else {
+            Toast.makeText(this.getApplicationContext(), "One of the monsters is not valid. Please ensure all are valid before continuing.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // loads all the players into the combatant list
