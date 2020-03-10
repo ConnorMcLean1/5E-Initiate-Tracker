@@ -32,7 +32,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     Player pc, tempPc;
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
-    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview, txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
+    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
+            txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
+            txtViewCurrentHpLabel, txtViewInitiative;
     EditText editTextChangeHealth;
     Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton, endCombatButton;
     Spinner statusSpinner;
@@ -61,6 +63,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewChangeHp = findViewById(R.id.txtViewCombatantHealth);
         txtViewDeathSaves = findViewById(R.id.txtViewCombatantDeathSaves);
         txtViewCurrentHpLabel = findViewById(R.id.txtViewCombatantCurrentHealthLabel);
+        txtViewInitiative = findViewById(R.id.txtViewInitiative);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
@@ -415,11 +418,21 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateName();
         updateStatus();
         updatePreviews();
+        updateInitiative();
     }
 
     private void updateControls(){
         updateDeathSaveButtons();
         updateHpControls();
+    }
+
+    private void updateInitiative(){
+        if(isPlayer){
+            txtViewInitiative.setText(Integer.toString(pc.getInitiative()));
+        }
+        else{
+            txtViewInitiative.setText(Integer.toString(npc.getInitiative()));
+        }
     }
 
     private void updateHealth(){
@@ -429,7 +442,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel.setVisibility(View.GONE);
         }
         else {
-            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth()));
+            String temp = Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth());
+            txtViewCombatantHealth.setText(temp);
             txtViewCombatantHealth.setVisibility(View.VISIBLE);
             txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
         }
