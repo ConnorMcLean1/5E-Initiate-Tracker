@@ -40,7 +40,7 @@ public class CombatantsActivity extends AppCompatActivity {
     private LinearLayout parentLinearLayout;
     HashMap<String, String> monsterNames;
     public static List<Combatant> combatantsList = new ArrayList<>();
-    private static boolean valid;
+    private static boolean validCombatants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,32 +70,9 @@ public class CombatantsActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.monster_entry_layout, null);
                 final AutoCompleteTextView autoCompleteTextView = rowView.findViewById(R.id.autoTxtViewMonsters);
+                final EditText numberEditText = rowView.findViewById(R.id.editTxtMonsterNumber);
                 autoCompleteTextView.setAdapter(arrayAdapter);
-
-                //When the user changes focus away from the list of possible monsters check if the
-                //monster exists. If not change the colour to red and display a toast.
-                //Prevents API errors.
-                autoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        String monster = autoCompleteTextView.getText().toString(), temp;
-                        ListAdapter adapter = autoCompleteTextView.getAdapter();
-
-                        for(int i = 0; i < adapter.getCount(); i++){
-                            temp = adapter.getItem(i).toString();
-                            if(monster.compareTo(temp) == 0){
-                                autoCompleteTextView.setBackgroundColor(Color.parseColor("#ffffff"));
-                                valid = true;
-                                return;
-                            }
-                        }
-                        Toast.makeText(CombatantsActivity.this, autoCompleteTextView.getText().toString() + " is not a valid monster. Please select one from the list!", Toast.LENGTH_SHORT).show();
-                        autoCompleteTextView.setBackgroundColor(Color.parseColor("#f54242"));
-                        valid = false;
-                    }
-                });
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount());
-                valid = false;
             }
         });
 
@@ -132,7 +109,48 @@ public class CombatantsActivity extends AppCompatActivity {
             Toast.makeText(this.getApplicationContext(), "Please add at least one combatant to the combat to start it!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(valid) {
+
+        int combatantCount = parentLinearLayout.getChildCount();
+        View view;
+        AutoCompleteTextView name;
+        EditText num;
+        int number;
+        for (int i = 0; i < combatantCount; i++) {
+            view = parentLinearLayout.getChildAt(i);
+            if (!view.getTag().toString().equals("player_entry")) {
+                num = view.findViewById(R.id.editTxtMonsterNumber);
+                name = view.findViewById(R.id.autoTxtViewMonsters);
+               try{
+                   number = Integer.parseInt(num.getText().toString());
+                   validCombatants = true;
+               }
+               catch (NumberFormatException e) {
+                   num.setBackgroundColor(Color.parseColor("#f54242"));
+                   validCombatants = false;
+               }
+
+                String monster = name.getText().toString(), temp;
+                ListAdapter adapter = name.getAdapter();
+                int j;
+
+                for(j = 0; j < adapter.getCount(); j++){
+                    temp = adapter.getItem(j).toString();
+                    if(monster.compareTo(temp) == 0){
+                        name.setBackgroundColor(Color.parseColor("#ffffff"));
+                        validCombatants = true;
+                        break;
+                    }
+                    if(j == adapter.getCount()){
+                        name.setBackgroundColor(Color.parseColor("#f54242"));
+                        validCombatants = false;
+                    }
+                }
+            }
+        }
+
+
+
+        if(validCombatants) {
             getPlayers();
             final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
             new Thread(new Runnable() {
@@ -157,7 +175,7 @@ public class CombatantsActivity extends AppCompatActivity {
             }).start();
         }
         else {
-            Toast.makeText(this.getApplicationContext(), "One of the monsters is not valid. Please ensure all are valid before continuing.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getApplicationContext(), "One of the monsters is not valid. Please ensure all fields are valid before continuing.", Toast.LENGTH_SHORT).show();
         }
     }
 
