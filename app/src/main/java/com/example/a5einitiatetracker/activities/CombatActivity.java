@@ -29,6 +29,7 @@ import com.example.a5einitiatetracker.dialoags.CombatantsDialog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, CombatantsDialog.CombatantsDialogListener {
@@ -125,11 +126,35 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
+        // Button to deal damage from player screen
         dealDamageButton = findViewById(R.id.btnDamage);
         dealDamageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openNPCDialog();
+            }
+        });
+
+        // Edittext for entering damage amount to deal
+        editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
+        editTextDamageAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editTextDamageAmount.getText().toString().length() > 0) {
+                    dealDamageButton.setEnabled(true);
+                } else {
+                    dealDamageButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -479,7 +504,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel.setVisibility(View.GONE);
         }
         else {
-            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth()));
+            txtViewCombatantHealth.setText(
+                    String.format(Locale.CANADA,
+                            "%d / %d",
+                            npc.getHealth(), npc.getMaxHealth())
+            );
             txtViewCombatantHealth.setVisibility(View.VISIBLE);
             txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
         }
@@ -487,6 +516,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void updateDamageControls() {
         if (isPlayer) {
+            dealDamageButton.setEnabled(false);
             editTextDamageAmount.setVisibility(View.VISIBLE);
             dealDamageButton.setVisibility(View.VISIBLE);
         } else {

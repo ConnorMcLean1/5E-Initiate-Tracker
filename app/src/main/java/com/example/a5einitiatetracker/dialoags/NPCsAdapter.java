@@ -41,7 +41,7 @@ public class NPCsAdapter extends ArrayAdapter {
         assert npc != null;
         monsterName.setText(npc.getName());
         monsterHealth.setText(String.format(Locale.CANADA,"%d/%d", npc.getHealth(), npc.getMaxHealth()));
-        monsterAC.setText(String.valueOf(npc.getAc()));
+        monsterAC.setText(String.valueOf(npc.getArmourClass()));
 
         return convertView;
     }
