@@ -11,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,15 +37,15 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     List<Combatant> combatantsList;
     public static List<NPC> npcs;
     Combatant currCombatant, prevCombatant, nextCombatant;
-    NPC npc, tempNpc;
-    Player pc, tempPc;
+    NPC npc, previewNpc;
+    Player pc, previewPc;
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
     EditText editTextChangeHealth, editTextDamageAmount;
-    Button previousButton, nextButton, healHpButton, damageHpButton, rollDeathSaveButton,
-            endCombatButton, dealDamageButton;
+    Button rollDeathSaveButton, dealDamageButton;
+    ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
 
     @Override
@@ -540,31 +542,31 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void updatePreviews(){
 
-        tempNpc = npc;
-        tempPc = pc;
-
-        if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
-        else prevCombatant = combatantsList.get(combatantsList.size()-1);
+        previewNpc = npc;
+        previewPc = pc;
 
         if (currentIndex+1 < combatantsList.size()) nextCombatant = combatantsList.get(currentIndex+1);
         else nextCombatant = combatantsList.get(0);
 
+        if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
+        else prevCombatant = combatantsList.get(combatantsList.size()-1);
+
         if (nextCombatant instanceof Player) {
-            tempPc = (Player) nextCombatant;
-            txtViewNextCombatantPreview.setText(tempPc.getName());
+            previewPc = (Player) nextCombatant;
+            txtViewNextCombatantPreview.setText(previewPc.getName());
         }
         else {
-            tempNpc = (NPC) nextCombatant;
-            txtViewNextCombatantPreview.setText(tempNpc.getName());
+            previewNpc = (NPC) nextCombatant;
+            txtViewNextCombatantPreview.setText(previewNpc.getName());
         }
 
         if (prevCombatant instanceof Player) {
-            tempPc = (Player) prevCombatant;
-            txtViewPrevCombatantPreview.setText(tempPc.getName());
+            previewPc = (Player) prevCombatant;
+            txtViewPrevCombatantPreview.setText(previewPc.getName());
         }
         else {
-            tempNpc = (NPC) prevCombatant;
-            txtViewPrevCombatantPreview.setText(tempNpc.getName());
+            previewNpc = (NPC) prevCombatant;
+            txtViewPrevCombatantPreview.setText(previewNpc.getName());
         }
     }
 

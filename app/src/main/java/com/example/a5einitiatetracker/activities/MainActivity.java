@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.a5einitiatetracker.api.MonsterName;
 import com.example.a5einitiatetracker.R;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         JSONUtility.createFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
         monsterListJSON = new File(this.getFilesDir(), JSONUtility.JSON_FILE_NAME);
 
-        Button startButton = findViewById(R.id.btnStart);
+        ImageButton startButton = findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), CombatantsActivity.class);
