@@ -54,13 +54,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combat);
 
-        //region TEST VARIABLES
         combatantsList = CombatantsActivity.combatantsList;
-//        combatantList.add(new Player(22, 5, Combatant.combatantStates.ALIVE, "Player1"));
-//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 1", 0));
-//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 2", 0));
-//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 3", 0));
-        //endregion
 
         currentIndex = 0;
         combatComplete = false;
