@@ -182,7 +182,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 if (m.containsKey(name.getText().toString())) {
                     isValid = false;
                     sb.append(String.format("The monster %s has already been added, please delete one.\n", name.getText().toString()));
-                } else {
+                } else if(isValid) {
                     m.put(
                             name.getText().toString(),
                             Integer.parseInt(num.getText().toString())
@@ -198,6 +198,7 @@ public class CombatantsActivity extends AppCompatActivity {
         View view;
         AutoCompleteTextView name;
         EditText num;
+        Log.d("TEST","Checking Monster Quantity Validity");
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
             if (!view.getTag().toString().equals("player_entry")) {
@@ -205,16 +206,19 @@ public class CombatantsActivity extends AppCompatActivity {
                 String monster = name.getText().toString();
                 if (monsterNames.containsKey(monster)) {
                     name.setBackgroundColor(Color.parseColor("#ffffff"));
+                    Log.d("TEST","Monster Quantity Valid");
                 } else {
                     name.setBackgroundColor(Color.parseColor("#f54242"));
                     sb.append(String.format("%s is not a valid monster, please select a valid monster.\n", monster));
                     isValid = false;
+                    Log.d("TEST","Monster Quantity Invalid");
                 }
             }
         }
     }
 
     private void checkMonsterQuantityValidity() {
+        Log.d("TEST","Checking Monster Validity");
         int combatantCount = parentLinearLayout.getChildCount();
         View view;
         EditText num;
@@ -228,10 +232,12 @@ public class CombatantsActivity extends AppCompatActivity {
                     try {
                         Integer.parseInt(num.getText().toString());
                         num.setBackgroundColor(Color.parseColor("#ffffff"));
+                        Log.d("TEST","Monster Valid");
                     } catch (NumberFormatException e) {
                         num.setBackgroundColor(Color.parseColor("#f54242"));
                         sb.append(String.format("%s must have a quantity entered.\n", name.getText().toString()));
                         isValid = false;
+                        Log.d("TEST","Monster Invalid");
                     }
                 }
             }
