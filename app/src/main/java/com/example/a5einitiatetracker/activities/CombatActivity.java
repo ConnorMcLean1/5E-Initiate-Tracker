@@ -1,5 +1,6 @@
 package com.example.a5einitiatetracker.activities;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -129,6 +131,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View v) {
                 openNPCDialog();
+                hideKeyboard(CombatActivity.this);
             }
         });
 
@@ -386,6 +389,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             updateControls();
             updateUIValues();
         }
+            hideKeyboard(CombatActivity.this);
     }
 
     private void damageHpOnClick(){
@@ -408,6 +412,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         editTextChangeHealth.setText("0");
         updateUIValues();
         updateControls();
+        hideKeyboard(CombatActivity.this);
     }
     //endregion
 
@@ -622,6 +627,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     //Method to handle the return from the NPC.checkDeathSaves() method
     //updates the NPC's values and also sets the spinner to the correct position
+
+    //region UTILITY METHODS
     private void checkDeathSaves(){
         switch (npc.checkDeathSaves()) {
             case UNSTABLE:
@@ -652,5 +659,18 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         }
     }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    //endregion
 
 }
