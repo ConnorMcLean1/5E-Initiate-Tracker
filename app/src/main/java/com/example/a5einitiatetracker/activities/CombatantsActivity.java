@@ -226,19 +226,57 @@ public class CombatantsActivity extends AppCompatActivity {
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
             if (!view.getTag().toString().equals("player_entry")) {
-                if (!view.getTag().toString().equals("player_entry")) {
-                    name = view.findViewById(R.id.autoTxtViewMonsters);
-                    num = view.findViewById(R.id.editTxtMonsterNumber);
-                    try {
-                        Integer.parseInt(num.getText().toString());
-                        num.setBackgroundColor(Color.parseColor("#ffffff"));
-                        Log.d("TEST","Monster Valid");
-                    } catch (NumberFormatException e) {
-                        num.setBackgroundColor(Color.parseColor("#f54242"));
-                        sb.append(String.format("%s must have a quantity entered.\n", name.getText().toString()));
-                        isValid = false;
-                        Log.d("TEST","Monster Invalid");
-                    }
+                name = view.findViewById(R.id.autoTxtViewMonsters);
+                num = view.findViewById(R.id.editTxtMonsterNumber);
+                try {
+                    Integer.parseInt(num.getText().toString());
+                    num.setBackgroundColor(Color.parseColor("#ffffff"));
+                } catch (NumberFormatException e) {
+                    num.setBackgroundColor(Color.parseColor("#f54242"));
+                    sb.append(String.format("%s must have a quantity entered.\n", name.getText().toString()));
+                    isValid = false;
+                }
+            }
+        }
+    }
+
+    private void checkPlayerInitiativeValidity(){
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText playerInitiativeEditText, playerNameEditText;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("player_entry")) {
+                playerInitiativeEditText = v.findViewById(R.id.editTxtInitiative);
+                playerNameEditText = v.findViewById(R.id.editTxtPlayerName);
+                try{
+                    Integer.parseInt(playerInitiativeEditText.getText().toString());
+                    playerInitiativeEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+                catch (NumberFormatException e){
+                    playerInitiativeEditText.setBackgroundColor(Color.parseColor("#f54242"));
+                    isValid = false;
+                    sb.append(String.format(" %s must have a initiative entered.\n", playerInitiativeEditText.getText().toString()));
+                }
+            }
+        }
+    }
+
+    private void checkPlayerNameValidity(){
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText playerNameEditText;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("player_entry")) {
+                playerNameEditText = v.findViewById(R.id.editTxtPlayerName);
+                if(playerNameEditText.getText().toString().equals("")){
+                    isValid = false;
+                    playerNameEditText.setBackgroundColor(Color.parseColor("##f54242"));
+                    sb.append("All players must have a name to continue.\n");
+                }
+                else{
+                    playerNameEditText.setBackgroundColor(Color.parseColor("#ffffff"));
                 }
             }
         }
