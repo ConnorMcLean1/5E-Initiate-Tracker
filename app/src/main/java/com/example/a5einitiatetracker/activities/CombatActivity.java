@@ -42,7 +42,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     Boolean combatComplete, isPlayer;
     int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
-            txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
+            txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
+            txtViewCurrentHpLabel, txtViewInitiative;
     EditText editTextChangeHealth, editTextDamageAmount;
     Button rollDeathSaveButton, dealDamageButton;
     ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
@@ -72,6 +73,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewChangeHp = findViewById(R.id.txtViewCombatantHealth);
         txtViewDeathSaves = findViewById(R.id.txtViewCombatantDeathSaves);
         txtViewCurrentHpLabel = findViewById(R.id.txtViewCombatantCurrentHealthLabel);
+        txtViewInitiative = findViewById(R.id.txtViewInitiative);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
@@ -489,6 +491,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateName();
         updateStatus();
         updatePreviews();
+        updateInitiative();
         updateDamageControls();
     }
 
@@ -496,6 +499,15 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateDeathSaveButtons();
         updateHpControls();
         updateDamageControls();
+    }
+
+    private void updateInitiative(){
+        if(isPlayer){
+            txtViewInitiative.setText(Integer.toString(pc.getInitiative()));
+        }
+        else{
+            txtViewInitiative.setText(Integer.toString(npc.getInitiative()));
+        }
     }
 
     private void updateHealth(){
@@ -510,6 +522,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                             "%d / %d",
                             npc.getHealth(), npc.getMaxHealth())
             );
+            String temp = Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth());
+            txtViewCombatantHealth.setText(temp);
             txtViewCombatantHealth.setVisibility(View.VISIBLE);
             txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
         }
