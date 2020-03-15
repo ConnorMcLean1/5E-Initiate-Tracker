@@ -1,5 +1,9 @@
 package com.example.a5einitiatetracker.combatant;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import java.util.Random;
@@ -12,6 +16,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     private final int maxHealth;
     private final int MINDEATHSAVESUCCESS = 10;
     private int health;
+    private int armourClass;
     public enum deathSaveResult {SUCCESS, FAILURE, CRITICALSUCCESS, NONE}
     public enum deathSaveState {UNSTABLE, DEAD, STABLE, ALIVE}
     private deathSaveResult[] deathSaves;
@@ -23,18 +28,20 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         health = 0;
         maxHealth = 0;
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
+        armourClass = 0;
         super.initiative = 0;
         super.initiativeModifier = 0;
         super.status = combatantStates.ALIVE;
     }
 
-    public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv) {
+    public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv, int armourClass) {
         this.status = status;
         this.health = health;
         this.maxHealth = health;
         this.initiativeModifier = initiativeModifier;
         this.name = name;
         this.initiative = rollInitiative(adv);
+        this.armourClass = armourClass;
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
 
@@ -54,6 +61,14 @@ public class NPC extends Combatant implements Comparable<Combatant> {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public int getArmourClass() {
+        return armourClass;
+    }
+
+    public void setArmourClass(int armourClass) {
+        this.armourClass = armourClass;
     }
 
     @Override
@@ -173,6 +188,36 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public void resetDeathSaves(){
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
+
+    public boolean damageNpc(int damage, Context context){
+        health -= damage;
+        if(health < 0){
+            int overkill = Math.abs(health);
+            health = 0;
+            if(overkill >= maxHealth){ //If the current combatant would be outright killed by the damage
+                Toast.makeText(context, "The combatant has been instantly killed by taking massive damage.", Toast.LENGTH_SHORT).show();
+                status = Combatant.combatantStates.DEAD;
+                Log.d("damageHpClick", "The combatant: " + name + " is killed by RAW.");
+            }
+            else if(status == Combatant.combatantStates.UNSTABLE){
+                setNextDeathSave(NPC.deathSaveResult.FAILURE);
+                return true;
+            }
+            else if(status != Combatant.combatantStates.DEAD){
+                Toast.makeText(context, "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
+                status = Combatant.combatantStates.UNSTABLE;
+                Log.d("damageHpClick", "The combatant: " + name + " is at 0 HP");
+            }
+        }
+        else if(health == 0){
+            Toast.makeText(context, "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
+            status = Combatant.combatantStates.UNSTABLE;
+            Log.d("damageHpClick", "The combatant: " + name + " is at 0 HP");
+        }
+        return false;
+    }
+
+
 
     //endregion
 

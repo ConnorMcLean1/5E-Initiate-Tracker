@@ -1,14 +1,19 @@
 package com.example.a5einitiatetracker.activities;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,22 +27,29 @@ import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
+import com.example.a5einitiatetracker.dialogs.CombatantsDialog;
 import com.example.a5einitiatetracker.views.VerticalRatingBar;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
-public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CombatActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, CombatantsDialog.CombatantsDialogListener {
     List<Combatant> combatantsList;
+    public static List<NPC> npcs;
     Combatant currCombatant, prevCombatant, nextCombatant;
     NPC npc, previewNpc;
     Player pc, previewPc;
     Boolean combatComplete, isPlayer;
-    int count, previewCount, currentIndex, previewIndex;
-    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview, txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp, txtViewCurrentHpLabel;
-    EditText editTextChangeHealth;
-    Button rollDeathSaveButton;
-    ImageButton previousButton, nextButton, endCombatButton, healHpButton, damageHpButton;
+    int count, currentIndex;
+    TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
+            txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
+            txtViewCurrentHpLabel, txtViewInitiative;
+    EditText editTextChangeHealth, editTextDamageAmount;
+    Button rollDeathSaveButton, dealDamageButton;
+    ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
     VerticalRatingBar deathSaveSuccessBar, deathSaveFailureBar;
 
@@ -46,16 +58,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combat);
 
-        //region TEST VARIABLES
         combatantsList = CombatantsActivity.combatantsList;
-//        combatantList.add(new Player(22, 5, Combatant.combatantStates.ALIVE, "Player1"));
-//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 1", 0));
-//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 2", 0));
-//        combatantList.add(new NPC(2, Combatant.combatantStates.ALIVE, 100, "Goblin 3", 0));
-        //endregion
 
         currentIndex = 0;
-        previewIndex = 0;
         combatComplete = false;
 
         //Initialize the TextViews
@@ -66,9 +71,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewChangeHp = findViewById(R.id.txtViewCombatantHealth);
         txtViewDeathSaves = findViewById(R.id.txtViewCombatantDeathSaves);
         txtViewCurrentHpLabel = findViewById(R.id.txtViewCombatantCurrentHealthLabel);
+        txtViewInitiative = findViewById(R.id.txtViewInitiative);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
+        editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
 
         //Initialize the RatingBars
         deathSaveFailureBar = findViewById(R.id.deathSaveFailureBar);
@@ -124,6 +131,39 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
+        // Button to deal damage from player screen
+        dealDamageButton = findViewById(R.id.btnDamage);
+        dealDamageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openNPCDialog();
+                hideKeyboard(CombatActivity.this);
+            }
+        });
+
+        // Edittext for entering damage amount to deal
+        editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
+        editTextDamageAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editTextDamageAmount.getText().toString().length() > 0) {
+                    dealDamageButton.setEnabled(true);
+                } else {
+                    dealDamageButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         //combatantStatus Spinner
         statusSpinner = findViewById(R.id.combatantStatusSpinner);
         ArrayAdapter<CharSequence> statusSpinnerAdapter = ArrayAdapter.createFromResource(this,
@@ -167,6 +207,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+    }
+
 
     private boolean checkIfUnstable(NPC npc){
         return (npc.getStatus() == Combatant.combatantStates.UNSTABLE);
@@ -179,6 +224,37 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     //region BUTTON METHODS
+    private void openNPCDialog() {
+        if (editTextDamageAmount.getText().toString().equals("")) {
+            Toast.makeText(this, "Enter damage to deal", Toast.LENGTH_SHORT).show();
+        } else {
+            int dmg = Integer.parseInt(editTextDamageAmount.getText().toString());
+            npcs = combatantsList
+                    .stream()
+                    .filter(p -> p instanceof NPC)
+                    .filter(p -> p.getCombatState() != NPC.combatantStates.DEAD)
+                    .map(p -> (NPC)p)
+                    .collect(Collectors.toList());
+            Log.v("NPCs", npcs.toString());
+            CombatantsDialog dialog = new CombatantsDialog();
+            dialog.show(getSupportFragmentManager(), "combatants dialog");
+            dialog.setDamage(dmg);
+        }
+    }
+
+    @Override
+    public void returnCombatantsList(ArrayList<NPC> checkedNPCs, int damage) {
+        for (int i = 0; i < npcs.size(); i++) {
+            for (int j = 0; j < checkedNPCs.size(); j++) {
+                if (npcs.get(i).equals(checkedNPCs.get(j))) {
+                    npcs.get(i).damageNpc(damage, this);
+                }
+            }
+        }
+        editTextDamageAmount.setText("");
+        Toast.makeText(this, "Damage dealt!", Toast.LENGTH_SHORT).show();
+    }
+
     private void endCombatOnClick(){
         combatComplete = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
@@ -207,13 +283,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         do { //Get the next combatant, skipping over dead ones
             if (currentIndex+1 < combatantsList.size()) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex++;
-                previewIndex++;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Next");
             }
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = 0;
-                previewIndex = 0;
                 count++;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Next Button. No next combatant. Reset to start of iterator");
@@ -247,12 +321,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         do { //Get the next combatant, skipping over dead ones
             if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex--;
-                previewIndex--;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST","Previous");
             } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = combatantsList.size()-1;
-                previewIndex = combatantsList.size()-1;
                 count++;
                 currCombatant = combatantsList.get(currentIndex);
                 Log.d("MAIN_LOOP_TEST", "Previous Button. No previous combatant. Reset to end of iterator");
@@ -281,32 +353,24 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void rollDeathSaveOnClick() {
-        if (isPlayer) { //Check if the current combatant is a player or not
-            Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, who should roll their own death saves. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
+        if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
+            npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
+            Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
+            checkDeathSaves();
+            updateUIValues();
         } else {
-            if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
-                npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
-                checkDeathSaves();
-                updateUIValues();
-                Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
-            } else {
-                Toast.makeText(getApplicationContext(), "The current combatant is not unstable (unconscious) and cannot make death saving throws!.", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getApplicationContext(), "The current combatant is not unstable (unconscious) and cannot make death saving throws!.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void healHpOnClick(){
         int currCombatantHp;
-        if(isPlayer){
-            Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
-        }
-        else if(npc.getCombatState() == Combatant.combatantStates.DEAD){
+        if(npc.getCombatState() == Combatant.combatantStates.DEAD){
             Toast.makeText(getApplicationContext(), "The combatant is dead and cannot be healed.", Toast.LENGTH_SHORT).show();
             editTextChangeHealth.setText("0");
             updateControls();
             updateUIValues();
         }
-        else{
             int change = Integer.parseInt(editTextChangeHealth.getText().toString());
 
             if(change > 0) {
@@ -325,58 +389,36 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     npc.setCombatState(Combatant.combatantStates.ALIVE);
                     statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.ALIVE));
                     Toast.makeText(getApplicationContext(), "The combatant has been healed and is no longer unstable.", Toast.LENGTH_SHORT).show();
-                    Log.d("healButton", "The combatant has been healed while unstable and is now alive");
-                }
             }
 
             updateControls();
+            updateControls();
             updateUIValues();
         }
+            hideKeyboard(CombatActivity.this);
     }
 
-    //TODO the below function should add functionality for an NPC to suffer an automatic death save failure if damaged while unstable
     private void damageHpOnClick(){
-        int currCombatantHp;
-        if(isPlayer){
-            Toast.makeText(getApplicationContext(), "The currently selected combatant is a player character, and their health is not tracked by the app. Please select a non-player character and try again!", Toast.LENGTH_SHORT).show();
+        //Setup the damage variable and grab it from the edit text. If the an invalid entry exists,
+        //simply default to 0 so there is no change
+        int damage;
+        try{
+            damage = Integer.parseInt(editTextChangeHealth.getText().toString());
         }
-        else{
-            currCombatantHp = npc.getHealth();
-            int change = Integer.parseInt(editTextChangeHealth.getText().toString());
-
-            currCombatantHp -= change;
-            if(currCombatantHp < 0){
-                int overkill = Math.abs(currCombatantHp);
-                currCombatantHp = 0;
-                if(overkill >= npc.getMaxHealth()){ //If the current combatant would be outright killed by the damage
-                    Toast.makeText(getApplicationContext(), "The combatant has been instantly killed by taking massive damage.", Toast.LENGTH_SHORT).show();
-                    npc.setCombatState(Combatant.combatantStates.DEAD);
-                    updateStatus();
-                    Log.d("damageHpClick", "The combatant: " + npc.getName() + " is killed by RAW.");
-                }
-                else if(npc.getCombatState() == Combatant.combatantStates.UNSTABLE){
-                    npc.setNextDeathSave(NPC.deathSaveResult.FAILURE);
-                    checkDeathSaves();
-                }
-                else if(npc.getCombatState() != Combatant.combatantStates.DEAD){
-                    Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
-                    npc.setCombatState(Combatant.combatantStates.UNSTABLE);
-                    updateStatus();
-                    Log.d("damageHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
-                }
-            }
-            else if(currCombatantHp == 0){
-                Toast.makeText(getApplicationContext(), "The combatant has been reduced to 0 HP and is now unstable.", Toast.LENGTH_SHORT).show();
-                npc.setCombatState(Combatant.combatantStates.UNSTABLE);
-                updateStatus();
-                Log.d("damageHpClick", "The combatant: " + npc.getName() + " is at 0 HP");
-            }
-
-            editTextChangeHealth.setText("0");
-            npc.setHealth(currCombatantHp);
-            updateUIValues();
-            updateControls();
+        catch(NumberFormatException e){
+            damage = 0;
         }
+        boolean checkSaves = npc.damageNpc(damage, getApplicationContext());
+
+        //If the NPC has suffered a failed death save due to the damage, update the UI
+        if(checkSaves)
+            checkDeathSaves();
+
+        //Reset text box to 0 and update controls
+        editTextChangeHealth.setText("0");
+        updateUIValues();
+        updateControls();
+        hideKeyboard(CombatActivity.this);
     }
     //endregion
 
@@ -454,11 +496,23 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updateName();
         updateStatus();
         updatePreviews();
+        updateInitiative();
+        updateDamageControls();
     }
 
     private void updateControls(){
         updateDeathSaveButtons();
         updateHpControls();
+        updateDamageControls();
+    }
+
+    private void updateInitiative(){
+        if(isPlayer){
+            txtViewInitiative.setText(Integer.toString(pc.getInitiative()));
+        }
+        else{
+            txtViewInitiative.setText(Integer.toString(npc.getInitiative()));
+        }
     }
 
     private void updateHealth(){
@@ -468,9 +522,26 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel.setVisibility(View.GONE);
         }
         else {
-            txtViewCombatantHealth.setText(Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth()));
+            txtViewCombatantHealth.setText(
+                    String.format(Locale.CANADA,
+                            "%d / %d",
+                            npc.getHealth(), npc.getMaxHealth())
+            );
+            String temp = Integer.toString(npc.getHealth()) + " / " + Integer.toString(npc.getMaxHealth());
+            txtViewCombatantHealth.setText(temp);
             txtViewCombatantHealth.setVisibility(View.VISIBLE);
             txtViewCurrentHpLabel.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateDamageControls() {
+        if (isPlayer) {
+            dealDamageButton.setEnabled(false);
+            editTextDamageAmount.setVisibility(View.VISIBLE);
+            dealDamageButton.setVisibility(View.VISIBLE);
+        } else {
+            editTextDamageAmount.setVisibility(View.GONE);
+            dealDamageButton.setVisibility(View.GONE);
         }
     }
 
@@ -493,35 +564,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         previewNpc = npc;
         previewPc = pc;
 
-        previewCount = 0;
+        if (currentIndex+1 < combatantsList.size()) nextCombatant = combatantsList.get(currentIndex+1);
+        else nextCombatant = combatantsList.get(0);
 
-        do {
-            if (previewIndex+1 < combatantsList.size()) {
-                previewIndex++;
-                nextCombatant = combatantsList.get(previewIndex);
-            }
-            else {
-                previewIndex = 0;
-                previewCount++;
-                nextCombatant = combatantsList.get(previewIndex);
-            }
-        } while (nextCombatant.getCombatState() == Combatant.combatantStates.DEAD && previewCount <2);
-
-        previewCount = 0;
-
-        do {
-            if (previewIndex-1 >= 0) {
-                previewIndex--;
-                prevCombatant = combatantsList.get(previewIndex);
-                Log.d("PREVIOUS_PREVIEW: ", "Previous");
-            }
-            else {
-                previewIndex = combatantsList.size()-1;
-                previewCount++;
-                prevCombatant = combatantsList.get(previewIndex);
-                Log.d("PREVIOUS_PREVIEW: ", "Previous preview at bottom of list.");
-            }
-        } while (prevCombatant.getCombatState() == Combatant.combatantStates.DEAD && previewCount <2);
+        if (currentIndex-1 >= 0) prevCombatant = combatantsList.get(currentIndex-1);
+        else prevCombatant = combatantsList.get(combatantsList.size()-1);
 
         if (nextCombatant instanceof Player) {
             previewPc = (Player) nextCombatant;
@@ -587,7 +634,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewChangeHp.setVisibility(View.VISIBLE);
         }
     }
+    //endregion
 
+    //Method to handle the return from the NPC.checkDeathSaves() method
+    //updates the NPC's values and also sets the spinner to the correct position
+
+    //region UTILITY METHODS
     private void checkDeathSaves(){
         switch (npc.checkDeathSaves()) {
             case UNSTABLE:
@@ -618,5 +670,18 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         }
     }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     //endregion
+
 }
