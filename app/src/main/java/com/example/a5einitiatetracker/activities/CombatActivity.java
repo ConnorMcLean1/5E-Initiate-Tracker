@@ -22,6 +22,7 @@ import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
+import com.example.a5einitiatetracker.views.VerticalRatingBar;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +39,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     Button rollDeathSaveButton;
     ImageButton previousButton, nextButton, endCombatButton, healHpButton, damageHpButton;
     Spinner statusSpinner;
+    VerticalRatingBar deathSaveSuccessBar, deathSaveFailureBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +69,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
+
+        //Initialize the RatingBars
+        deathSaveFailureBar = findViewById(R.id.deathSaveFailureBar);
+        deathSaveSuccessBar = findViewById(R.id.deathSaveSuccessBar);
 
         //Button to go to the previous combatant in initiative
         nextButton = findViewById(R.id.btnNext);
@@ -541,17 +547,22 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             rollDeathSaveButton.setEnabled(false);
             rollDeathSaveButton.setVisibility(View.GONE);
             txtViewDeathSaves.setVisibility(View.GONE);
-
+            deathSaveSuccessBar.setVisibility(View.GONE);
+            deathSaveFailureBar.setVisibility(View.GONE);
         }
         else if(npc.getCombatState() != Combatant.combatantStates.UNSTABLE){
             rollDeathSaveButton.setEnabled(false);
             rollDeathSaveButton.setVisibility(View.VISIBLE);
             txtViewDeathSaves.setVisibility(View.VISIBLE);
+            deathSaveSuccessBar.setVisibility(View.VISIBLE);
+            deathSaveFailureBar.setVisibility(View.VISIBLE);
         }
         else {
             rollDeathSaveButton.setEnabled(true);
             rollDeathSaveButton.setVisibility(View.VISIBLE);
             txtViewDeathSaves.setVisibility(View.VISIBLE);
+            deathSaveSuccessBar.setVisibility(View.VISIBLE);
+            deathSaveFailureBar.setVisibility(View.VISIBLE);
         }
 
     }

@@ -199,4 +199,28 @@
         app:layout_constraintHorizontal_bias="0.94"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <com.example.a5einitiatetracker.views.VerticalRatingBar
+        android:id="@+id/deathSaveSuccessBar"
+        style="@style/deathSaveSuccessBar"
+        android:layout_width="45dp"
+        android:layout_height="144dp"
+        android:isIndicator="true"
+        android:numStars="3"
+        android:rating="3"
+        android:stepSize="1"
+        app:layout_constraintRight_toLeftOf="@id/btnDeathSave"
+        app:layout_constraintTop_toTopOf="@id/txtViewCombatantDeathSaves" />
+
+    <com.example.a5einitiatetracker.views.VerticalRatingBar
+        android:id="@+id/deathSaveFailureBar"
+        style="@style/deathSaveFailureBar"
+        android:layout_width="45dp"
+        android:layout_height="144dp"
+        android:isIndicator="true"
+        android:numStars="3"
+        android:rating="3"
+        android:stepSize="1"
+        app:layout_constraintLeft_toRightOf="@id/btnDeathSave"
+        app:layout_constraintTop_toTopOf="@id/txtViewCombatantDeathSaves" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
