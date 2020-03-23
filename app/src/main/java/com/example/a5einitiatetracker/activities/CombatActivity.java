@@ -498,6 +498,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updatePreviews();
         updateInitiative();
         updateDamageControls();
+        updateDeathSaveBars();
     }
 
     private void updateControls(){
@@ -612,6 +613,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             deathSaveFailureBar.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void updateDeathSaveBars(){
+            deathSaveSuccessBar.setRating(npc.getDeathSaveSuccesses());
+            deathSaveFailureBar.setRating(npc.getDeathSaveFailures());
     }
 
     private void updateHpControls(){

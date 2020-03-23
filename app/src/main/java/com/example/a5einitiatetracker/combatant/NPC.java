@@ -53,6 +53,40 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         this.deathSaves = deathSaves;
     }
 
+    public int getDeathSaveFailures() {
+        int failures = 0;
+        deathSaveResult temp;
+        for(int i = 0; i < deathSaves.length; i++){
+            temp = deathSaves[i];
+            switch (temp){
+                case FAILURE:
+                    failures++;
+                    break;
+                case NONE:
+                    i = deathSaves.length; //break the loop
+                    break;
+            }
+        }
+        return failures;
+    }
+
+    public int getDeathSaveSuccesses() {
+        int successes = 0;
+        deathSaveResult temp;
+        for(int i = 0; i < deathSaves.length; i++){
+            temp = deathSaves[i];
+            switch (temp){
+                case SUCCESS:
+                    successes++;
+                    break;
+                case NONE:
+                    i = deathSaves.length; //break the loop
+                    break;
+            }
+        }
+        return successes;
+    }
+
     public int getMaxHealth() {return maxHealth;}
 
     public int getHealth() {
@@ -188,6 +222,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public void resetDeathSaves(){
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
+
 
     public boolean damageNpc(int damage, Context context){
         health -= damage;
