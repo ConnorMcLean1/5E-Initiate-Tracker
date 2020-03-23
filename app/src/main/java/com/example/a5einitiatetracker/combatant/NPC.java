@@ -45,6 +45,15 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
 
+    public NPC(String name, int initiative, int health, int ac) {
+        this.status = combatantStates.ALIVE;
+        this.name = name;
+        this.initiative = initiative;
+        this.maxHealth = health;
+        this.health = health;
+        this.armourClass = ac;
+    }
+
     public deathSaveResult[] getDeathSaves() {
         return deathSaves;
     }
