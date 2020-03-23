@@ -7,24 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.api.APIUtility;
 import com.example.a5einitiatetracker.api.json.JSONUtility;
 import com.example.a5einitiatetracker.combatant.Combatant;
-import com.example.a5einitiatetracker.combatant.Monster;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -64,7 +60,7 @@ public class CombatantsActivity extends AppCompatActivity {
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, monsters);
-
+        // add monster/enemy
         FloatingActionButton addMonsterButton = findViewById(R.id.fabAddMonster);
         addMonsterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,18 +68,27 @@ public class CombatantsActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.monster_entry_layout, null);
                 final AutoCompleteTextView autoCompleteTextView = rowView.findViewById(R.id.autoTxtViewMonsters);
-                final EditText numberEditText = rowView.findViewById(R.id.editTxtMonsterNumber);
                 autoCompleteTextView.setAdapter(arrayAdapter);
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount());
             }
         });
-
+        // add player character
         FloatingActionButton addPlayerButton = findViewById(R.id.fabAddPlayer);
         addPlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.player_entry_layout, null);
+                parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount());
+            }
+        });
+        // add custom npc
+        FloatingActionButton addCustomNPC = findViewById(R.id.fabAddCustomNPC);
+        addCustomNPC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View rowView = inflater.inflate(R.layout.custom_npc_entry_layout, null);
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount());
             }
         });
@@ -117,6 +122,7 @@ public class CombatantsActivity extends AppCompatActivity {
         final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         if (isValid) {
             getPlayers();
+            getCustomNPCs();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -167,6 +173,29 @@ public class CombatantsActivity extends AppCompatActivity {
         }
     }
 
+    private void getCustomNPCs() {
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText npcName, npcInitiavtive, npcHealth, npcAC;
+        String name;
+        int initiative, health, ac;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("custom_npc_entry")) {
+                npcName = v.findViewById(R.id.editTxtCustomNPCName);
+                npcInitiavtive = v.findViewById(R.id.editTxtCustomNPCInitiative);
+                npcHealth = v.findViewById(R.id.editTxtCustomNPCHealth);
+                npcAC = v.findViewById(R.id.editTxtCustomNPCAC);
+                name = npcName.getText().toString();
+                initiative = Integer.parseInt(npcInitiavtive.getText().toString());
+                health = Integer.parseInt(npcHealth.getText().toString());
+                ac = Integer.parseInt(npcAC.getText().toString());
+                NPC c = new NPC(name, initiative, health, ac);
+                combatantsList.add(c);
+            }
+        }
+    }
+
     // creates a hashmap of all the monsters with their name and the number to load
     private HashMap createMonsterKeyValuePair() {
         HashMap<String, Integer> m = new HashMap<String, Integer>();
@@ -176,7 +205,7 @@ public class CombatantsActivity extends AppCompatActivity {
         EditText num;
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
-            if (!view.getTag().toString().equals("player_entry")) {
+            if (view.getTag().toString().equals("monster_entry")) {
                 num = view.findViewById(R.id.editTxtMonsterNumber);
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                 if (m.containsKey(name.getText().toString())) {
@@ -201,7 +230,7 @@ public class CombatantsActivity extends AppCompatActivity {
         Log.d("TEST","Checking Monster Quantity Validity");
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
-            if (!view.getTag().toString().equals("player_entry")) {
+            if (view.getTag().toString().equals("monster_entry")) {
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                 String monster = name.getText().toString();
                 if (monsterNames.containsKey(monster)) {
@@ -225,20 +254,18 @@ public class CombatantsActivity extends AppCompatActivity {
         EditText name;
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
-            if (!view.getTag().toString().equals("player_entry")) {
-                if (!view.getTag().toString().equals("player_entry")) {
-                    name = view.findViewById(R.id.autoTxtViewMonsters);
-                    num = view.findViewById(R.id.editTxtMonsterNumber);
-                    try {
-                        Integer.parseInt(num.getText().toString());
-                        num.setBackgroundColor(Color.parseColor("#ffffff"));
-                        Log.d("TEST","Monster Valid");
-                    } catch (NumberFormatException e) {
-                        num.setBackgroundColor(Color.parseColor("#f54242"));
-                        sb.append(String.format("%s must have a quantity entered.\n", name.getText().toString()));
-                        isValid = false;
-                        Log.d("TEST","Monster Invalid");
-                    }
+            if (view.getTag().toString().equals("monster_entry")) {
+                name = view.findViewById(R.id.autoTxtViewMonsters);
+                num = view.findViewById(R.id.editTxtMonsterNumber);
+                try {
+                    Integer.parseInt(num.getText().toString());
+                    num.setBackgroundColor(Color.parseColor("#ffffff"));
+                    Log.d("TEST","Monster Valid");
+                } catch (NumberFormatException e) {
+                    num.setBackgroundColor(Color.parseColor("#f54242"));
+                    sb.append(String.format("%s must have a quantity entered.\n", name.getText().toString()));
+                    isValid = false;
+                    Log.d("TEST","Monster Invalid");
                 }
             }
         }
@@ -247,5 +274,4 @@ public class CombatantsActivity extends AppCompatActivity {
     public void onDelete(View v) {
         parentLinearLayout.removeView((View) v.getParent());
     }
-
 }
