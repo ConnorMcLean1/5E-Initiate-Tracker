@@ -8,6 +8,11 @@
     <string name="btn_next">Next</string>
     <string name="player_entry_name">Player Name</string>
     <string name="player_entry_initiative">Initiative</string>
+    <string name="custom_npc_entry_name">NPC Name</string>
+    <string name="custom_npc_entry_initiative">Initiative</string>
+    <string name="custom_npc_health_entry">Health</string>
+    <string name="custom_npc_ac_entry">AC</string>
+    <string name="custom_npc_btn_remove">Remove</string>
     <string name="combat_btn_next">Next</string>
     <string name="combat_btn_previous">Previous</string>
     <string name="combat_btn_end">End Combat</string>
@@ -39,4 +44,5 @@
     <string name="not_connected">Not connected to the Internet! Closing app.</string>
     <string name="monster_entry_tag">monster_entry</string>
     <string name="player_entry_tag">player_entry</string>
+    <string name="custom_npc_entry_tag">custom_npc_entry</string>
 </resources>

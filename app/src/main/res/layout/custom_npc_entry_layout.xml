@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:tag="@string/custom_npc_entry_tag">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+    <EditText
+        android:id="@+id/editTxtCustomNPCName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:completionThreshold="1"
+        android:hint="@string/custom_npc_entry_name"
+        android:inputType="text"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:importantForAutofill="no" />
+
+    <EditText
+        android:id="@+id/editTxtCustomNPCInitiative"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:hint="@string/custom_npc_entry_initiative"
+        android:inputType="number"
+        android:importantForAutofill="no"
+        android:imeOptions="actionDone"
+        android:maxLines="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <EditText
+    android:id="@+id/editTxtCustomNPCHealth"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="5"
+    android:completionThreshold="1"
+    android:hint="@string/custom_npc_health_entry"
+    android:inputType="text"
+    android:imeOptions="actionDone"
+    android:maxLines="1"
+    android:importantForAutofill="no" />
+
+    <EditText
+    android:id="@+id/editTxtCustomNPCAC"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="5"
+    android:hint="@string/custom_npc_ac_entry"
+    android:inputType="number"
+    android:importantForAutofill="no"
+    android:imeOptions="actionDone"
+    android:maxLines="1" />
+
+    </LinearLayout>
+
+    <Button
+        android:text="@string/custom_npc_btn_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:onClick="onDelete" />
+
+</LinearLayout>
