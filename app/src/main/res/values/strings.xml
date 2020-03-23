@@ -12,6 +12,7 @@
     <string name="custom_npc_entry_initiative">Initiative</string>
     <string name="custom_npc_health_entry">Health</string>
     <string name="custom_npc_ac_entry">AC</string>
+    <string name="custom_npc_btn_remove">Remove</string>
     <string name="combat_btn_next">Next</string>
     <string name="combat_btn_previous">Previous</string>
     <string name="combat_btn_end">End Combat</string>

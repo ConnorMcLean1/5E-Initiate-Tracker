@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="150dp"
     android:tag="@string/custom_npc_entry_tag">
 
     <LinearLayout
@@ -32,15 +32,6 @@
         android:importantForAutofill="no"
         android:imeOptions="actionDone"
         android:maxLines="1" />
-
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:background="@drawable/ic_delete_red_24dp"
-        android:contentDescription="@string/entry_delete_button"
-        android:onClick="onDelete" />
 
     </LinearLayout>
 
@@ -73,5 +64,12 @@
     android:maxLines="1" />
 
     </LinearLayout>
+
+    <Button
+        android:text="@string/custom_npc_btn_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:onClick="onDelete" />
 
 </LinearLayout>

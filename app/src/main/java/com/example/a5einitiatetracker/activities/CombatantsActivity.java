@@ -122,6 +122,7 @@ public class CombatantsActivity extends AppCompatActivity {
         final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         if (isValid) {
             getPlayers();
+            getCustomNPCs();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -204,7 +205,7 @@ public class CombatantsActivity extends AppCompatActivity {
         EditText num;
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
-            if (!view.getTag().toString().equals("player_entry")) {
+            if (view.getTag().toString().equals("monster_entry")) {
                 num = view.findViewById(R.id.editTxtMonsterNumber);
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                 if (m.containsKey(name.getText().toString())) {
@@ -229,7 +230,7 @@ public class CombatantsActivity extends AppCompatActivity {
         Log.d("TEST","Checking Monster Quantity Validity");
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
-            if (!view.getTag().toString().equals("player_entry")) {
+            if (view.getTag().toString().equals("monster_entry")) {
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                 String monster = name.getText().toString();
                 if (monsterNames.containsKey(monster)) {
