@@ -46,7 +46,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
-            txtViewCurrentHpLabel, txtViewInitiative;
+            txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
+            txtViewDeathSaveFailureLabel;
     EditText editTextChangeHealth, editTextDamageAmount;
     Button rollDeathSaveButton, dealDamageButton;
     ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
@@ -72,6 +73,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewDeathSaves = findViewById(R.id.txtViewCombatantDeathSaves);
         txtViewCurrentHpLabel = findViewById(R.id.txtViewCombatantCurrentHealthLabel);
         txtViewInitiative = findViewById(R.id.txtViewInitiative);
+        txtViewDeathSaveSuccessLabel = findViewById(R.id.txtViewDeathSaveSuccessBarLabel);
+        txtViewDeathSaveFailureLabel = findViewById(R.id.txtViewDeathSaveFailureBarLabel);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
@@ -597,6 +600,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewDeathSaves.setVisibility(View.GONE);
             deathSaveSuccessBar.setVisibility(View.GONE);
             deathSaveFailureBar.setVisibility(View.GONE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.GONE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.GONE);
         }
         else if(npc.getCombatState() != Combatant.combatantStates.UNSTABLE){
             rollDeathSaveButton.setEnabled(false);
@@ -604,6 +609,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewDeathSaves.setVisibility(View.VISIBLE);
             deathSaveSuccessBar.setVisibility(View.VISIBLE);
             deathSaveFailureBar.setVisibility(View.VISIBLE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.VISIBLE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.VISIBLE);
         }
         else {
             rollDeathSaveButton.setEnabled(true);
@@ -611,6 +618,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewDeathSaves.setVisibility(View.VISIBLE);
             deathSaveSuccessBar.setVisibility(View.VISIBLE);
             deathSaveFailureBar.setVisibility(View.VISIBLE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.VISIBLE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.VISIBLE);
         }
 
     }

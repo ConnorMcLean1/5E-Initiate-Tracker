@@ -254,4 +254,20 @@
         app:layout_constraintLeft_toRightOf="@id/btnDeathSave"
         app:layout_constraintTop_toTopOf="@id/txtViewCombatantDeathSaves" />
 
+    <TextView
+        android:id="@+id/txtViewDeathSaveSuccessBarLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Successes"
+        app:layout_constraintBottom_toTopOf="@+id/deathSaveSuccessBar"
+        app:layout_constraintEnd_toEndOf="@+id/deathSaveSuccessBar" />
+
+    <TextView
+        android:id="@+id/txtViewDeathSaveFailureBarLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Failures"
+        app:layout_constraintBottom_toTopOf="@+id/deathSaveFailureBar"
+        app:layout_constraintStart_toStartOf="@id/deathSaveFailureBar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
