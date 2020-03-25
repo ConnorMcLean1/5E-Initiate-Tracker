@@ -28,6 +28,7 @@ import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.example.a5einitiatetracker.dialogs.CombatantsDialog;
+import com.example.a5einitiatetracker.views.VerticalRatingBar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,11 +46,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     int count, currentIndex;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
-            txtViewCurrentHpLabel, txtViewInitiative;
+            txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
+            txtViewDeathSaveFailureLabel;
     EditText editTextChangeHealth, editTextDamageAmount;
     Button rollDeathSaveButton, dealDamageButton;
     ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
+    VerticalRatingBar deathSaveSuccessBar, deathSaveFailureBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,10 +73,16 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewDeathSaves = findViewById(R.id.txtViewCombatantDeathSaves);
         txtViewCurrentHpLabel = findViewById(R.id.txtViewCombatantCurrentHealthLabel);
         txtViewInitiative = findViewById(R.id.txtViewInitiative);
+        txtViewDeathSaveSuccessLabel = findViewById(R.id.txtViewDeathSaveSuccessBarLabel);
+        txtViewDeathSaveFailureLabel = findViewById(R.id.txtViewDeathSaveFailureBarLabel);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
         editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
+
+        //Initialize the RatingBars
+        deathSaveFailureBar = findViewById(R.id.deathSaveFailureBar);
+        deathSaveSuccessBar = findViewById(R.id.deathSaveSuccessBar);
 
         //Button to go to the previous combatant in initiative
         nextButton = findViewById(R.id.btnNext);
@@ -492,6 +501,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updatePreviews();
         updateInitiative();
         updateDamageControls();
+        updateDeathSaveBars();
     }
 
     private void updateControls(){
@@ -588,19 +598,37 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             rollDeathSaveButton.setEnabled(false);
             rollDeathSaveButton.setVisibility(View.GONE);
             txtViewDeathSaves.setVisibility(View.GONE);
-
+            deathSaveSuccessBar.setVisibility(View.GONE);
+            deathSaveFailureBar.setVisibility(View.GONE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.GONE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.GONE);
         }
         else if(npc.getCombatState() != Combatant.combatantStates.UNSTABLE){
             rollDeathSaveButton.setEnabled(false);
             rollDeathSaveButton.setVisibility(View.VISIBLE);
             txtViewDeathSaves.setVisibility(View.VISIBLE);
+            deathSaveSuccessBar.setVisibility(View.VISIBLE);
+            deathSaveFailureBar.setVisibility(View.VISIBLE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.VISIBLE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.VISIBLE);
         }
         else {
             rollDeathSaveButton.setEnabled(true);
             rollDeathSaveButton.setVisibility(View.VISIBLE);
             txtViewDeathSaves.setVisibility(View.VISIBLE);
+            deathSaveSuccessBar.setVisibility(View.VISIBLE);
+            deathSaveFailureBar.setVisibility(View.VISIBLE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.VISIBLE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void updateDeathSaveBars(){
+        if(!isPlayer) {
+            deathSaveSuccessBar.setRating(npc.getDeathSaveSuccesses());
+            deathSaveFailureBar.setRating(npc.getDeathSaveFailures());
+        }
     }
 
     private void updateHpControls(){
