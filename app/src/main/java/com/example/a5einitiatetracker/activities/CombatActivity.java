@@ -625,8 +625,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void updateDeathSaveBars(){
+        if(!isPlayer) {
             deathSaveSuccessBar.setRating(npc.getDeathSaveSuccesses());
             deathSaveFailureBar.setRating(npc.getDeathSaveFailures());
+        }
     }
 
     private void updateHpControls(){

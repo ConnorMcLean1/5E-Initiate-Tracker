@@ -52,6 +52,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         this.maxHealth = health;
         this.health = health;
         this.armourClass = ac;
+        deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
 
     public deathSaveResult[] getDeathSaves() {
