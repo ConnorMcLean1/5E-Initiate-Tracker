@@ -234,6 +234,7 @@
 
     <com.example.a5einitiatetracker.views.VerticalRatingBar
         android:id="@+id/deathSaveSuccessBar"
+        style="@style/deathSaveSuccessBar"
         android:layout_width="45dp"
         android:layout_height="96dp"
         android:isIndicator="true"
@@ -245,6 +246,7 @@
 
     <com.example.a5einitiatetracker.views.VerticalRatingBar
         android:id="@+id/deathSaveFailureBar"
+        style="@style/deathSaveFailureBar"
         android:layout_width="45dp"
         android:layout_height="96dp"
         android:isIndicator="true"
