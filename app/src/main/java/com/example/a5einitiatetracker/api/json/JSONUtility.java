@@ -6,6 +6,10 @@ import android.util.JsonWriter;
 import android.util.Log;
 
 import com.example.a5einitiatetracker.api.MonsterName;
+import com.example.a5einitiatetracker.combatant.Combatant;
+import com.example.a5einitiatetracker.combatant.Player;
+import com.example.a5einitiatetracker.combatant.NPC;
+import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,12 +17,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class JSONUtility {
 
     public static final String JSON_FILE_NAME = "MonsterListJSON";
+    public static final String JSON_COMBAT_FILE_NAME = "SavedCombatJSON";
 
     //Creates a new file with the specified context and filename if one does not already exist
     public static void createFile(Context context, String filename){
@@ -176,6 +182,105 @@ public class JSONUtility {
         }
         catch (Exception e){
             Log.e("JSON_CONVERTER", "Error converting JSON to MonsterName list: " + e.getLocalizedMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void saveCombatToJSON(List<Combatant> combatantList, int position, String filename, Context context){
+        //File and writer variables
+        FileWriter fw;
+        File file;
+
+        Combatant currCombatant;
+        Player pc = null;
+        NPC npc = null;
+
+        //region Shared Player/NPC Variables
+        Boolean isNPC;
+        String name;
+        Combatant.combatantStates status;
+        int initiativeModifier, initiative;
+        //endregion
+
+
+        //region NPC Specific Variables
+        int health, maxhealth, armourClass;
+        NPC.deathSaveResult[] deathSaves;
+        //endregion
+
+        try{
+            //Creates the file if it does not already exist
+            createFile(context, filename);
+
+            file = new File(context.getFilesDir(), filename);
+            fw = new FileWriter(file.getAbsoluteFile(), false);
+
+            JSONObject positionObj = new JSONObject();
+            JSONArray JSONCombatantsArr = new JSONArray();
+            positionObj.put("position", position);
+            JSONCombatantsArr.put(positionObj);
+
+            JSONObject combatantObj = null;
+            JSONArray deathSavesJSONArr = null;
+            NPC.deathSaveResult[] deathSavesArr = new NPC.deathSaveResult[6];
+            for(int i = 0; i < combatantList.size(); i++){
+                combatantObj = new JSONObject();
+                deathSavesJSONArr = new JSONArray();
+                currCombatant = combatantList.get(i);
+                combatantObj.put("name", currCombatant.getName());
+                combatantObj.put("initiativeModifier", currCombatant.getInitiativeModifier());
+                combatantObj.put("initiative", currCombatant.getInitiative());
+                combatantObj.put("status", currCombatant.getStatus().toString());
+
+                if(currCombatant instanceof NPC) {
+                    npc = (NPC) currCombatant;
+                    isNPC = true;
+                    combatantObj.put("health", npc.getHealth());
+                    combatantObj.put("maxHealth", npc.getMaxHealth());
+                    combatantObj.put("armourClass", npc.getArmourClass());
+                    for(int j = 0; j < 6; j++){
+                        deathSavesJSONArr.put(j, deathSavesArr[j].toString());
+                    }
+                }
+                else{
+                    isNPC = false;
+                }
+                combatantObj.put("isNPC", isNPC);
+                JSONCombatantsArr.put(combatantObj);
+                JSONCombatantsArr.put(deathSavesJSONArr);
+            }
+
+            fw.write(JSONCombatantsArr.toString());
+            fw.flush();
+            fw.close();
+        }
+        catch (Exception e){
+            Log.e("COMBAT_SAVING", "Error saving the combat to JSON: " + e.getLocalizedMessage());
+        }
+    }
+
+    public static List<Combatant> loadCombatFromJSON(Context context, String filename){
+        FileReader fr;
+        JsonReader jr;
+        File file;
+
+        try{
+            file = new File(context.getFilesDir(), filename);
+            fr = new FileReader(file);
+            jr = new JsonReader(fr);
+            JsonParser jsonParser = new JsonParser();
+
+            int position;
+            List<Combatant> combatantsList = new ArrayList<Combatant>();
+            Boolean isNPC;
+
+            Object tempObj = jsonParser.parse(fr);
+            JSONArray data = (JSONArray) tempObj;
+
+        }
+        catch (Exception e){
+            Log.e("JSON_CONVERTER", "Error converting JSON to Combatants list: " + e.getLocalizedMessage());
             e.printStackTrace();
             return null;
         }

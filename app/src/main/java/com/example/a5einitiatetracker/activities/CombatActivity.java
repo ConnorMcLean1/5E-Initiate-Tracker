@@ -177,7 +177,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         statusSpinner.setPrompt("Status");
 
         //region INITIAL SCREEN SETUP
-        //TODO should change the below to find the first non-dead combatant most likely
         //Setup combat screen using the first combatant in the list
         currCombatant = combatantsList.get(0);
         if (currCombatant instanceof Player) {
