@@ -187,7 +187,7 @@ public class JSONUtility {
         }
     }
 
-    public static void saveCombatToJSON(List<Combatant> combatantList, int position, String filename, Context context){
+    public static boolean saveCombatToJSON(List<Combatant> combatantList, int position, String filename, Context context){
         //File and writer variables
         FileWriter fw;
         File file;
@@ -196,18 +196,7 @@ public class JSONUtility {
         Player pc = null;
         NPC npc = null;
 
-        //region Shared Player/NPC Variables
         Boolean isNPC;
-        String name;
-        Combatant.combatantStates status;
-        int initiativeModifier, initiative;
-        //endregion
-
-
-        //region NPC Specific Variables
-        int health, maxhealth, armourClass;
-        NPC.deathSaveResult[] deathSaves;
-        //endregion
 
         try{
             //Creates the file if it does not already exist
@@ -231,7 +220,7 @@ public class JSONUtility {
                 combatantObj.put("name", currCombatant.getName());
                 combatantObj.put("initiativeModifier", currCombatant.getInitiativeModifier());
                 combatantObj.put("initiative", currCombatant.getInitiative());
-                combatantObj.put("status", currCombatant.getStatus().toString());
+                combatantObj.put("status", Combatant.getStringFromCombatantState(currCombatant.getStatus()));
 
                 if(currCombatant instanceof NPC) {
                     npc = (NPC) currCombatant;
@@ -239,6 +228,7 @@ public class JSONUtility {
                     combatantObj.put("health", npc.getHealth());
                     combatantObj.put("maxHealth", npc.getMaxHealth());
                     combatantObj.put("armourClass", npc.getArmourClass());
+
                     for(int j = 0; j < 6; j++){
                         deathSavesJSONArr.put(j, deathSavesArr[j].toString());
                     }
@@ -257,26 +247,67 @@ public class JSONUtility {
         }
         catch (Exception e){
             Log.e("COMBAT_SAVING", "Error saving the combat to JSON: " + e.getLocalizedMessage());
+            e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public static List<Combatant> loadCombatFromJSON(Context context, String filename){
         FileReader fr;
-        JsonReader jr;
         File file;
 
         try{
             file = new File(context.getFilesDir(), filename);
             fr = new FileReader(file);
-            jr = new JsonReader(fr);
             JsonParser jsonParser = new JsonParser();
 
-            int position;
-            List<Combatant> combatantsList = new ArrayList<Combatant>();
-            Boolean isNPC;
+            int initiative, initiativeModifier, health, maxHealth,armourClass;
+            Combatant.combatantStates status;
+            NPC.deathSaveResult[] deathSaves = new NPC.deathSaveResult[6];
+            String name;
+            List<Combatant> combatantsList = new ArrayList<>();
+            Player tempPC;
+            NPC tempNPC;
+            boolean isNPC;
 
             Object tempObj = jsonParser.parse(fr);
-            JSONArray data = (JSONArray) tempObj;
+            JSONArray data = null;
+            JSONArray saves = null;
+            try {
+                data = (JSONArray) tempObj;
+            }
+            catch (ClassCastException e){
+                Log.e("COMBAT_LOADING", "Error loading the combatant data. " + e.getLocalizedMessage());
+            }
+
+            JSONObject tempJsonObj;
+            for(int i = 1; i < data.length(); i = i + 2){
+                tempJsonObj = (JSONObject) data.get(i);
+                isNPC = tempJsonObj.getBoolean("isNPC");
+                name = tempJsonObj.getString("name");
+                status = Combatant.getCombatantStateFromString(tempJsonObj.getString("Status"));
+                initiative = tempJsonObj.getInt("initiative");
+                initiativeModifier = tempJsonObj.getInt("initiativeModifier");
+
+                if(isNPC){
+                    health = tempJsonObj.getInt("health");
+                    maxHealth = tempJsonObj.getInt("maxHealth");
+                    armourClass = tempJsonObj.getInt("armourClass");
+                    saves = data.getJSONArray(i+1);
+                    for(int j = 0; j < saves.length(); j++){
+                        deathSaves[j] = NPC.convertStringToDeathSaveResult(saves.getString(j));
+                    }
+                    tempNPC = new NPC(name, initiative, initiativeModifier, status, armourClass, health, maxHealth, deathSaves) ;
+                    combatantsList.add(tempNPC);
+                }
+                else{
+                    tempPC = new Player(initiative, initiativeModifier, status, name);
+                    combatantsList.add(tempPC);
+                }
+            }
+
+            return combatantsList;
 
         }
         catch (Exception e){
@@ -284,5 +315,30 @@ public class JSONUtility {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static int loadCombatPositionFromJSON(Context context, String filename) {
+        FileReader fr;
+        File file;
+        int position = 0;
+
+        try {
+            file = new File(context.getFilesDir(), filename);
+            fr = new FileReader(file);
+            JsonParser jsonParser = new JsonParser();
+
+            Object tempObj = jsonParser.parse(fr);
+            JSONArray data = null;
+
+            data = (JSONArray) tempObj;
+
+            position = data.getJSONObject(0).getInt("position");
+
+        } catch (Exception e) {
+            Log.e("COMBAT_LOAD", "Error loading the combat, could not retrieve position data. " + e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+
+        return position;
     }
 }

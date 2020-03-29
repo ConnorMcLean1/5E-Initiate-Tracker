@@ -33,7 +33,17 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         super.initiativeModifier = 0;
         super.status = combatantStates.ALIVE;
     }
+    public NPC(String name, int initiative, int initiativeModifier, combatantStates status, int armourClass, int health, int maxHealth, deathSaveResult[] deathSaves){
+        this.name = name;
+        this.initiative = initiative;
+        this.initiativeModifier = initiativeModifier;
+        this.status = status;
+        this.armourClass = armourClass;
+        this.health = health;
+        this.maxHealth = maxHealth;
+        this.deathSaves = deathSaves;
 
+    }
     public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv, int armourClass) {
         this.status = status;
         this.health = health;
@@ -129,6 +139,21 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public static int dexToMod(int dex){
         Double mod = Math.floor(((dex-10)/2));
         return mod.intValue();
+    }
+
+    public static deathSaveResult convertStringToDeathSaveResult(String result){
+        switch (result){
+            case "NONE":
+                return deathSaveResult.NONE;
+            case "CRITICALSUCCESS":
+                return deathSaveResult.CRITICALSUCCESS;
+            case "FAILURE":
+                return deathSaveResult.FAILURE;
+            case "SUCCESS":
+                return deathSaveResult.SUCCESS;
+            default:
+                return deathSaveResult.NONE;
+        }
     }
 
     //endregion
