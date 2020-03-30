@@ -31,13 +31,11 @@
     </style>
 
     <style name="deathSaveFailureBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@drawable/skull_icon</item>
-        <item name="android:indeterminateDrawable">@drawable/button_prev</item>
+        <item name="android:progressDrawable">@drawable/death_save_failure_selector</item>
     </style>
 
     <style name="deathSaveSuccessBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@drawable/heart_icon</item>
-        <item name="android:indeterminateDrawable">@drawable/button_prev</item>
+        <item name="android:progressDrawable">@drawable/death_save_success_selector</item>
     </style>
 
 </resources>
