@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.a5einitiatetracker.R;
+import com.example.a5einitiatetracker.api.json.JSONUtility;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
@@ -59,7 +60,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combat);
 
-        combatantsList = CombatantsActivity.combatantsList;
+        //Gets an intent to determine if this combat is one loaded previously or just from the
+        //'next' button being clicked in the CombatantsActivity
+        Intent thisIntent = getIntent();
+        if(thisIntent.getBooleanExtra("isSaved", false))
+            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+        else
+            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
+        //combatantsList = CombatantsActivity.combatantsList;
 
         currentIndex = 0;
         combatComplete = false;

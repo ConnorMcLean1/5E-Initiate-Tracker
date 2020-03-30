@@ -14,6 +14,7 @@ import com.google.gson.JsonParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -24,7 +25,8 @@ import java.util.List;
 public class JSONUtility {
 
     public static final String JSON_FILE_NAME = "MonsterListJSON";
-    public static final String JSON_COMBAT_FILE_NAME = "SavedCombatJSON";
+    public static final String JSON_COMBAT_SAVED_FILE_NAME = "SavedCombatJSON";
+    public static final String JSON_COMBAT_CURRENT_FILE_NAME = "CurrentCombatJSON";
 
     //Creates a new file with the specified context and filename if one does not already exist
     public static void createFile(Context context, String filename){
@@ -193,8 +195,7 @@ public class JSONUtility {
         File file;
 
         Combatant currCombatant;
-        Player pc = null;
-        NPC npc = null;
+        NPC npc;
 
         Boolean isNPC;
 
@@ -228,6 +229,7 @@ public class JSONUtility {
                     combatantObj.put("health", npc.getHealth());
                     combatantObj.put("maxHealth", npc.getMaxHealth());
                     combatantObj.put("armourClass", npc.getArmourClass());
+                    deathSavesArr = npc.getDeathSaves();
 
                     for(int j = 0; j < 6; j++){
                         deathSavesJSONArr.put(j, deathSavesArr[j].toString());
@@ -260,7 +262,7 @@ public class JSONUtility {
         try{
             file = new File(context.getFilesDir(), filename);
             fr = new FileReader(file);
-            JsonParser jsonParser = new JsonParser();
+            BufferedReader bufferedReader = new BufferedReader(fr);
 
             int initiative, initiativeModifier, health, maxHealth,armourClass;
             Combatant.combatantStates status;
@@ -271,14 +273,17 @@ public class JSONUtility {
             NPC tempNPC;
             boolean isNPC;
 
-            Object tempObj = jsonParser.parse(fr);
-            JSONArray data = null;
-            JSONArray saves = null;
+            String JSONData = bufferedReader.readLine();
+            JSONArray data = new JSONArray(), saves;
+
             try {
-                data = (JSONArray) tempObj;
+
+                data = new JSONArray(JSONData);
+                Log.d("TESTING","" + data.toString());
             }
             catch (ClassCastException e){
                 Log.e("COMBAT_LOADING", "Error loading the combatant data. " + e.getLocalizedMessage());
+                e.printStackTrace();
             }
 
             JSONObject tempJsonObj;
@@ -286,7 +291,7 @@ public class JSONUtility {
                 tempJsonObj = (JSONObject) data.get(i);
                 isNPC = tempJsonObj.getBoolean("isNPC");
                 name = tempJsonObj.getString("name");
-                status = Combatant.getCombatantStateFromString(tempJsonObj.getString("Status"));
+                status = Combatant.getCombatantStateFromString(tempJsonObj.getString("status"));
                 initiative = tempJsonObj.getInt("initiative");
                 initiativeModifier = tempJsonObj.getInt("initiativeModifier");
 

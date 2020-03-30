@@ -101,7 +101,9 @@ public class CombatantsActivity extends AppCompatActivity {
     }
 
     public void startCombat() {
+        JSONUtility.saveCombatToJSON(combatantsList, 0, JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME,  this.getApplicationContext());
         Intent intent = new Intent(getBaseContext(), CombatActivity.class);
+        intent.putExtra("isSaved", false);
         startActivity(intent);
     }
 
