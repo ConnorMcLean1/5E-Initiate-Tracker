@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.a5einitiatetracker.R;
+import com.example.a5einitiatetracker.api.json.JSONUtility;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
@@ -49,7 +50,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
             txtViewDeathSaveFailureLabel;
     EditText editTextChangeHealth, editTextDamageAmount;
-    Button rollDeathSaveButton, dealDamageButton;
+    Button rollDeathSaveButton, dealDamageButton, saveCombatButton;
     ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
     VerticalRatingBar deathSaveSuccessBar, deathSaveFailureBar;
@@ -59,9 +60,19 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combat);
 
-        combatantsList = CombatantsActivity.combatantsList;
+        //Gets an intent to determine if this combat is one loaded previously or just from the
+        //'next' button being clicked in the CombatantsActivity
+        Intent thisIntent = getIntent();
+        if(thisIntent.getBooleanExtra("isSaved", false)) {
+            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+            currentIndex = JSONUtility.loadCombatPositionFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+        }
+        else {
+            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
+            currentIndex = 0;
+        }
+        //combatantsList = CombatantsActivity.combatantsList;
 
-        currentIndex = 0;
         combatComplete = false;
 
         //Initialize the TextViews
@@ -130,7 +141,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         endCombatButton = findViewById(R.id.btnEndCombat);
         endCombatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            endCombatOnClick();
+                endCombatOnClick();
+            }
+        });
+
+        saveCombatButton = findViewById(R.id.saveCombatButton);
+        saveCombatButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                saveCombat();
             }
         });
 
@@ -177,9 +195,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         statusSpinner.setPrompt("Status");
 
         //region INITIAL SCREEN SETUP
-        //TODO should change the below to find the first non-dead combatant most likely
         //Setup combat screen using the first combatant in the list
-        currCombatant = combatantsList.get(0);
+        currCombatant = combatantsList.get(currentIndex);
         if (currCombatant instanceof Player) {
             isPlayer = true;
             pc = (Player) currCombatant;
@@ -650,6 +667,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             editTextChangeHealth.setVisibility(View.VISIBLE);
             txtViewChangeHp.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void saveCombat(){
+        JSONUtility.saveCombatToJSON(combatantsList, currentIndex, JSONUtility.JSON_COMBAT_SAVED_FILE_NAME, this.getApplicationContext());
+        Toast.makeText(this.getApplicationContext(), "Combat saved successfully!", Toast.LENGTH_SHORT).show();
     }
     //endregion
 

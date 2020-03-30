@@ -45,4 +45,5 @@
     <string name="monster_entry_tag">monster_entry</string>
     <string name="player_entry_tag">player_entry</string>
     <string name="custom_npc_entry_tag">custom_npc_entry</string>
+    <string name="btn_load">Load</string>
 </resources>

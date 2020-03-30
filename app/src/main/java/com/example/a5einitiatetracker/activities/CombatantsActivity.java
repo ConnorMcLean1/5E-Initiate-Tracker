@@ -25,6 +25,7 @@ import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -101,7 +102,9 @@ public class CombatantsActivity extends AppCompatActivity {
     }
 
     public void startCombat() {
+        JSONUtility.saveCombatToJSON(combatantsList, 0, JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME,  this.getApplicationContext());
         Intent intent = new Intent(getBaseContext(), CombatActivity.class);
+        intent.putExtra("isSaved", false);
         startActivity(intent);
     }
 
@@ -274,4 +277,5 @@ public class CombatantsActivity extends AppCompatActivity {
     public void onDelete(View v) {
         parentLinearLayout.removeView((View) v.getParent());
     }
+
 }

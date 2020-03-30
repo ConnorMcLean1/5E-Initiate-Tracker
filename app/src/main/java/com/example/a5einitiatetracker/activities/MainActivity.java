@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.a5einitiatetracker.api.MonsterName;
 import com.example.a5einitiatetracker.R;
@@ -50,6 +51,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void startSavedCombat(View view) {
+        File file = new File(this.getApplicationContext().getFilesDir(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+        if(file.exists()) {
+            Intent intent = new Intent(getBaseContext(), CombatActivity.class);
+            intent.putExtra("isSaved", true);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(this.getApplicationContext(), "No saved combat exists to load!", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

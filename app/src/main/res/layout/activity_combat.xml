@@ -272,4 +272,13 @@
         app:layout_constraintBottom_toTopOf="@+id/deathSaveFailureBar"
         app:layout_constraintStart_toStartOf="@id/deathSaveFailureBar" />
 
+    <Button
+        android:id="@+id/saveCombatButton"
+        android:text="Save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/txtViewCombatantName"
+        app:layout_constraintLeft_toLeftOf="@+id/txtViewInitiative"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
