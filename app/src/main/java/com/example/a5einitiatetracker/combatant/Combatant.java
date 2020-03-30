@@ -71,6 +71,36 @@ public class Combatant implements Comparable<Combatant> {
         this.name = name;
     }
 
+    public static combatantStates getCombatantStateFromString(String status){
+        switch (status){
+            case "ALIVE":
+                return combatantStates.ALIVE;
+            case "DEAD":
+                return combatantStates.DEAD;
+            case "UNCONSCIOUS":
+                return combatantStates.UNCONSCIOUS;
+            case "UNSTABLE":
+                return combatantStates.UNSTABLE;
+            default:
+                return null;
+        }
+    }
+
+    public static String getStringFromCombatantState(combatantStates status){
+        switch (status){
+            case ALIVE:
+                return "ALIVE";
+            case DEAD:
+                return "DEAD";
+            case UNCONSCIOUS:
+                return "UNCONSCIOUS";
+            case UNSTABLE:
+                return "UNSTABLE";
+            default:
+                return null;
+        }
+    }
+
     @NonNull
     @Override
     public String toString() {
