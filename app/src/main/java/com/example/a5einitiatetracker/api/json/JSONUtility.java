@@ -189,7 +189,7 @@ public class JSONUtility {
         }
     }
 
-    public static boolean saveCombatToJSON(List<Combatant> combatantList, int position, String filename, Context context){
+    public static boolean saveCombatToJSON(List<Combatant> combatantList, int position, int roundCount, String filename, Context context){
         //File and writer variables
         FileWriter fw;
         File file;
@@ -206,14 +206,19 @@ public class JSONUtility {
             file = new File(context.getFilesDir(), filename);
             fw = new FileWriter(file.getAbsoluteFile(), false);
 
+            //The first two lines of the JSON file contain the saved position in the combat, and
+            //the saved round count of the combat
             JSONObject positionObj = new JSONObject();
+            JSONObject roundCountObj = new JSONObject();
             JSONArray JSONCombatantsArr = new JSONArray();
             positionObj.put("position", position);
+            positionObj.put("roundCount", roundCount);
             JSONCombatantsArr.put(positionObj);
+            JSONCombatantsArr.put(roundCountObj);
 
-            JSONObject combatantObj = null;
-            JSONArray deathSavesJSONArr = null;
-            NPC.deathSaveResult[] deathSavesArr = new NPC.deathSaveResult[6];
+            JSONObject combatantObj;
+            JSONArray deathSavesJSONArr;
+            NPC.deathSaveResult[] deathSavesArr;
             for(int i = 0; i < combatantList.size(); i++){
                 combatantObj = new JSONObject();
                 deathSavesJSONArr = new JSONArray();
@@ -287,7 +292,7 @@ public class JSONUtility {
             }
 
             JSONObject tempJsonObj;
-            for(int i = 1; i < data.length(); i = i + 2){
+            for(int i = 2; i < data.length(); i = i + 2){
                 tempJsonObj = (JSONObject) data.get(i);
                 isNPC = tempJsonObj.getBoolean("isNPC");
                 name = tempJsonObj.getString("name");
@@ -342,5 +347,27 @@ public class JSONUtility {
         }
 
         return position;
+    }
+
+    public static int loadCombatRoundFromJSON(Context context, String filename) {
+        FileReader fr;
+        File file;
+        int roundCount = 0;
+
+        try {
+            file = new File(context.getFilesDir(), filename);
+            fr = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fr);
+
+            JSONArray data = new JSONArray(bufferedReader.readLine());
+
+            roundCount = data.getJSONObject(1).getInt("roundCount");
+
+        } catch (Exception e) {
+            Log.e("COMBAT_LOAD", "Error loading the combat, could not retrieve round count data. " + e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+
+        return roundCount;
     }
 }

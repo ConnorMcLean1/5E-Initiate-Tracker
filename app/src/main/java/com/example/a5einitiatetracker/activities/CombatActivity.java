@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,11 +43,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     NPC npc, previewNpc;
     Player pc, previewPc;
     Boolean combatComplete, isPlayer;
-    int count, currentIndex;
+    int count, currentIndex, roundCount;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
             txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
-            txtViewDeathSaveFailureLabel;
+            txtViewDeathSaveFailureLabel, txtViewRoundCount;
     EditText editTextChangeHealth, editTextDamageAmount;
     Button rollDeathSaveButton, dealDamageButton, saveCombatButton;
     ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
@@ -66,10 +65,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         if(thisIntent.getBooleanExtra("isSaved", false)) {
             combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
             currentIndex = JSONUtility.loadCombatPositionFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+            roundCount = JSONUtility.loadCombatRoundFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
         }
         else {
             combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
             currentIndex = 0;
+            roundCount = 0;
         }
         //combatantsList = CombatantsActivity.combatantsList;
 
@@ -86,6 +87,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewInitiative = findViewById(R.id.txtViewInitiative);
         txtViewDeathSaveSuccessLabel = findViewById(R.id.txtViewDeathSaveSuccessBarLabel);
         txtViewDeathSaveFailureLabel = findViewById(R.id.txtViewDeathSaveFailureBarLabel);
+        txtViewRoundCount = findViewById(R.id.txtViewRoundCount);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
@@ -670,7 +672,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void saveCombat(){
-        JSONUtility.saveCombatToJSON(combatantsList, currentIndex, JSONUtility.JSON_COMBAT_SAVED_FILE_NAME, this.getApplicationContext());
+        JSONUtility.saveCombatToJSON(combatantsList, currentIndex, roundCount, JSONUtility.JSON_COMBAT_SAVED_FILE_NAME, this.getApplicationContext());
         Toast.makeText(this.getApplicationContext(), "Combat saved successfully!", Toast.LENGTH_SHORT).show();
     }
     //endregion

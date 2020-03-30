@@ -46,4 +46,6 @@
     <string name="player_entry_tag">player_entry</string>
     <string name="custom_npc_entry_tag">custom_npc_entry</string>
     <string name="btn_load">Load</string>
+    <string name="btn_save">Save</string>
+    <string name="round_count">Round Number:</string>
 </resources>
