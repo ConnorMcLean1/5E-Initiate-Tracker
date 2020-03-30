@@ -330,12 +330,9 @@ public class JSONUtility {
         try {
             file = new File(context.getFilesDir(), filename);
             fr = new FileReader(file);
-            JsonParser jsonParser = new JsonParser();
+            BufferedReader bufferedReader = new BufferedReader(fr);
 
-            Object tempObj = jsonParser.parse(fr);
-            JSONArray data = null;
-
-            data = (JSONArray) tempObj;
+            JSONArray data = new JSONArray(bufferedReader.readLine());
 
             position = data.getJSONObject(0).getInt("position");
 

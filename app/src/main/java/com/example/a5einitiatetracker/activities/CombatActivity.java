@@ -65,13 +65,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         Intent thisIntent = getIntent();
         if(thisIntent.getBooleanExtra("isSaved", false)) {
             combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
-            //currentIndex = JSONUtility.loadCombatPositionFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+            currentIndex = JSONUtility.loadCombatPositionFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
         }
-        else
+        else {
             combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
+            currentIndex = 0;
+        }
         //combatantsList = CombatantsActivity.combatantsList;
 
-        currentIndex = 0;
         combatComplete = false;
 
         //Initialize the TextViews
@@ -195,7 +196,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
         //region INITIAL SCREEN SETUP
         //Setup combat screen using the first combatant in the list
-        currCombatant = combatantsList.get(0);
+        currCombatant = combatantsList.get(currentIndex);
         if (currCombatant instanceof Player) {
             isPlayer = true;
             pc = (Player) currCombatant;
