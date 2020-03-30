@@ -208,13 +208,11 @@ public class JSONUtility {
 
             //The first two lines of the JSON file contain the saved position in the combat, and
             //the saved round count of the combat
-            JSONObject positionObj = new JSONObject();
-            JSONObject roundCountObj = new JSONObject();
+            JSONObject generalDataObj = new JSONObject();
             JSONArray JSONCombatantsArr = new JSONArray();
-            positionObj.put("position", position);
-            positionObj.put("roundCount", roundCount);
-            JSONCombatantsArr.put(positionObj);
-            JSONCombatantsArr.put(roundCountObj);
+            generalDataObj.put("position", position);
+            generalDataObj.put("roundCount", roundCount);
+            JSONCombatantsArr.put(generalDataObj);
 
             JSONObject combatantObj;
             JSONArray deathSavesJSONArr;
@@ -292,7 +290,7 @@ public class JSONUtility {
             }
 
             JSONObject tempJsonObj;
-            for(int i = 2; i < data.length(); i = i + 2){
+            for(int i = 1; i < data.length(); i = i + 2){
                 tempJsonObj = (JSONObject) data.get(i);
                 isNPC = tempJsonObj.getBoolean("isNPC");
                 name = tempJsonObj.getString("name");
@@ -361,7 +359,7 @@ public class JSONUtility {
 
             JSONArray data = new JSONArray(bufferedReader.readLine());
 
-            roundCount = data.getJSONObject(1).getInt("roundCount");
+            roundCount = data.getJSONObject(0).getInt("roundCount");
 
         } catch (Exception e) {
             Log.e("COMBAT_LOAD", "Error loading the combat, could not retrieve round count data. " + e.getLocalizedMessage());
