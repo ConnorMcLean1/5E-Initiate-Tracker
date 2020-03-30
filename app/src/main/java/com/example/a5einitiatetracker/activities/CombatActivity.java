@@ -50,7 +50,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
             txtViewDeathSaveFailureLabel;
     EditText editTextChangeHealth, editTextDamageAmount;
-    Button rollDeathSaveButton, dealDamageButton;
+    Button rollDeathSaveButton, dealDamageButton, saveCombatButton;
     ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
     VerticalRatingBar deathSaveSuccessBar, deathSaveFailureBar;
@@ -63,8 +63,10 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         //Gets an intent to determine if this combat is one loaded previously or just from the
         //'next' button being clicked in the CombatantsActivity
         Intent thisIntent = getIntent();
-        if(thisIntent.getBooleanExtra("isSaved", false))
+        if(thisIntent.getBooleanExtra("isSaved", false)) {
             combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+            //currentIndex = JSONUtility.loadCombatPositionFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+        }
         else
             combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
         //combatantsList = CombatantsActivity.combatantsList;
@@ -138,7 +140,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         endCombatButton = findViewById(R.id.btnEndCombat);
         endCombatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            endCombatOnClick();
+                endCombatOnClick();
+            }
+        });
+
+        saveCombatButton = findViewById(R.id.saveCombatButton);
+        saveCombatButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                saveCombat();
             }
         });
 
@@ -657,6 +666,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             editTextChangeHealth.setVisibility(View.VISIBLE);
             txtViewChangeHp.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void saveCombat(){
+        JSONUtility.saveCombatToJSON(combatantsList, currentIndex, JSONUtility.JSON_COMBAT_SAVED_FILE_NAME, this.getApplicationContext());
+        Toast.makeText(this.getApplicationContext(), "Combat saved successfully!", Toast.LENGTH_SHORT).show();
     }
     //endregion
 
