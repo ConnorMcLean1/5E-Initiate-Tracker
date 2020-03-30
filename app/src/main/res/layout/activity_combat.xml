@@ -19,6 +19,27 @@
         app:layout_constraintBottom_toTopOf="@id/txtViewCombatantName" />
 
     <TextView
+        android:id="@+id/txtViewRoundCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/round_count"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txtViewInitiative"
+        />
+
+    <Button
+        android:id="@+id/saveCombatButton"
+        android:text="@string/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/txtViewCombatantName"
+        app:layout_constraintLeft_toLeftOf="@+id/txtViewInitiative"
+        />
+
+    <TextView
         android:id="@+id/txtViewCombatantName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -231,5 +252,43 @@
         app:layout_constraintEnd_toStartOf="@+id/btnNext"
         app:layout_constraintStart_toEndOf="@+id/btnPrev"
         app:layout_constraintTop_toBottomOf="@+id/btnDeathSave" />
+
+    <com.example.a5einitiatetracker.views.VerticalRatingBar
+        android:id="@+id/deathSaveSuccessBar"
+        android:layout_width="45dp"
+        android:layout_height="96dp"
+        android:isIndicator="true"
+        android:numStars="2"
+        android:rating="0"
+        android:stepSize="1"
+        app:layout_constraintRight_toLeftOf="@id/btnDeathSave"
+        app:layout_constraintTop_toTopOf="@id/txtViewCombatantDeathSaves" />
+
+    <com.example.a5einitiatetracker.views.VerticalRatingBar
+        android:id="@+id/deathSaveFailureBar"
+        android:layout_width="45dp"
+        android:layout_height="96dp"
+        android:isIndicator="true"
+        android:numStars="2"
+        android:rating="0"
+        android:stepSize="1"
+        app:layout_constraintLeft_toRightOf="@id/btnDeathSave"
+        app:layout_constraintTop_toTopOf="@id/txtViewCombatantDeathSaves" />
+
+    <TextView
+        android:id="@+id/txtViewDeathSaveSuccessBarLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Successes"
+        app:layout_constraintBottom_toTopOf="@+id/deathSaveSuccessBar"
+        app:layout_constraintEnd_toEndOf="@+id/deathSaveSuccessBar" />
+
+    <TextView
+        android:id="@+id/txtViewDeathSaveFailureBarLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Failures"
+        app:layout_constraintBottom_toTopOf="@+id/deathSaveFailureBar"
+        app:layout_constraintStart_toStartOf="@id/deathSaveFailureBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

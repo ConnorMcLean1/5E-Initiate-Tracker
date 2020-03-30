@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,10 +23,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.a5einitiatetracker.R;
+import com.example.a5einitiatetracker.api.json.JSONUtility;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.example.a5einitiatetracker.dialogs.CombatantsDialog;
+import com.example.a5einitiatetracker.views.VerticalRatingBar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,23 +43,37 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     NPC npc, previewNpc;
     Player pc, previewPc;
     Boolean combatComplete, isPlayer;
-    int count, currentIndex;
+    int count, currentIndex, roundCount;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
-            txtViewCurrentHpLabel, txtViewInitiative;
+            txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
+            txtViewDeathSaveFailureLabel, txtViewRoundCount;
     EditText editTextChangeHealth, editTextDamageAmount;
-    Button rollDeathSaveButton, dealDamageButton;
+    Button rollDeathSaveButton, dealDamageButton, saveCombatButton;
     ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
     Spinner statusSpinner;
+    VerticalRatingBar deathSaveSuccessBar, deathSaveFailureBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combat);
 
-        combatantsList = CombatantsActivity.combatantsList;
+        //Gets an intent to determine if this combat is one loaded previously or just from the
+        //'next' button being clicked in the CombatantsActivity
+        Intent thisIntent = getIntent();
+        if(thisIntent.getBooleanExtra("isSaved", false)) {
+            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+            currentIndex = JSONUtility.loadCombatPositionFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+            roundCount = JSONUtility.loadCombatRoundFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
+        }
+        else {
+            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
+            currentIndex = 0;
+            roundCount = 1;
+        }
+        //combatantsList = CombatantsActivity.combatantsList;
 
-        currentIndex = 0;
         combatComplete = false;
 
         //Initialize the TextViews
@@ -70,10 +85,17 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         txtViewDeathSaves = findViewById(R.id.txtViewCombatantDeathSaves);
         txtViewCurrentHpLabel = findViewById(R.id.txtViewCombatantCurrentHealthLabel);
         txtViewInitiative = findViewById(R.id.txtViewInitiative);
+        txtViewDeathSaveSuccessLabel = findViewById(R.id.txtViewDeathSaveSuccessBarLabel);
+        txtViewDeathSaveFailureLabel = findViewById(R.id.txtViewDeathSaveFailureBarLabel);
+        txtViewRoundCount = findViewById(R.id.txtViewRoundCount);
 
         //Initialize the EditTexts
         editTextChangeHealth = findViewById(R.id.editTxtHealth);
         editTextDamageAmount = findViewById(R.id.editTxtDamageAmount);
+
+        //Initialize the RatingBars
+        deathSaveFailureBar = findViewById(R.id.deathSaveFailureBar);
+        deathSaveSuccessBar = findViewById(R.id.deathSaveSuccessBar);
 
         //Button to go to the previous combatant in initiative
         nextButton = findViewById(R.id.btnNext);
@@ -121,7 +143,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         endCombatButton = findViewById(R.id.btnEndCombat);
         endCombatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            endCombatOnClick();
+                endCombatOnClick();
+            }
+        });
+
+        saveCombatButton = findViewById(R.id.saveCombatButton);
+        saveCombatButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                saveCombat();
             }
         });
 
@@ -168,9 +197,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         statusSpinner.setPrompt("Status");
 
         //region INITIAL SCREEN SETUP
-        //TODO should change the below to find the first non-dead combatant most likely
         //Setup combat screen using the first combatant in the list
-        currCombatant = combatantsList.get(0);
+        currCombatant = combatantsList.get(currentIndex);
         if (currCombatant instanceof Player) {
             isPlayer = true;
             pc = (Player) currCombatant;
@@ -181,6 +209,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         }
         updateUIValues();
         updateControls();
+        updateRoundCount();
 
         editTextChangeHealth.setText("0");
         //endregion
@@ -278,19 +307,18 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             if (currentIndex+1 < combatantsList.size()) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex++;
                 currCombatant = combatantsList.get(currentIndex);
-                Log.d("MAIN_LOOP_TEST","Next");
             }
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = 0;
+                roundCount++;
                 count++;
                 currCombatant = combatantsList.get(currentIndex);
-                Log.d("MAIN_LOOP_TEST", "Next Button. No next combatant. Reset to start of iterator");
+                updateRoundCount();
             }
         } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
 
         if(count > 1){ //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
             Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
-            Log.d("MAIN_LOOP_TEST", "Next Button. No non-dead combatants. Loop would be infinite");
         }
 
         if(currCombatant instanceof Player){ //Check if the current combatant is a player or not, and cast it appropriately
@@ -298,14 +326,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             isPlayer = true;
             updateUIValues();
             updateControls();
-            Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else{
             npc = (NPC) currCombatant;
             isPlayer = false;
             updateUIValues();
             updateControls();
-            Log.d("MAIN_LOOP_TEST", "Next Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
 
@@ -316,18 +342,15 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex--;
                 currCombatant = combatantsList.get(currentIndex);
-                Log.d("MAIN_LOOP_TEST","Previous");
             } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = combatantsList.size()-1;
                 count++;
                 currCombatant = combatantsList.get(currentIndex);
-                Log.d("MAIN_LOOP_TEST", "Previous Button. No previous combatant. Reset to end of iterator");
             }
         } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
 
         if (count > 1) { //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
             Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
-            Log.d("MAIN_LOOP_TEST", "Previous Button. No non-dead combatants. Loop would be infinite");
         }
 
         if (currCombatant instanceof Player) { //Check if the current combatant is a player or not, and cast it appropriately
@@ -492,6 +515,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         updatePreviews();
         updateInitiative();
         updateDamageControls();
+        updateDeathSaveBars();
     }
 
     private void updateControls(){
@@ -553,6 +577,11 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCombatantName.setText(npc.getName());
     }
 
+    private void updateRoundCount(){
+        String roundCountText = getString(R.string.round_count) + "\n" + roundCount;
+        txtViewRoundCount.setText(roundCountText);
+    }
+
     private void updatePreviews(){
 
         previewNpc = npc;
@@ -588,19 +617,37 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             rollDeathSaveButton.setEnabled(false);
             rollDeathSaveButton.setVisibility(View.GONE);
             txtViewDeathSaves.setVisibility(View.GONE);
-
+            deathSaveSuccessBar.setVisibility(View.GONE);
+            deathSaveFailureBar.setVisibility(View.GONE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.GONE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.GONE);
         }
         else if(npc.getCombatState() != Combatant.combatantStates.UNSTABLE){
             rollDeathSaveButton.setEnabled(false);
             rollDeathSaveButton.setVisibility(View.VISIBLE);
             txtViewDeathSaves.setVisibility(View.VISIBLE);
+            deathSaveSuccessBar.setVisibility(View.VISIBLE);
+            deathSaveFailureBar.setVisibility(View.VISIBLE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.VISIBLE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.VISIBLE);
         }
         else {
             rollDeathSaveButton.setEnabled(true);
             rollDeathSaveButton.setVisibility(View.VISIBLE);
             txtViewDeathSaves.setVisibility(View.VISIBLE);
+            deathSaveSuccessBar.setVisibility(View.VISIBLE);
+            deathSaveFailureBar.setVisibility(View.VISIBLE);
+            txtViewDeathSaveFailureLabel.setVisibility(View.VISIBLE);
+            txtViewDeathSaveSuccessLabel.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void updateDeathSaveBars(){
+        if(!isPlayer) {
+            deathSaveSuccessBar.setRating(npc.getDeathSaveSuccesses());
+            deathSaveFailureBar.setRating(npc.getDeathSaveFailures());
+        }
     }
 
     private void updateHpControls(){
@@ -622,6 +669,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             editTextChangeHealth.setVisibility(View.VISIBLE);
             txtViewChangeHp.setVisibility(View.VISIBLE);
         }
+    }
+
+    //Called when the save button is pressed. Saves the combat data to a file and displays a message
+    private void saveCombat(){
+        JSONUtility.saveCombatToJSON(combatantsList, currentIndex, roundCount, JSONUtility.JSON_COMBAT_SAVED_FILE_NAME, this.getApplicationContext());
+        Toast.makeText(this.getApplicationContext(), "Combat saved successfully!", Toast.LENGTH_SHORT).show();
     }
     //endregion
 
