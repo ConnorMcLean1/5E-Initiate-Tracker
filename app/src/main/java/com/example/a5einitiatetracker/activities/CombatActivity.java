@@ -49,8 +49,8 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
             txtViewDeathSaveFailureLabel, txtViewRoundCount;
     EditText editTextChangeHealth, editTextDamageAmount;
-    Button rollDeathSaveButton, dealDamageButton, saveCombatButton;
-    ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton;
+    Button rollDeathSaveButton, dealDamageButton;
+    ImageButton  endCombatButton, damageHpButton, healHpButton, previousButton, nextButton, saveCombatButton;
     Spinner statusSpinner;
     VerticalRatingBar deathSaveSuccessBar, deathSaveFailureBar;
 

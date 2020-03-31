@@ -29,11 +29,13 @@
         app:layout_constraintTop_toTopOf="@id/txtViewInitiative"
         />
 
-    <Button
+    <ImageButton
         android:id="@+id/saveCombatButton"
-        android:text="@string/btn_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:src="@drawable/button_save"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/txtViewCombatantName"
         app:layout_constraintLeft_toLeftOf="@+id/txtViewInitiative"
