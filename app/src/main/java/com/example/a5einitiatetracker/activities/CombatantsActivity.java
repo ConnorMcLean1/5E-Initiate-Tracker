@@ -120,8 +120,7 @@ public class CombatantsActivity extends AppCompatActivity {
             return;
         }
         isValid = true;
-        checkMonsterQuantityValidity();
-        checkMonstersValidity();
+        checkFieldValidation();
         final HashMap<String, Integer> monsters = createMonsterKeyValuePair();
         if (isValid) {
             getPlayers();
@@ -282,7 +281,6 @@ public class CombatantsActivity extends AppCompatActivity {
             v = parentLinearLayout.getChildAt(i);
             if (v.getTag().toString().equals("player_entry")) {
                 playerInitiativeEditText = v.findViewById(R.id.editTxtInitiative);
-                playerNameEditText = v.findViewById(R.id.editTxtPlayerName);
                 try{
                     Integer.parseInt(playerInitiativeEditText.getText().toString());
                     playerInitiativeEditText.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -314,6 +312,13 @@ public class CombatantsActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void checkFieldValidation(){
+        checkMonstersValidity();
+        checkMonsterQuantityValidity();
+        checkPlayerNameValidity();
+        checkPlayerInitiativeValidity();
     }
 
     public void onDelete(View v) {
