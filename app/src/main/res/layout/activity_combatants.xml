@@ -44,6 +44,14 @@
             app:fab_icon="@drawable/ic_person_add_white_24dp"
             app:fab_title="Add Player" />
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddCustomNPC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_size="mini"
+            app:fab_icon="@drawable/ic_person_add_white_24dp"
+            app:fab_title="Add Custom NPC" />
+
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     <ImageButton

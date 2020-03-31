@@ -30,4 +30,12 @@
         <item name="android:textColor">@color/cardview_light_background</item>
     </style>
 
+    <style name="deathSaveFailureBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/death_save_failure_selector</item>
+    </style>
+
+    <style name="deathSaveSuccessBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/death_save_success_selector</item>
+    </style>
+
 </resources>

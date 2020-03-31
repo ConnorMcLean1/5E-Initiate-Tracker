@@ -30,4 +30,15 @@
         android:background="@null"
         android:layout_gravity="center"/>
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load"
+        app:layout_constraintTop_toBottomOf="@+id/btnStart"
+        app:layout_constraintLeft_toLeftOf="@+id/btnStart"
+        android:onClick="startSavedCombat"
+     />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

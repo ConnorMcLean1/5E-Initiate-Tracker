@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class NPC extends Combatant implements Comparable<Combatant> {
@@ -33,7 +34,17 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         super.initiativeModifier = 0;
         super.status = combatantStates.ALIVE;
     }
+    public NPC(String name, int initiative, int initiativeModifier, combatantStates status, int armourClass, int health, int maxHealth, deathSaveResult[] deathSaves){
+        this.name = name;
+        this.initiative = initiative;
+        this.initiativeModifier = initiativeModifier;
+        this.status = status;
+        this.armourClass = armourClass;
+        this.health = health;
+        this.maxHealth = maxHealth;
+        this.deathSaves = Arrays.copyOf(deathSaves, 6);
 
+    }
     public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv, int armourClass) {
         this.status = status;
         this.health = health;
@@ -45,12 +56,56 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
 
+    public NPC(String name, int initiative, int health, int ac) {
+        this.status = combatantStates.ALIVE;
+        this.name = name;
+        this.initiative = initiative;
+        this.maxHealth = health;
+        this.health = health;
+        this.armourClass = ac;
+        deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
+    }
+
     public deathSaveResult[] getDeathSaves() {
         return deathSaves;
     }
 
     public void setDeathSaves(deathSaveResult[] deathSaves) {
         this.deathSaves = deathSaves;
+    }
+
+    public int getDeathSaveFailures() {
+        int failures = 0;
+        deathSaveResult temp;
+        for(int i = 0; i < deathSaves.length; i++){
+            temp = deathSaves[i];
+            switch (temp){
+                case FAILURE:
+                    failures++;
+                    break;
+                case NONE:
+                    i = deathSaves.length; //break the loop
+                    break;
+            }
+        }
+        return failures;
+    }
+
+    public int getDeathSaveSuccesses() {
+        int successes = 0;
+        deathSaveResult temp;
+        for(int i = 0; i < deathSaves.length; i++){
+            temp = deathSaves[i];
+            switch (temp){
+                case SUCCESS:
+                    successes++;
+                    break;
+                case NONE:
+                    i = deathSaves.length; //break the loop
+                    break;
+            }
+        }
+        return successes;
     }
 
     public int getMaxHealth() {return maxHealth;}
@@ -85,6 +140,21 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public static int dexToMod(int dex){
         Double mod = Math.floor(((dex-10)/2));
         return mod.intValue();
+    }
+
+    public static deathSaveResult convertStringToDeathSaveResult(String result){
+        switch (result){
+            case "NONE":
+                return deathSaveResult.NONE;
+            case "CRITICALSUCCESS":
+                return deathSaveResult.CRITICALSUCCESS;
+            case "FAILURE":
+                return deathSaveResult.FAILURE;
+            case "SUCCESS":
+                return deathSaveResult.SUCCESS;
+            default:
+                return deathSaveResult.NONE;
+        }
     }
 
     //endregion
@@ -188,6 +258,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
     public void resetDeathSaves(){
         deathSaves = new deathSaveResult[]{deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE, deathSaveResult.NONE};
     }
+
 
     public boolean damageNpc(int damage, Context context){
         health -= damage;
