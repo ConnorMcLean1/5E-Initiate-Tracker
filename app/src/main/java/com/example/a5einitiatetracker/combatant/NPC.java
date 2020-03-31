@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class NPC extends Combatant implements Comparable<Combatant> {
@@ -41,7 +42,7 @@ public class NPC extends Combatant implements Comparable<Combatant> {
         this.armourClass = armourClass;
         this.health = health;
         this.maxHealth = maxHealth;
-        this.deathSaves = deathSaves;
+        this.deathSaves = Arrays.copyOf(deathSaves, 6);
 
     }
     public NPC(int initiativeModifier, combatantStates status, int health, String name, int adv, int armourClass) {

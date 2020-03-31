@@ -68,7 +68,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             roundCount = JSONUtility.loadCombatRoundFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
         }
         else {
-            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
+            combatantsList = CombatantsActivity.combatantsList;
             currentIndex = 0;
             roundCount = 1;
         }
