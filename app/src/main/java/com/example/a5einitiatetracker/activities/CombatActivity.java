@@ -43,7 +43,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     NPC npc, previewNpc;
     Player pc, previewPc;
     Boolean combatComplete, isPlayer;
-    int count, currentIndex, roundCount;
+    int currentIndex, roundCount;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
             txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
@@ -283,7 +283,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
         builder.setCancelable(true);
         builder.setTitle("Combat Finish");
-        builder.setMessage("Are you sure you would like to finish combat? You can't return to this combat later.");
+        builder.setMessage("Are you sure you would like to finish combat? Any unsaved changes will be lost.");
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
@@ -301,9 +301,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void nextCombatantOnClick(){
-        count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
 
-        do { //Get the next combatant, skipping over dead ones
             if (currentIndex+1 < combatantsList.size()) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex++;
                 currCombatant = combatantsList.get(currentIndex);
@@ -311,15 +309,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = 0;
                 roundCount++;
-                count++;
                 currCombatant = combatantsList.get(currentIndex);
                 updateRoundCount();
             }
-        } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
-
-        if(count > 1){ //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
-            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
-        }
 
         if(currCombatant instanceof Player){ //Check if the current combatant is a player or not, and cast it appropriately
             pc = (Player) currCombatant;
@@ -336,21 +328,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void previousCombatantOnClick(){
-        count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
 
-        do { //Get the next combatant, skipping over dead ones
-            if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
-                currentIndex--;
-                currCombatant = combatantsList.get(currentIndex);
-            } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
-                currentIndex = combatantsList.size()-1;
-                count++;
-                currCombatant = combatantsList.get(currentIndex);
-            }
-        } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
-
-        if (count > 1) { //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
-            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
+        if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
+            currentIndex--;
+            currCombatant = combatantsList.get(currentIndex);
+        } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
+            currentIndex = combatantsList.size()-1;
+            currCombatant = combatantsList.get(currentIndex);
         }
 
         if (currCombatant instanceof Player) { //Check if the current combatant is a player or not, and cast it appropriately
@@ -358,14 +342,12 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             isPlayer = true;
             updateUIValues();
             updateControls();
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else {
             npc = (NPC) currCombatant;
             isPlayer = false;
             updateUIValues();
             updateControls();
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
 
