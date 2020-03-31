@@ -31,7 +31,6 @@
 
     <ImageButton
         android:id="@+id/saveCombatButton"
-        android:text="@string/btn_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
