@@ -43,7 +43,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     NPC npc, previewNpc;
     Player pc, previewPc;
     Boolean combatComplete, isPlayer;
-    int count, currentIndex, roundCount;
+    int currentIndex, roundCount;
     TextView txtViewCombatantHealth, txtViewCombatantName, txtViewNextCombatantPreview,
             txtViewPrevCombatantPreview, txtViewDeathSaves, txtViewChangeHp,
             txtViewCurrentHpLabel, txtViewInitiative, txtViewDeathSaveSuccessLabel,
@@ -68,7 +68,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             roundCount = JSONUtility.loadCombatRoundFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_SAVED_FILE_NAME);
         }
         else {
-            combatantsList = JSONUtility.loadCombatFromJSON(this.getApplicationContext(), JSONUtility.JSON_COMBAT_CURRENT_FILE_NAME);
+            combatantsList = CombatantsActivity.combatantsList;
             currentIndex = 0;
             roundCount = 1;
         }
@@ -283,7 +283,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
         builder.setCancelable(true);
         builder.setTitle("Combat Finish");
-        builder.setMessage("Are you sure you would like to finish combat? You can't return to this combat later.");
+        builder.setMessage("Are you sure you would like to finish combat? Any unsaved changes will be lost.");
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
@@ -301,9 +301,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void nextCombatantOnClick(){
-        count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
 
-        do { //Get the next combatant, skipping over dead ones
             if (currentIndex+1 < combatantsList.size()) { //Check if there is another combatant in the list. If yes, grab it out
                 currentIndex++;
                 currCombatant = combatantsList.get(currentIndex);
@@ -311,15 +309,9 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             else { //If not, the iterator is at the end of the list. Loop it back to the beginning
                 currentIndex = 0;
                 roundCount++;
-                count++;
                 currCombatant = combatantsList.get(currentIndex);
                 updateRoundCount();
             }
-        } while(currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
-
-        if(count > 1){ //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
-            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
-        }
 
         if(currCombatant instanceof Player){ //Check if the current combatant is a player or not, and cast it appropriately
             pc = (Player) currCombatant;
@@ -336,21 +328,13 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void previousCombatantOnClick(){
-        count = 0; //Counter variable to prevent infinite looping if the combat only contains dead characters
 
-        do { //Get the next combatant, skipping over dead ones
-            if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
-                currentIndex--;
-                currCombatant = combatantsList.get(currentIndex);
-            } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
-                currentIndex = combatantsList.size()-1;
-                count++;
-                currCombatant = combatantsList.get(currentIndex);
-            }
-        } while (currCombatant.getCombatState() == Combatant.combatantStates.DEAD && count < 2);
-
-        if (count > 1) { //If the count goes over 1 the do/while likely would have gone on infinitely. The combat should end at this point, as there is nothing left to do
-            Toast.makeText(getApplicationContext(), "The combat contains no non-dead combatants. Add another combatant, change one of their states, or end the combat.", Toast.LENGTH_SHORT).show();
+        if (currentIndex-1 >= 0) { //Check if there is another combatant in the list. If yes, grab it out
+            currentIndex--;
+            currCombatant = combatantsList.get(currentIndex);
+        } else { //If not, the iterator is at the end of the list. Loop it back to the beginning
+            currentIndex = combatantsList.size()-1;
+            currCombatant = combatantsList.get(currentIndex);
         }
 
         if (currCombatant instanceof Player) { //Check if the current combatant is a player or not, and cast it appropriately
@@ -358,21 +342,18 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
             isPlayer = true;
             updateUIValues();
             updateControls();
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + pc.getName() + " is a PC.");
         }
         else {
             npc = (NPC) currCombatant;
             isPlayer = false;
             updateUIValues();
             updateControls();
-            Log.d("MAIN_LOOP_TEST", "Previous Button. The current combatant: " + npc.getName() + " is a NPC.");
         }
     }
 
     private void rollDeathSaveOnClick() {
         if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
             npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
-            Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
             checkDeathSaves();
             updateUIValues();
         } else {
@@ -400,7 +381,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
                 editTextChangeHealth.setText("0");
                 npc.setHealth(currCombatantHp);
-                Log.d("MAIN_LOOP_TEST", "ChangeHp: the combatant: " + npc.getName() + " now has: " + npc.getHealth() + " health.");
 
                 if ((npc.getCombatState() == Combatant.combatantStates.UNSTABLE || npc.getCombatState() == Combatant.combatantStates.UNCONSCIOUS) && npc.getHealth() > 0) {
                     npc.setCombatState(Combatant.combatantStates.ALIVE);
@@ -489,19 +469,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     private int getStatusSpinnerPosition(Combatant.combatantStates status){
         switch (status){
             case ALIVE:
-                Log.d("SPINNER_POS","ALIVE, 0");
                 return 0;
             case DEAD:
-                Log.d("SPINNER_POS","DEAD, 1");
                 return 1;
             case UNCONSCIOUS:
-                Log.d("SPINNER_POS","UNCONSCIOUS, 2");
                 return 2;
             case UNSTABLE:
-                Log.d("SPINNER_POS","UNSTABLE, 3");
                 return 3;
             default:
-                Log.d("SPINNER_POS","Default, 0");
                 return 0;
         }
     }
@@ -685,21 +660,18 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     private void checkDeathSaves(){
         switch (npc.checkDeathSaves()) {
             case UNSTABLE:
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is still UNSTABLE.");
                 break;
             case DEAD:
                 npc.resetDeathSaves();
                 npc.setStatus(Combatant.combatantStates.DEAD);
                 statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.DEAD));
                 Toast.makeText(getApplicationContext(), "The current combatant has failed 3 death saves and is now dead.", Toast.LENGTH_SHORT).show();
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is now DEAD.");
                 break;
             case STABLE:
                 npc.resetDeathSaves();
                 npc.setStatus(Combatant.combatantStates.UNCONSCIOUS);
                 statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.UNCONSCIOUS));
                 Toast.makeText(getApplicationContext(), "The current combatant has succeeded 3 death saves and is now stable.", Toast.LENGTH_SHORT).show();
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now UNCONSCIOUS (Stable).");
                 break;
             case ALIVE:
                 npc.resetDeathSaves();
@@ -707,7 +679,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                 npc.setHealth(1);
                 statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.ALIVE));
                 Toast.makeText(getApplicationContext(), "The current combatant has critically succeeded and is alive again.", Toast.LENGTH_SHORT).show();
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now ALIVE.");
                 break;
 
         }
