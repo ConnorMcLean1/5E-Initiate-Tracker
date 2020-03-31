@@ -354,7 +354,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     private void rollDeathSaveOnClick() {
         if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
             npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
-            Log.d("MAIN_LOOP_TEST","Checking death saves. Current saves are: " + Arrays.toString(npc.getDeathSaves()));
             checkDeathSaves();
             updateUIValues();
         } else {
@@ -382,7 +381,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
                 editTextChangeHealth.setText("0");
                 npc.setHealth(currCombatantHp);
-                Log.d("MAIN_LOOP_TEST", "ChangeHp: the combatant: " + npc.getName() + " now has: " + npc.getHealth() + " health.");
 
                 if ((npc.getCombatState() == Combatant.combatantStates.UNSTABLE || npc.getCombatState() == Combatant.combatantStates.UNCONSCIOUS) && npc.getHealth() > 0) {
                     npc.setCombatState(Combatant.combatantStates.ALIVE);
@@ -471,19 +469,14 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     private int getStatusSpinnerPosition(Combatant.combatantStates status){
         switch (status){
             case ALIVE:
-                Log.d("SPINNER_POS","ALIVE, 0");
                 return 0;
             case DEAD:
-                Log.d("SPINNER_POS","DEAD, 1");
                 return 1;
             case UNCONSCIOUS:
-                Log.d("SPINNER_POS","UNCONSCIOUS, 2");
                 return 2;
             case UNSTABLE:
-                Log.d("SPINNER_POS","UNSTABLE, 3");
                 return 3;
             default:
-                Log.d("SPINNER_POS","Default, 0");
                 return 0;
         }
     }
@@ -667,21 +660,18 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     private void checkDeathSaves(){
         switch (npc.checkDeathSaves()) {
             case UNSTABLE:
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is still UNSTABLE.");
                 break;
             case DEAD:
                 npc.resetDeathSaves();
                 npc.setStatus(Combatant.combatantStates.DEAD);
                 statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.DEAD));
                 Toast.makeText(getApplicationContext(), "The current combatant has failed 3 death saves and is now dead.", Toast.LENGTH_SHORT).show();
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combatant rolled a death save and is now DEAD.");
                 break;
             case STABLE:
                 npc.resetDeathSaves();
                 npc.setStatus(Combatant.combatantStates.UNCONSCIOUS);
                 statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.UNCONSCIOUS));
                 Toast.makeText(getApplicationContext(), "The current combatant has succeeded 3 death saves and is now stable.", Toast.LENGTH_SHORT).show();
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now UNCONSCIOUS (Stable).");
                 break;
             case ALIVE:
                 npc.resetDeathSaves();
@@ -689,7 +679,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                 npc.setHealth(1);
                 statusSpinner.setSelection(getStatusSpinnerPosition(Combatant.combatantStates.ALIVE));
                 Toast.makeText(getApplicationContext(), "The current combatant has critically succeeded and is alive again.", Toast.LENGTH_SHORT).show();
-                Log.d("MAIN_LOOP_TEST", "Death Save. The current combat rolled a death save and is now ALIVE.");
                 break;
 
         }
