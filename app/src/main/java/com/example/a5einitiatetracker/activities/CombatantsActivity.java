@@ -304,7 +304,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 playerNameEditText = v.findViewById(R.id.editTxtPlayerName);
                 if(playerNameEditText.getText().toString().equals("")){
                     isValid = false;
-                    playerNameEditText.setBackgroundColor(Color.parseColor("##f54242"));
+                    playerNameEditText.setBackgroundColor(Color.parseColor("#f54242"));
                     sb.append("All players must have a name to continue.\n");
                 }
                 else{
