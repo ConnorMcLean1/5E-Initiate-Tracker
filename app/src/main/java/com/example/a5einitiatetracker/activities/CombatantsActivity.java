@@ -212,7 +212,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                 if (m.containsKey(name.getText().toString())) {
                     isValid = false;
-                    sb.append(String.format("The monster %s has already been added, please delete one.\n", name.getText().toString()));
+                    sb.append(String.format("The monster ' %s ' has already been added, please delete one.\n", name.getText().toString()));
                 } else if(isValid) {
                     m.put(
                             name.getText().toString(),
@@ -240,7 +240,7 @@ public class CombatantsActivity extends AppCompatActivity {
                     Log.d("TEST","Monster Quantity Valid");
                 } else {
                     name.setBackgroundColor(Color.parseColor("#f54242"));
-                    sb.append(String.format("%s is not a valid monster, please select a valid monster.\n", monster));
+                    sb.append(String.format("' %s ' is not a valid monster, please select a valid monster.\n", monster));
                     isValid = false;
                     Log.d("TEST","Monster Quantity Invalid");
                 }
@@ -265,7 +265,7 @@ public class CombatantsActivity extends AppCompatActivity {
                     Log.d("TEST", "Monster Valid");
                 } catch (NumberFormatException e) {
                     num.setBackgroundColor(Color.parseColor("#f54242"));
-                    sb.append(String.format("%s must have a quantity entered.\n", name.getText().toString()));
+                    sb.append(String.format("' %s ' must have a quantity entered.\n", name.getText().toString()));
                     isValid = false;
                     Log.d("TEST", "Monster Invalid");
                 }
@@ -281,6 +281,7 @@ public class CombatantsActivity extends AppCompatActivity {
             v = parentLinearLayout.getChildAt(i);
             if (v.getTag().toString().equals("player_entry")) {
                 playerInitiativeEditText = v.findViewById(R.id.editTxtInitiative);
+                playerNameEditText = v.findViewById(R.id.editTxtPlayerName);
                 try{
                     Integer.parseInt(playerInitiativeEditText.getText().toString());
                     playerInitiativeEditText.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -288,7 +289,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 catch (NumberFormatException e){
                     playerInitiativeEditText.setBackgroundColor(Color.parseColor("#f54242"));
                     isValid = false;
-                    sb.append(String.format(" %s must have a initiative entered.\n", playerInitiativeEditText.getText().toString()));
+                    sb.append(String.format(" ' %s ' must have a initiative entered.\n", playerNameEditText.getText().toString()));
                 }
             }
         }
@@ -314,11 +315,101 @@ public class CombatantsActivity extends AppCompatActivity {
         }
     }
 
+    private void checkCustomNPCNameValidity(){
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText npcNameEditText;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("custom_npc_entry")) {
+                npcNameEditText = v.findViewById(R.id.editTxtCustomNPCName);
+                if(npcNameEditText.getText().toString().equals("")){
+                    isValid = false;
+                    npcNameEditText.setBackgroundColor(Color.parseColor("#f54242"));
+                    sb.append("All custom NPCs must have a name to continue.\n");
+                }
+                else{
+                    npcNameEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+            }
+        }
+    }
+
+    private void checkCustomNPCInitiativeValidity(){
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText npcInitiativeEditText, npcNameEditText;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("custom_npc_entry")) {
+                npcInitiativeEditText = v.findViewById(R.id.editTxtCustomNPCInitiative);
+                npcNameEditText = v.findViewById(R.id.editTxtCustomNPCName);
+                try{
+                    Integer.parseInt(npcInitiativeEditText.getText().toString());
+                    npcInitiativeEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+                catch (NumberFormatException e){
+                    npcInitiativeEditText.setBackgroundColor(Color.parseColor("#f54242"));
+                    isValid = false;
+                    sb.append(String.format("The custom NPC ' %s ' must have a initiative entered.\n",  npcNameEditText.getText().toString()));
+                }
+            }
+        }
+    }
+
+    private void checkCustomNPCHealthValidity(){
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText npcHealthEditText, npcNameEditText;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("custom_npc_entry")) {
+                npcHealthEditText = v.findViewById(R.id.editTxtCustomNPCHealth);
+                npcNameEditText = v.findViewById(R.id.editTxtCustomNPCName);
+                try{
+                    Integer.parseInt(npcHealthEditText.getText().toString());
+                    npcHealthEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+                catch (NumberFormatException e){
+                    npcHealthEditText.setBackgroundColor(Color.parseColor("#f54242"));
+                    isValid = false;
+                    sb.append(String.format("The custom NPC ' %s ' must have a health value entered.\n", npcNameEditText.getText().toString()));
+                }
+            }
+        }
+    }
+
+    private void checkCustomNPCArmourClassValidity(){
+        int combatantCount = parentLinearLayout.getChildCount();
+        View v;
+        EditText npcArmourClassEditText, npcNameEditText;
+        for (int i = 0; i < combatantCount; i++) {
+            v = parentLinearLayout.getChildAt(i);
+            if (v.getTag().toString().equals("custom_npc_entry")) {
+                npcArmourClassEditText = v.findViewById(R.id.editTxtCustomNPCAC);
+                npcNameEditText = v.findViewById(R.id.editTxtCustomNPCName);
+                try{
+                    Integer.parseInt(npcArmourClassEditText.getText().toString());
+                    npcArmourClassEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+                catch (NumberFormatException e){
+                    npcArmourClassEditText.setBackgroundColor(Color.parseColor("#f54242"));
+                    isValid = false;
+                    sb.append(String.format("The custom NPC ' %s ' must have an Armour Class entered.\n", npcNameEditText.getText().toString()));
+                }
+            }
+        }
+    }
+
     public void checkFieldValidation(){
         checkMonstersValidity();
         checkMonsterQuantityValidity();
         checkPlayerNameValidity();
         checkPlayerInitiativeValidity();
+        checkCustomNPCArmourClassValidity();
+        checkCustomNPCHealthValidity();
+        checkCustomNPCNameValidity();
+        checkCustomNPCInitiativeValidity();
     }
 
     public void onDelete(View v) {
