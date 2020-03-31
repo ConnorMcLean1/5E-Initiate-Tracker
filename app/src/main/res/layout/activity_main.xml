@@ -40,5 +40,4 @@
         android:onClick="startSavedCombat"
      />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

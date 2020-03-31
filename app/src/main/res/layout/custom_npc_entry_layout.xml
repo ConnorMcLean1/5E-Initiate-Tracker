@@ -3,7 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="150dp"
-    android:tag="@string/custom_npc_entry_tag">
+    android:tag="@string/custom_npc_entry_tag"
+    android:background="@color/brownLight">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -20,7 +21,8 @@
         android:inputType="text"
         android:imeOptions="actionDone"
         android:maxLines="1"
-        android:importantForAutofill="no" />
+        android:importantForAutofill="no"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <EditText
         android:id="@+id/editTxtCustomNPCInitiative"
@@ -31,7 +33,8 @@
         android:inputType="number"
         android:importantForAutofill="no"
         android:imeOptions="actionDone"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     </LinearLayout>
 
@@ -50,7 +53,8 @@
     android:inputType="text"
     android:imeOptions="actionDone"
     android:maxLines="1"
-    android:importantForAutofill="no" />
+    android:importantForAutofill="no"
+    android:fontFamily="@font/ancient_modern_tales"/>
 
     <EditText
     android:id="@+id/editTxtCustomNPCAC"
@@ -61,7 +65,8 @@
     android:inputType="number"
     android:importantForAutofill="no"
     android:imeOptions="actionDone"
-    android:maxLines="1" />
+    android:maxLines="1"
+    android:fontFamily="@font/ancient_modern_tales"/>
 
     </LinearLayout>
 
@@ -70,6 +75,8 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:onClick="onDelete" />
+        android:onClick="onDelete"
+        android:background="@color/chineseRed"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
 </LinearLayout>
