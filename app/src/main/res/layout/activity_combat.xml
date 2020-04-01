@@ -44,11 +44,12 @@
     <TextView
         android:id="@+id/txtViewCombatantName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
         android:text="@string/combat_txt_name"
         android:textAlignment="center"
         android:textSize="50sp"
-        android:layout_marginTop="20dp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintTop_toBottomOf="@id/txtViewInitiative" />
 
     <TextView
@@ -212,10 +213,12 @@
     <TextView
         android:id="@+id/txtViewPrevCombatantPreview"
         android:layout_width="144dp"
-        android:layout_height="0dp"
+        android:layout_height="35dp"
         android:layout_marginBottom="4dp"
+        android:text="prevPreview"
         android:textAlignment="center"
         android:textSize="25sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@id/btnPrev"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.063"
@@ -224,10 +227,12 @@
     <TextView
         android:id="@+id/txtViewNextCombatantPreview"
         android:layout_width="144dp"
-        android:layout_height="0dp"
+        android:layout_height="35dp"
         android:layout_marginBottom="4dp"
+        android:text="nextPreview"
         android:textAlignment="center"
         android:textSize="25sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@id/btnNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.94"
