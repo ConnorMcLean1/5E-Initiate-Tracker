@@ -131,6 +131,7 @@
         android:id="@+id/btnNext"
         android:layout_width="114dp"
         android:layout_height="61dp"
+        android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/button_next"
         app:layout_constraintHorizontal_bias="0.0"
