@@ -2,6 +2,7 @@ package com.example.a5einitiatetracker.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import java.util.Map;
 public class CombatantsActivity extends AppCompatActivity {
 
     private LinearLayout parentLinearLayout;
+    private final int textBackgroundColor = ContextCompat.getColor(this.getApplicationContext(), R.color.brownLight);
     HashMap<String, String> monsterNames;
     public static List<Combatant> combatantsList = new ArrayList<>();
     private boolean isValid;
@@ -47,6 +49,7 @@ public class CombatantsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_combatants);
 
         parentLinearLayout = findViewById(R.id.lnrLayoutMonsters);
+
         //Reads in the list of monster Names and Indexes from the JSON file created on startup
         monsterNames = JSONUtility.readMonsternamesFromJSONFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
 
@@ -236,7 +239,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 name = view.findViewById(R.id.autoTxtViewMonsters);
                 String monster = name.getText().toString();
                 if (monsterNames.containsKey(monster)) {
-                    name.setBackgroundColor(Color.parseColor("#ffffff"));
+                    name.setBackgroundColor(textBackgroundColor);
                     Log.d("TEST","Monster Quantity Valid");
                 } else {
                     name.setBackgroundColor(Color.parseColor("#f54242"));
@@ -261,7 +264,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 num = view.findViewById(R.id.editTxtMonsterNumber);
                 try {
                     Integer.parseInt(num.getText().toString());
-                    num.setBackgroundColor(Color.parseColor("#ffffff"));
+                    num.setBackgroundColor(textBackgroundColor);
                     Log.d("TEST", "Monster Valid");
                 } catch (NumberFormatException e) {
                     num.setBackgroundColor(Color.parseColor("#f54242"));
@@ -284,7 +287,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 playerNameEditText = v.findViewById(R.id.editTxtPlayerName);
                 try{
                     Integer.parseInt(playerInitiativeEditText.getText().toString());
-                    playerInitiativeEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    playerInitiativeEditText.setBackgroundColor(textBackgroundColor);
                 }
                 catch (NumberFormatException e){
                     playerInitiativeEditText.setBackgroundColor(Color.parseColor("#f54242"));
@@ -309,7 +312,7 @@ public class CombatantsActivity extends AppCompatActivity {
                     sb.append("All players must have a name to continue.\n");
                 }
                 else{
-                    playerNameEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    playerNameEditText.setBackgroundColor(textBackgroundColor);
                 }
             }
         }
@@ -329,7 +332,7 @@ public class CombatantsActivity extends AppCompatActivity {
                     sb.append("All custom NPCs must have a name to continue.\n");
                 }
                 else{
-                    npcNameEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    npcNameEditText.setBackgroundColor(textBackgroundColor);
                 }
             }
         }
@@ -346,7 +349,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 npcNameEditText = v.findViewById(R.id.editTxtCustomNPCName);
                 try{
                     Integer.parseInt(npcInitiativeEditText.getText().toString());
-                    npcInitiativeEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    npcInitiativeEditText.setBackgroundColor(textBackgroundColor);
                 }
                 catch (NumberFormatException e){
                     npcInitiativeEditText.setBackgroundColor(Color.parseColor("#f54242"));
@@ -368,7 +371,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 npcNameEditText = v.findViewById(R.id.editTxtCustomNPCName);
                 try{
                     Integer.parseInt(npcHealthEditText.getText().toString());
-                    npcHealthEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    npcHealthEditText.setBackgroundColor(textBackgroundColor);
                 }
                 catch (NumberFormatException e){
                     npcHealthEditText.setBackgroundColor(Color.parseColor("#f54242"));
@@ -390,7 +393,7 @@ public class CombatantsActivity extends AppCompatActivity {
                 npcNameEditText = v.findViewById(R.id.editTxtCustomNPCName);
                 try{
                     Integer.parseInt(npcArmourClassEditText.getText().toString());
-                    npcArmourClassEditText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    npcArmourClassEditText.setBackgroundColor(textBackgroundColor);
                 }
                 catch (NumberFormatException e){
                     npcArmourClassEditText.setBackgroundColor(Color.parseColor("#f54242"));
