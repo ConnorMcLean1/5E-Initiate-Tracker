@@ -48,11 +48,12 @@
     <TextView
         android:id="@+id/txtViewCombatantName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
         android:text="@string/combat_txt_name"
         android:textAlignment="center"
         android:textSize="50sp"
-        android:layout_marginTop="20dp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintTop_toBottomOf="@id/txtViewInitiative"
         android:fontFamily="@font/ancient_modern_tales"/>
 
@@ -102,12 +103,12 @@
         android:id="@+id/txtViewCombatantStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="316dp"
+        android:layout_marginEnd="12dp"
         android:text="@string/combat_txt_status"
         android:textAlignment="center"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/combatantStatusSpinner"
         app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantHealth"
         app:layout_constraintVertical_bias="0.15"
         android:fontFamily="@font/ancient_modern_tales"/>
@@ -121,7 +122,7 @@
         android:textAlignment="center"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantStatus"
         android:fontFamily="@font/ancient_modern_tales"/>
@@ -130,13 +131,12 @@
         android:id="@+id/btnNext"
         android:layout_width="114dp"
         android:layout_height="61dp"
+        android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/button_next"
-        android:background="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.882"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnPrev" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/btnEndCombat"
+        app:layout_constraintTop_toTopOf="@+id/btnEndCombat" />
 
     <ImageButton
         android:id="@+id/btnPrev"
@@ -145,10 +145,8 @@
         android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/button_prev"
-        app:layout_constraintBottom_toBottomOf="@id/btnEndCombat"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.117"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/btnEndCombat"
+        app:layout_constraintEnd_toStartOf="@+id/btnEndCombat" />
 
     <ImageButton
         android:id="@+id/btnEndCombat"
@@ -192,13 +190,12 @@
         android:id="@+id/btnHpHeal"
         android:layout_width="80dp"
         android:layout_height="45dp"
-        android:layout_marginStart="4dp"
         android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/button_heal"
         app:layout_constraintLeft_toRightOf="@+id/editTxtHealth"
-        app:layout_constraintTop_toTopOf="@id/editTxtHealth"
-        tools:layout_editor_absoluteY="189dp" />
+        app:layout_constraintStart_toEndOf="@+id/editTxtHealth"
+        app:layout_constraintTop_toTopOf="@id/editTxtHealth" />
 
     <ImageButton
         android:id="@+id/btnHpDamage"
@@ -207,27 +204,30 @@
         android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/button_damage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toEndOf="@+id/editTxtHealth"
+        app:layout_constraintEnd_toEndOf="@+id/btnHpHeal"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/btnHpHeal"
         app:layout_constraintTop_toBottomOf="@+id/btnHpHeal" />
 
     <Spinner
         android:id="@+id/combatantStatusSpinner"
-        android:entries="@array/status_array"
         android:layout_width="288dp"
         android:layout_height="31dp"
-        android:layout_marginStart="12dp"
-        app:layout_constraintStart_toEndOf="@+id/txtViewCombatantStatus"
+        android:entries="@array/status_array"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.837"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txtViewCombatantStatus" />
 
     <TextView
         android:id="@+id/txtViewPrevCombatantPreview"
         android:layout_width="144dp"
-        android:layout_height="0dp"
+        android:layout_height="35dp"
         android:layout_marginBottom="4dp"
+        android:text="prevPreview"
         android:textAlignment="center"
         android:textSize="25sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@id/btnPrev"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.063"
@@ -237,10 +237,12 @@
     <TextView
         android:id="@+id/txtViewNextCombatantPreview"
         android:layout_width="144dp"
-        android:layout_height="0dp"
+        android:layout_height="35dp"
         android:layout_marginBottom="4dp"
+        android:text="nextPreview"
         android:textAlignment="center"
         android:textSize="25sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@id/btnNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.94"
