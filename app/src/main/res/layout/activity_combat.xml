@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.CombatActivity">
+    tools:context=".activities.CombatActivity"
+    android:background="@drawable/activity_bg">
 
     <TextView
         android:id="@+id/txtViewInitiative"
@@ -16,7 +17,8 @@
         android:layout_marginTop="20dp"
         android:text="@string/initiative"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/txtViewCombatantName" />
+        app:layout_constraintBottom_toTopOf="@id/txtViewCombatantName"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewRoundCount"
@@ -27,6 +29,7 @@
         android:textSize="20sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/txtViewInitiative"
+        android:fontFamily="@font/ancient_modern_tales"
         />
 
     <ImageButton
@@ -39,6 +42,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/txtViewCombatantName"
         app:layout_constraintLeft_toLeftOf="@+id/txtViewInitiative"
+        android:fontFamily="@font/ancient_modern_tales"
         />
 
     <TextView
@@ -50,7 +54,8 @@
         android:textAlignment="center"
         android:textSize="50sp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintTop_toBottomOf="@id/txtViewInitiative" />
+        app:layout_constraintTop_toBottomOf="@id/txtViewInitiative"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewCombatantCurrentHealthLabel"
@@ -62,7 +67,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@id/txtViewCombatantName"
         app:layout_constraintStart_toStartOf="@id/txtViewCombatantHealth"
-        app:layout_constraintVertical_bias="0.12"/>
+        app:layout_constraintVertical_bias="0.12"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewCombatantCurrentHealth"
@@ -74,7 +80,8 @@
         app:layout_constraintTop_toTopOf="@id/txtViewCombatantName"
         app:layout_constraintStart_toEndOf="@id/txtViewCombatantCurrentHealthLabel"
         app:layout_constraintEnd_toEndOf="@id/txtViewCombatantName"
-        app:layout_constraintVertical_bias="0.12"/>
+        app:layout_constraintVertical_bias="0.12"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewCombatantHealth"
@@ -89,7 +96,8 @@
         app:layout_constraintHorizontal_bias="0.115"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantName"
-        app:layout_constraintVertical_bias="0.064" />
+        app:layout_constraintVertical_bias="0.064"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewCombatantStatus"
@@ -102,7 +110,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/combatantStatusSpinner"
         app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantHealth"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.15"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewCombatantDeathSaves"
@@ -115,13 +124,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantStatus"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <ImageButton
         android:id="@+id/btnNext"
         android:layout_width="114dp"
         android:layout_height="61dp"
-        android:background="@null"
         android:scaleType="centerInside"
         android:src="@drawable/button_next"
         app:layout_constraintHorizontal_bias="0.0"
@@ -161,7 +170,8 @@
         android:imeOptions="actionDone"
         android:maxLines="1"
         app:layout_constraintStart_toEndOf="@+id/txtViewCombatantHealth"
-        app:layout_constraintTop_toTopOf="@+id/txtViewCombatantHealth" />
+        app:layout_constraintTop_toTopOf="@+id/txtViewCombatantHealth"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <Button
         android:id="@+id/btnDeathSave"
@@ -172,7 +182,8 @@
         android:tooltipText="@string/roll_death_save_button_tip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantDeathSaves" />
+        app:layout_constraintTop_toBottomOf="@+id/txtViewCombatantDeathSaves"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <ImageButton
         android:id="@+id/btnHpHeal"
@@ -219,7 +230,8 @@
         app:layout_constraintBottom_toTopOf="@id/btnPrev"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.063"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewNextCombatantPreview"
@@ -233,25 +245,31 @@
         app:layout_constraintBottom_toTopOf="@id/btnNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.94"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <Button
         android:id="@+id/btnDamage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="72dp"
+        android:fontFamily="@font/ancient_modern_tales"
         android:text="Deal Damage"
         app:layout_constraintBottom_toTopOf="@+id/btnEndCombat"
         app:layout_constraintEnd_toStartOf="@+id/btnNext"
-        app:layout_constraintStart_toEndOf="@+id/btnPrev" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btnPrev"
+        app:layout_constraintTop_toBottomOf="@+id/editTxtDamageAmount" />
 
     <EditText
         android:id="@+id/editTxtDamageAmount"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:fontFamily="@font/ancient_modern_tales"
         android:hint="Damage to deal"
         android:imeOptions="actionDone"
+        android:inputType="number"
         android:maxLines="1"
         app:layout_constraintEnd_toStartOf="@+id/btnNext"
         app:layout_constraintStart_toEndOf="@+id/btnPrev"
@@ -287,7 +305,8 @@
         android:layout_height="wrap_content"
         android:text="Successes"
         app:layout_constraintBottom_toTopOf="@+id/deathSaveSuccessBar"
-        app:layout_constraintEnd_toEndOf="@+id/deathSaveSuccessBar" />
+        app:layout_constraintEnd_toEndOf="@+id/deathSaveSuccessBar"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <TextView
         android:id="@+id/txtViewDeathSaveFailureBarLabel"
@@ -295,6 +314,7 @@
         android:layout_height="wrap_content"
         android:text="Failures"
         app:layout_constraintBottom_toTopOf="@+id/deathSaveFailureBar"
-        app:layout_constraintStart_toStartOf="@id/deathSaveFailureBar" />
+        app:layout_constraintStart_toStartOf="@id/deathSaveFailureBar"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

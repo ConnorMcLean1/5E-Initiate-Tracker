@@ -3,7 +3,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:tag="@string/monster_entry_tag">
+    android:tag="@string/monster_entry_tag"
+    android:background="@color/brownLight">
 
     <AutoCompleteTextView
         android:id="@+id/autoTxtViewMonsters"
@@ -15,7 +16,8 @@
         android:hint="@string/monster_entry_name"
         android:inputType="text"
         android:imeOptions="actionDone"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <EditText
         android:id="@+id/editTxtMonsterNumber"
@@ -25,7 +27,8 @@
         android:hint="@string/monster_entry_number"
         android:inputType="number"
         android:imeOptions="actionDone"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <Button
         android:layout_width="0dp"

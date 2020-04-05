@@ -3,7 +3,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:tag="@string/player_entry_tag">
+    android:tag="@string/player_entry_tag"
+    android:background="@color/brownLight">
 
     <EditText
         android:id="@+id/editTxtPlayerName"
@@ -15,7 +16,8 @@
         android:inputType="text"
         android:imeOptions="actionDone"
         android:maxLines="1"
-        android:importantForAutofill="no" />
+        android:importantForAutofill="no"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <EditText
         android:id="@+id/editTxtInitiative"
@@ -26,7 +28,8 @@
         android:inputType="number"
         android:importantForAutofill="no"
         android:imeOptions="actionDone"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:fontFamily="@font/ancient_modern_tales"/>
 
     <Button
         android:layout_width="0dp"

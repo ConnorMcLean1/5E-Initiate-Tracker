@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.MainActivity"
+    android:background="@drawable/activity_bg"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/app_name"
+        android:fontFamily="@font/ancient_modern_tales"
+        android:gravity="center"
+        android:textSize="100sp"
+        android:textColor="@color/chineseRed"
+        android:layout_marginTop="100dp"/>
 
     <ImageButton
         android:id="@+id/btnStart"
@@ -14,12 +28,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/button_fight"
         android:background="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.238" />
+        android:layout_gravity="center"/>
 
     <ImageButton
         android:id="@+id/buttonLoad"
@@ -30,9 +39,6 @@
         android:onClick="startSavedCombat"
         android:scaleType="centerInside"
         android:src="@drawable/button_load"
-        app:layout_constraintEnd_toEndOf="@+id/btnStart"
-        app:layout_constraintHorizontal_bias="0.468"
-        app:layout_constraintStart_toStartOf="@+id/btnStart"
-        app:layout_constraintTop_toBottomOf="@+id/btnStart" />
+        android:layout_gravity="center"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
