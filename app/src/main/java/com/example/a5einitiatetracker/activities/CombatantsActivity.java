@@ -37,7 +37,7 @@ import java.util.Map;
 public class CombatantsActivity extends AppCompatActivity {
 
     private LinearLayout parentLinearLayout;
-    private final int textBackgroundColor = ContextCompat.getColor(this.getApplicationContext(), R.color.brownLight);
+    private int textBackgroundColor;
     HashMap<String, String> monsterNames;
     public static List<Combatant> combatantsList = new ArrayList<>();
     private boolean isValid;
@@ -47,7 +47,7 @@ public class CombatantsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combatants);
-
+        textBackgroundColor = ContextCompat.getColor(this.getApplicationContext(), R.color.brownLight);
         parentLinearLayout = findViewById(R.id.lnrLayoutMonsters);
 
         //Reads in the list of monster Names and Indexes from the JSON file created on startup
