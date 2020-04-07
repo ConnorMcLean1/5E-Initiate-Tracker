@@ -8,12 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -26,7 +24,6 @@ import com.example.a5einitiatetracker.combatant.NPC;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,7 +54,6 @@ public class CombatantsActivity extends AppCompatActivity {
         int i = 0;
         for (Map.Entry<String, String> entry : monsterNames.entrySet()) {
             monsters[i] = entry.getKey();
-            Log.d("myTAG", monsters[i]);
             i++;
         }
 
@@ -144,7 +140,6 @@ public class CombatantsActivity extends AppCompatActivity {
                     }
 
                     Collections.sort(combatantsList, Collections.<Combatant>reverseOrder());
-                    Log.v("LIST", combatantsList.toString());
                     startCombat();
                 }
             }).start();
@@ -232,7 +227,6 @@ public class CombatantsActivity extends AppCompatActivity {
         View view;
         AutoCompleteTextView name;
         EditText num;
-        Log.d("TEST","Checking Monster Quantity Validity");
         for (int i = 0; i < combatantCount; i++) {
             view = parentLinearLayout.getChildAt(i);
             if (view.getTag().toString().equals("monster_entry")) {
@@ -240,19 +234,16 @@ public class CombatantsActivity extends AppCompatActivity {
                 String monster = name.getText().toString();
                 if (monsterNames.containsKey(monster)) {
                     name.setBackgroundColor(textBackgroundColor);
-                    Log.d("TEST","Monster Quantity Valid");
                 } else {
                     name.setBackgroundColor(Color.parseColor("#f54242"));
                     sb.append(String.format("' %s ' is not a valid monster, please select a valid monster.\n", monster));
                     isValid = false;
-                    Log.d("TEST","Monster Quantity Invalid");
                 }
             }
         }
     }
 
     private void checkMonsterQuantityValidity() {
-        Log.d("TEST","Checking Monster Validity");
         int combatantCount = parentLinearLayout.getChildCount();
         View view;
         EditText num;
@@ -265,12 +256,10 @@ public class CombatantsActivity extends AppCompatActivity {
                 try {
                     Integer.parseInt(num.getText().toString());
                     num.setBackgroundColor(textBackgroundColor);
-                    Log.d("TEST", "Monster Valid");
                 } catch (NumberFormatException e) {
                     num.setBackgroundColor(Color.parseColor("#f54242"));
                     sb.append(String.format("' %s ' must have a quantity entered.\n", name.getText().toString()));
                     isValid = false;
-                    Log.d("TEST", "Monster Invalid");
                 }
             }
         }

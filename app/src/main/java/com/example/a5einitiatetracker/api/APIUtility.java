@@ -1,7 +1,6 @@
 package com.example.a5einitiatetracker.api;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -41,12 +40,9 @@ public class APIUtility {
 
         try {
             monster = call.execute().body();
-            //Log.d("API_TEST", monster.toString());
             npc = new NPC(NPC.dexToMod(monster.getDex()), NPC.combatantStates.ALIVE, monster.getHp(), monster.getName(), 0, monster.getAc());
-            //Log.d("API_TEST", npc.toString());
         }
         catch (Exception e){
-            Log.e("API_RESPONSE", "There was an error getting the requested monster from the API" + e.getLocalizedMessage());
             e.printStackTrace();
         }
 
@@ -76,7 +72,6 @@ public class APIUtility {
 
             @Override
             public void onFailure(@NonNull Call<MonsterIndex> call, @NonNull Throwable throwable) {
-                Log.e("API_RESPONSE", throwable.toString());
             }
         });
     }
