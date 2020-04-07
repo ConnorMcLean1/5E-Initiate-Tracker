@@ -21,8 +21,7 @@
         android:inputType="text"
         android:imeOptions="actionDone"
         android:maxLines="1"
-        android:importantForAutofill="no"
-        android:fontFamily="@font/ancient_modern_tales"/>
+        android:importantForAutofill="no"/>
 
     <EditText
         android:id="@+id/editTxtCustomNPCInitiative"
@@ -33,8 +32,7 @@
         android:inputType="number"
         android:importantForAutofill="no"
         android:imeOptions="actionDone"
-        android:maxLines="1"
-        android:fontFamily="@font/ancient_modern_tales"/>
+        android:maxLines="1"/>
 
     </LinearLayout>
 
@@ -53,8 +51,7 @@
     android:inputType="text"
     android:imeOptions="actionDone"
     android:maxLines="1"
-    android:importantForAutofill="no"
-    android:fontFamily="@font/ancient_modern_tales"/>
+    android:importantForAutofill="no"/>
 
     <EditText
     android:id="@+id/editTxtCustomNPCAC"
@@ -65,8 +62,7 @@
     android:inputType="number"
     android:importantForAutofill="no"
     android:imeOptions="actionDone"
-    android:maxLines="1"
-    android:fontFamily="@font/ancient_modern_tales"/>
+    android:maxLines="1"/>
 
     </LinearLayout>
 

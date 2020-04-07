@@ -16,8 +16,7 @@
         android:hint="@string/monster_entry_name"
         android:inputType="text"
         android:imeOptions="actionDone"
-        android:maxLines="1"
-        android:fontFamily="@font/ancient_modern_tales"/>
+        android:maxLines="1"/>
 
     <EditText
         android:id="@+id/editTxtMonsterNumber"
@@ -27,8 +26,7 @@
         android:hint="@string/monster_entry_number"
         android:inputType="number"
         android:imeOptions="actionDone"
-        android:maxLines="1"
-        android:fontFamily="@font/ancient_modern_tales"/>
+        android:maxLines="1"/>
 
     <Button
         android:layout_width="0dp"
