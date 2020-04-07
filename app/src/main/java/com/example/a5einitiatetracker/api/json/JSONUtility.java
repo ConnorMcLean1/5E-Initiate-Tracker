@@ -3,13 +3,11 @@ package com.example.a5einitiatetracker.api.json;
 import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonWriter;
-import android.util.Log;
 
 import com.example.a5einitiatetracker.api.MonsterName;
 import com.example.a5einitiatetracker.combatant.Combatant;
 import com.example.a5einitiatetracker.combatant.Player;
 import com.example.a5einitiatetracker.combatant.NPC;
-import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +35,6 @@ public class JSONUtility {
                 file.createNewFile();
             }
             catch (Exception e){
-                Log.e("FILE_CREATION", "Error: " + e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
@@ -75,21 +72,16 @@ public class JSONUtility {
                 for(int j = 0; j < tempArr.length(); j++) {
                     name = tempArr.getString(j);
                     jw.name(name).value(tempOBJ.getString(name));
-                    //Log.d("JSON_TEST", "" + tempOBJ.getString("Index"));
-                    //Log.d("JSON_TEST", "" + tempOBJ.getString("Name"));
                 }
                 jw.endObject();
             }
             jw.endArray();
             jw.flush();
-
-            //Log.d("JSON_TEST", "The information stored to the file is: " + arr.toString());
         }
         //endregion
 
         //region CATCH
         catch (Exception e){
-            Log.e("FILE_WRITING", "Error: " + e.getLocalizedMessage());
             e.printStackTrace();
         }
         //endregion
@@ -112,8 +104,7 @@ public class JSONUtility {
             }
         }
         catch (Exception e){
-            Log.e("JSON_CONVERTER", "Error converting MonsterName list to JSON Object: "
-                    + e.getLocalizedMessage());
+            e.printStackTrace();
         }
         //endregion
 
@@ -140,16 +131,13 @@ public class JSONUtility {
                 tempObj = new JSONObject();
                 for(int i = 0; i < 2; i++){
                     name = jr.nextName();
-                    //Log.d("JSON_TEST", "Out of loop Index = " + name);
                     if(name.equals("Index")){
                         Index = jr.nextString();
                         tempObj.put(name, Index);
-                        //Log.d("JSON_TEST", "In loop Index = " + Index);
                     }
                     else if(name.equals("Name")){
                         monstName = jr.nextString();
                         tempObj.put(name, monstName);
-                        //Log.d("JSON_TEST", "In loop Name = " + monstName);
                     }
                 }
                 jr.endObject();
@@ -158,12 +146,9 @@ public class JSONUtility {
             jr.endArray();
             jr.close();
 
-            Log.d("JSON_TEST", "The information read from the file is: " + tempArr.toString());
-
             return convertJSONtoHashMap(tempArr);
         }
         catch (Exception e){
-            Log.e("JSON_CONVERTER", "Error reading JSON File to convert to list: " + e.getLocalizedMessage());
             e.printStackTrace();
 
             return null;
@@ -179,11 +164,9 @@ public class JSONUtility {
                 jsonObject = arr.getJSONObject(i);
                 map.put(jsonObject.getString("Name"), jsonObject.getString("Index"));
             }
-            Log.d("JSON_TEST", "The information converted from JSON is: " + map.toString());
             return map;
         }
         catch (Exception e){
-            Log.e("JSON_CONVERTER", "Error converting JSON to MonsterName list: " + e.getLocalizedMessage());
             e.printStackTrace();
             return null;
         }
@@ -197,7 +180,7 @@ public class JSONUtility {
         Combatant currCombatant;
         NPC npc;
 
-        Boolean isNPC;
+        boolean isNPC;
 
         try{
             //Creates the file if it does not already exist
@@ -251,7 +234,6 @@ public class JSONUtility {
             fw.close();
         }
         catch (Exception e){
-            Log.e("COMBAT_SAVING", "Error saving the combat to JSON: " + e.getLocalizedMessage());
             e.printStackTrace();
             return false;
         }
@@ -282,10 +264,8 @@ public class JSONUtility {
             try {
 
                 data = new JSONArray(JSONData);
-                Log.d("TESTING","" + data.toString());
             }
             catch (ClassCastException e){
-                Log.e("COMBAT_LOADING", "Error loading the combatant data. " + e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
@@ -319,7 +299,6 @@ public class JSONUtility {
 
         }
         catch (Exception e){
-            Log.e("JSON_CONVERTER", "Error converting JSON to Combatants list: " + e.getLocalizedMessage());
             e.printStackTrace();
             return null;
         }
@@ -340,7 +319,6 @@ public class JSONUtility {
             position = data.getJSONObject(0).getInt("position");
 
         } catch (Exception e) {
-            Log.e("COMBAT_LOAD", "Error loading the combat, could not retrieve position data. " + e.getLocalizedMessage());
             e.printStackTrace();
         }
 
@@ -362,7 +340,6 @@ public class JSONUtility {
             roundCount = data.getJSONObject(0).getInt("roundCount");
 
         } catch (Exception e) {
-            Log.e("COMBAT_LOAD", "Error loading the combat, could not retrieve round count data. " + e.getLocalizedMessage());
             e.printStackTrace();
         }
 

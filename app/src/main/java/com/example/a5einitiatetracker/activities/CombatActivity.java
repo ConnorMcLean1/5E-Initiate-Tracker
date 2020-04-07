@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -31,7 +30,6 @@ import com.example.a5einitiatetracker.dialogs.CombatantsDialog;
 import com.example.a5einitiatetracker.views.VerticalRatingBar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -258,7 +256,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
                     .filter(p -> p.getCombatState() != NPC.combatantStates.DEAD)
                     .map(p -> (NPC)p)
                     .collect(Collectors.toList());
-            Log.v("NPCs", npcs.toString());
             CombatantsDialog dialog = new CombatantsDialog();
             dialog.show(getSupportFragmentManager(), "combatants dialog");
             dialog.setDamage(dmg);
@@ -353,7 +350,7 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void rollDeathSaveOnClick() {
         if (checkIfUnstable(npc)) { //Check if the npc is unstable and therefore if they need to roll a death save
-            npc.rollDeathSave(0, 0); //TODO get the advantage and bonus values from the DM if needed
+            npc.rollDeathSave(0, 0);
             checkDeathSaves();
             updateUIValues();
         } else {
@@ -423,7 +420,6 @@ public class CombatActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = (String) parent.getItemAtPosition(position);
-        //TODO add handling to prevent the combatant status from changing if they are not at the correct HP for the status OR change the HP as well
         if(isPlayer) {
             switch (item) {
                 case "Alive":
