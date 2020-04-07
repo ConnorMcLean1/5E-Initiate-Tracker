@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     File monsterListJSON;
     FileReader fr;
-    JsonReader jr;
+    BufferedReader br;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             fr = new FileReader(monsterListJSON);
-            jr = new JsonReader(fr);
+            br = new BufferedReader(fr);
         }
         catch (FileNotFoundException e){
             e.printStackTrace();
@@ -81,15 +82,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startOnClick(){
+        int temp = -1;
         try {
-            if (!jr.hasNext()) {
-                Toast.makeText(this.getApplicationContext(), "We're sorry, an issue accessing the network occurred. Please ensure you are connected, wait a minute, and try again.", Toast.LENGTH_LONG).show();
-            } else {
+            temp = br.read();
+            if(temp != -1) {
                 Intent intent = new Intent(getBaseContext(), CombatantsActivity.class);
                 startActivity(intent);
             }
+            else{
+                Toast.makeText(this.getApplicationContext(), "We're sorry, an issue accessing the network occurred. Please ensure you are connected, wait a minute, and try again.", Toast.LENGTH_LONG).show();
+            }
         }
-        catch (IOException e){
+        catch(IOException e){
             e.printStackTrace();
         }
     }
