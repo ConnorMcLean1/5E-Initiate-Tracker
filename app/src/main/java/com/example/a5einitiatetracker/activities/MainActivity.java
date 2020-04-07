@@ -13,8 +13,13 @@ import com.example.a5einitiatetracker.api.MonsterName;
 import com.example.a5einitiatetracker.R;
 import com.example.a5einitiatetracker.api.APIUtility;
 import com.example.a5einitiatetracker.api.json.JSONUtility;
+import com.google.gson.stream.JsonReader;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     public static List<MonsterName> monstersList;
 
     File monsterListJSON;
+    FileReader fr;
+    JsonReader jr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +40,20 @@ public class MainActivity extends AppCompatActivity {
         JSONUtility.createFile(this.getApplicationContext(), JSONUtility.JSON_FILE_NAME);
         monsterListJSON = new File(this.getFilesDir(), JSONUtility.JSON_FILE_NAME);
 
+        try {
+            fr = new FileReader(monsterListJSON);
+            jr = new JsonReader(fr);
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+
         ImageButton startButton = findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), CombatantsActivity.class);
-                startActivity(intent);
+                startOnClick();
             }
         });
 
@@ -61,6 +77,20 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             Toast.makeText(this.getApplicationContext(), "No saved combat exists to load!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startOnClick(){
+        try {
+            if (!jr.hasNext()) {
+                Toast.makeText(this.getApplicationContext(), "We're sorry, an issue accessing the network occurred. Please ensure you are connected, wait a minute, and try again.", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(getBaseContext(), CombatantsActivity.class);
+                startActivity(intent);
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
         }
     }
 
