@@ -276,7 +276,7 @@
         app:layout_constraintStart_toEndOf="@+id/btnPrev"
         app:layout_constraintTop_toBottomOf="@+id/btnDeathSave" />
 
-    <com.example.a5einitiatetracker.views.VerticalRatingBar
+    <com.dnd5e.combattracker.views.VerticalRatingBar
         android:id="@+id/deathSaveSuccessBar"
         style="@style/deathSaveSuccessBar"
         android:layout_width="45dp"
@@ -288,7 +288,7 @@
         app:layout_constraintRight_toLeftOf="@id/btnDeathSave"
         app:layout_constraintTop_toTopOf="@id/txtViewCombatantDeathSaves" />
 
-    <com.example.a5einitiatetracker.views.VerticalRatingBar
+    <com.dnd5e.combattracker.views.VerticalRatingBar
         android:id="@+id/deathSaveFailureBar"
         style="@style/deathSaveFailureBar"
         android:layout_width="45dp"
